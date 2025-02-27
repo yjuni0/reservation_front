@@ -45,7 +45,11 @@ function SignIn() {
       console.error("Error Details:", err); // 전체 오류 객체 출력
     }
   };
-
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      login();
+    }
+  };
   const login = async () => {
     const req = {
       email: id,
@@ -91,7 +95,6 @@ function SignIn() {
         <LoginTitle>
           <h1>로그인</h1>
         </LoginTitle>
-
         <InputBox>
           <input
             type="text"
@@ -104,6 +107,7 @@ function SignIn() {
             placeholder="비밀번호"
             value={pwd}
             onChange={changePwd}
+            onKeyDown={handleKeyDown}
           />
           <IdFind>
             <Link to="/findId">
