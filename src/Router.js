@@ -1,40 +1,45 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import GlobalStyle from "./styles/GlobalStyle.js";
-import Header from "./components/common/Header.js";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+
+// 메인
 import Home from "./components/common/Home";
+import Header from "./components/common/Header";
+import Footer from "./components/common/Footer";
 
-import Introduce from "./components/introduce/Introduce.js";
-import Directions from "./components/introduce/Directions.js";
-import Department from "./components/introduce/Department.js";
+import Introduce from "./pages/introduce/Introduce";
+import Directions from "./pages/introduce/Directions";
+import Department from "./pages/introduce/Department";
 
-import Notice from "./components/board/notice/Notice.js";
+import UserReserv from "./pages/reservation/UserReserv";
+import NonUserReserve from "./pages/reservation/NonUserReserve";
 
-import UserReserv from "./components/reservation/UserReserv.js";
-import NonUserReserve from "./components/reservation/NonUserReserve.js";
+import SignIn from "./pages/user/login/SignIn";
+import SignUp from "./pages/user/login/SignUp";
+import FindId from "./pages/user/login/FindId";
+import FindPw from "./pages/user/login/FindPw";
+import MyPage from "./pages/user/mypage/MyPage";
 
-import OnlineCounsel from "./components/board/onlinecounsel/OnlineCounsel.js";
-import OnlineCounselWrite from "./components/board/onlinecounsel/OnlineCounselWrite.js";
-import OnlineCounselUpdate from "./components/board/onlinecounsel/OnlineCounselUpdate.js";
-import OnlineCounselDetail from "./components/board/onlinecounsel/OnlineCounselDetail.js";
+import AdminHome from "./pages/admin/AdminHome";
 
-import Review from "./components/board/review/Review.js";
-import ReviewUpdate from "./components/board/review/ReviewUpdate.js"
-import ReviewWrite from "./components/board/review/ReviewWrite.js";
+// 공지사항
+import NoticeLayout from "./pages/notice/NoticeLayout";
+import Notice from "./pages/notice/Notice";
+import NoticeWrite from "./pages/notice/NoticeWrite";
+import NoticeDetail from "./pages/notice/NoticeDetail";
+import NoticeUpdate from "./pages/notice/NoticeUpdate";
 
+// 온라인 상담
+import OnlineCounselLayout from "./pages/onlinecounsel/OnlineCounselLayout";
+import OnlineCounsel from "./pages/onlinecounsel/OnlineCounsel";
+import OnlineCounselWrite from "./pages/onlinecounsel/OnlineCounselWrite";
+import OnlineCounselDetail from "./pages/onlinecounsel/OnlineCounselDetail";
+import OnlineCounselUpdate from "./pages/onlinecounsel/OnlineCounselUpdate";
 
-import SignIn from "./components/user/login/SignIn.js";
-import SignUp from "./components/user/login/SignUp.js";
-import FindId from "./components/user/login/FindId.js";
-import FindPw from "./components/user/login/FindPw.js";
-
-import MyPage from "./components/user/mypage/MyPage.js";
-
-import AdminHome from "./components/admin/AdminHome.js";
-import Footer from "./components/common/Footer.js";
-
-import NoticeUpdate from "./components/board/notice/NoticeUpdate.js"
-import NoticeWrite from "./components/board/notice/NoticeWrite.js";
-import NoticeDetail from "./components/board/notice/NoticeDetail.js";
+// 후기
+import ReviewLayout from "./pages/review/ReviewLayout";
+import Review from "./pages/review/Review";
+import ReviewWrite from "./pages/review/ReviewWrite";
+import ReviewDetail from "./pages/review/ReviewDetail";
+import ReviewUpdate from "./pages/review/ReviewUpdate";
 
 const Router = () => {
   return (
@@ -45,40 +50,43 @@ const Router = () => {
         <Route path="/introduce" element={<Introduce />} />
         <Route path="/directions" element={<Directions />} />
         <Route path="/department" element={<Department />} />
-        <Route path="/notice" element={<Notice />}></Route>
-
-        <Route path="/noticeUpdate" element={<NoticeUpdate />}></Route>
-        <Route path="/noticeWrite" element={<NoticeWrite />}></Route>
-        <Route path="/noticedetail/:noticeId" element={<NoticeDetail />}></Route>
 
         <Route path="/userreserv" element={<UserReserv />}></Route>
         <Route path="/nonuserreserve" element={<NonUserReserve />}></Route>
-        <Route path="/onlineCounsel" element={<OnlineCounsel />}></Route>
-        <Route
-          path="/onlineCounselWrite"
-          element={<OnlineCounselWrite />}
-        ></Route>
-        <Route
-          path="/onlienCounselUpdate"
-          element={<OnlineCounselUpdate />}
-        ></Route>
-         <Route
-          path="/onlineCounselDetail"
-          element={<OnlineCounselDetail />}
-        ></Route>
-
-
-        <Route path="/review" element={<Review />}></Route>
-
-        <Route path="/reviewUpdate" element={<ReviewUpdate />}></Route>
-        <Route path="/reviewWrite" element={<ReviewWrite />}></Route>
 
         <Route path="/SignIn" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/findId" element={<FindId />} />
         <Route path="/findPw" element={<FindPw />} />
         <Route path="/mypage" element={<MyPage />}></Route>
-        <Route path="/adminhome" element={<AdminHome />}></Route>
+        <Route path="/admin" element={<AdminHome />}></Route>
+      </Routes>
+
+      <Routes>
+        <Route path="/notice" element={<NoticeLayout />}>
+          <Route index element={<Notice />} />
+          <Route path="write" element={<NoticeWrite />} />
+          <Route path=":noticeId" element={<Outlet />}>
+            <Route index element={<NoticeDetail />} />
+            <Route path="update" element={<NoticeUpdate />} />
+          </Route>
+        </Route>
+        <Route path="/onlineCounsel" element={<OnlineCounselLayout />}>
+          <Route index element={<OnlineCounsel />} />
+          <Route path="write" element={<OnlineCounselWrite />} />
+          <Route path=":onlineCounselId" element={<Outlet />}>
+            <Route index element={<OnlineCounselDetail />} />
+            <Route path=":update" element={<OnlineCounselUpdate />} />
+          </Route>
+        </Route>
+        <Route path="/review" element={<ReviewLayout />}>
+          <Route index element={<Review />} />
+          <Route path="write" element={<ReviewWrite />} />
+          <Route path=":reviewId" element={<Outlet />}>
+            <Route index element={<ReviewDetail />} />
+            <Route path=":update" element={<ReviewUpdate />} />
+          </Route>
+        </Route>
       </Routes>
 
       <Footer />

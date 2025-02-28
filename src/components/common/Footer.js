@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
-import footer_logo from "./imgs/footer_logo.png";
-import media_icon_instagram from "./imgs/media_icon_instagram.png";
-import media_icon_youtube from "./imgs/media_icon_youtube.png";
-import media_icon_appstore from "./imgs/media_icon_appstore.png";
-import media_icon_googleplay from "./imgs/media_icon_googleplay.png";
+import footer_logo from "../../assets/imgs/footer_logo.png";
+import media_icon_instagram from "../../assets/imgs/media_icon_instagram.png";
+import media_icon_youtube from "../../assets/imgs/media_icon_youtube.png";
+import media_icon_appstore from "../../assets/imgs/media_icon_appstore.png";
+import media_icon_googleplay from "../../assets/imgs/media_icon_googleplay.png";
 import styled from "styled-components";
 
 function Footer() {
@@ -28,7 +28,6 @@ function Footer() {
               <tr>
                 <td>문의</td>
                 <td>
-                  {" "}
                   대표번호 : 02-837-9922 팩스 : 02-3482-8835 이메일:
                   saff@saff.kr
                 </td>
@@ -36,7 +35,6 @@ function Footer() {
               <tr>
                 <td>주소</td>
                 <td>
-                  {" "}
                   서울특별시 구로구 시흥대로 163길 33 2층, 3층 (주호타워)
                   사업자등록번호 : 203-87-00672
                 </td>
@@ -59,7 +57,7 @@ function Footer() {
           </FooterIcon>
           <Copy>
             <p>©Copyright 2025 HIPAT. All Rights Reserved</p>
-          </Copy>{" "}
+          </Copy>
         </FooterBoxB>
       </FooterSection>
     </FooterContainer>
