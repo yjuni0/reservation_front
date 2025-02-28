@@ -35,21 +35,26 @@ import OnlineCounselDetail from "./pages/onlinecounsel/OnlineCounselDetail";
 import OnlineCounselUpdate from "./pages/onlinecounsel/OnlineCounselUpdate";
 
 // 후기
-import ReviewLayout from "./pages/review/ReviewLayout";
-import Review from "./pages/review/Review";
-import ReviewWrite from "./pages/review/ReviewWrite";
-import ReviewDetail from "./pages/review/ReviewDetail";
-import ReviewUpdate from "./pages/review/ReviewUpdate";
+import ReviewLayout from "./pages/reviews/ReviewLayout";
+import Review from "./pages/reviews/Review";
+import ReviewWrite from "./pages/reviews/ReviewWrite";
+import ReviewDetail from "./pages/reviews/ReviewDetail";
+import ReviewUpdate from "./pages/reviews/ReviewUpdate";
+import AdminUserList from "./pages/admin/user/AdminUserList";
+import AdminReservationList from "./pages/admin/reservation/AdminReservationList";
+
+// admin
+import AdminRouter from "./components/AdminRouter";
 
 const Router = () => {
   return (
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path="/" element={<Home />}></Route>
-        <Route path="/introduce" element={<Introduce />} />
-        <Route path="/directions" element={<Directions />} />
-        <Route path="/department" element={<Department />} />
+        <Route path="/" element={<Home />} />
+        <Route path="introduce" element={<Introduce />} />
+        <Route path="directions" element={<Directions />} />
+        <Route path="department" element={<Department />} />
 
         <Route path="/userreserv" element={<UserReserv />}></Route>
         <Route path="/nonuserreserve" element={<NonUserReserve />}></Route>
@@ -59,36 +64,56 @@ const Router = () => {
         <Route path="/findId" element={<FindId />} />
         <Route path="/findPw" element={<FindPw />} />
         <Route path="/mypage" element={<MyPage />}></Route>
-        <Route path="/admin" element={<AdminHome />}></Route>
-      </Routes>
 
-      <Routes>
-        <Route path="/notice" element={<NoticeLayout />}>
+        <Route path="notice" element={<NoticeLayout />}>
           <Route index element={<Notice />} />
           <Route path="write" element={<NoticeWrite />} />
-          <Route path=":noticeId" element={<Outlet />}>
-            <Route index element={<NoticeDetail />} />
-            <Route path="update" element={<NoticeUpdate />} />
-          </Route>
+          <Route path=":noticeId" element={<NoticeDetail />} />
+          <Route path=":noticeId/update" element={<NoticeUpdate />} />
         </Route>
+
         <Route path="/onlineCounsel" element={<OnlineCounselLayout />}>
           <Route index element={<OnlineCounsel />} />
           <Route path="write" element={<OnlineCounselWrite />} />
-          <Route path=":onlineCounselId" element={<Outlet />}>
-            <Route index element={<OnlineCounselDetail />} />
-            <Route path=":update" element={<OnlineCounselUpdate />} />
-          </Route>
+          <Route path=":onlineCounselId" element={<OnlineCounselDetail />} />
+          <Route
+            path=":onlineCounselId/update"
+            element={<OnlineCounselUpdate />}
+          />
         </Route>
+
         <Route path="/review" element={<ReviewLayout />}>
           <Route index element={<Review />} />
           <Route path="write" element={<ReviewWrite />} />
-          <Route path=":reviewId" element={<Outlet />}>
-            <Route index element={<ReviewDetail />} />
-            <Route path=":update" element={<ReviewUpdate />} />
+          <Route path=":reviewId" element={<ReviewDetail />} />
+          <Route path=":reviewId/update" element={<ReviewUpdate />} />
+        </Route>
+
+        <Route path="/admin" element={<AdminHome />}>
+          <Route path="notice" element={<NoticeLayout />}>
+            <Route index element={<Notice />} />
+            <Route path="write" element={<NoticeWrite />} />
+            <Route path=":noticeId" element={<NoticeDetail />} />
+            <Route path=":noticeId/update" element={<NoticeUpdate />} />
+          </Route>
+          <Route path="onlineCounsel" element={<OnlineCounselLayout />}>
+            <Route index element={<OnlineCounsel />} />
+            <Route path="write" element={<OnlineCounselWrite />} />
+            <Route path=":onlineCounselId" element={<OnlineCounselDetail />} />
+            <Route
+              path=":onlineCounselId/update"
+              element={<OnlineCounselUpdate />}
+            />
+          </Route>
+
+          <Route path="review" element={<ReviewLayout />}>
+            <Route index element={<Review />} />
+            <Route path="write" element={<ReviewWrite />} />
+            <Route path=":reviewId" element={<ReviewDetail />} />
+            <Route path=":reviewId/update" element={<ReviewUpdate />} />
           </Route>
         </Route>
       </Routes>
-
       <Footer />
     </BrowserRouter>
   );

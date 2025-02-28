@@ -3,24 +3,36 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
-function NoticeUpdate() {
+function ReviewUpdate() {
   const location = useLocation();
   const { bbs } = location.state || {};
   console.log(bbs);
   // const boardId = bbs.boardId;
   const [title, setTitle] = useState(bbs.title);
   const [content, setContent] = useState(bbs.content);
-
   const update = async () => {
     try {
-      await axios.patch(`/api/admin/notice/${bbs.id}/update`, {
-        title: title,
-        content: content,
-      });
+      const token = localStorage.getItem("access_token"); // 🔥 토큰 가져오기
+      if (!token) {
+        console.error("🚨 토큰이 없음! 로그인 상태 확인 필요");
+        return;
+      }
+
+      await axios.patch(
+        `/api/member/review/${bbs.id}/update`,
+        { title, content },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // 🔥 토큰 추가
+          },
+          withCredentials: true, // 쿠키 정보 포함 (백엔드가 필요하면 추가)
+        }
+      );
+
       alert("수정되었습니다.");
-      window.location.href = "/notice";
+      window.location.href = "/review";
     } catch (error) {
-      console.error("Error fetching board data:", error);
+      console.error("🚨 Error updating review:", error);
     }
   };
 
@@ -60,7 +72,7 @@ function NoticeUpdate() {
 
         <BottomBox>
           <Button onClick={update}>확인</Button>
-          <Link to="/notice">
+          <Link to="/review">
             <Button>취소</Button>
           </Link>
         </BottomBox>
@@ -151,4 +163,4 @@ const Button = styled.button`
   border: 1px solid #111111;
   margin-left: 20px;
 `;
-export default NoticeUpdate;
+export default ReviewUpdate;

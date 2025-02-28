@@ -1,71 +1,53 @@
-import React from "react";
-import { useTable } from "react-table";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 function CommonTable({ bbsList, columns, linkPrefix }) {
-  const data = React.useMemo(() => bbsList, [bbsList]);
-  const columnData = React.useMemo(
-    () =>
-      columns.map((col) => ({
-        Header: col.label,
-        accessor: col.field,
-        Cell: ({ value, row }) =>
-          col.link ? (
-            <Link to={`${linkPrefix}/${row.original.id}`}>{value}</Link>
-          ) : (
-            value
-          ),
-      })),
-    [columns, linkPrefix]
-  );
-
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable({
-      columns: columnData,
-      data,
-    });
-
   return (
-    <TableContainer>
-      <StyledTable {...getTableProps()}>
+    <NoticeTableBox>
+      <NoticeTabled>
         <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()}>{column.render("Header")}</th>
-              ))}
+          <tr>
+            {columns.map((column, index) => (
+              <th key={index}>{column.label}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {bbsList.map((response, index) => (
+            <tr key={index}>
+              {columns.map((column, colIndex) => {
+                const data = column.field ? response[column.field] : null;
+                return (
+                  <td key={colIndex}>
+                    {column.link ? (
+                      <Link to={`${linkPrefix}/${response.id}`}>{data}</Link>
+                    ) : (
+                      data
+                    )}
+                  </td>
+                );
+              })}
             </tr>
           ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {rows.map((row) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => (
-                  <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-                ))}
-              </tr>
-            );
-          })}
         </tbody>
-      </StyledTable>
-    </TableContainer>
+      </NoticeTabled>
+    </NoticeTableBox>
   );
 }
 
-const TableContainer = styled.div`
+const NoticeTableBox = styled.div`
   width: 100%;
   max-width: 1280px;
   margin-top: 20px;
   display: flex;
   justify-content: center;
   overflow-x: auto;
-  padding: 0 140px;
+  padding-left: 140px;
+  padding-right: 140px;
 `;
 
-const StyledTable = styled.table`
+const NoticeTabled = styled.table`
   width: 100%;
   border-collapse: collapse;
 
@@ -74,16 +56,31 @@ const StyledTable = styled.table`
     font-weight: bold;
   }
 
-  th,
-  td {
+  thead th {
     padding: 10px;
+    font-weight: medium;
     font-size: 20px;
     font-family: "Noto Sans KR", serif;
-    text-align: left;
   }
 
-  tbody tr:nth-child(even) {
-    background-color: #f4f4f4;
+  tbody tr {
+    &:nth-child(odd) {
+      border: none;
+      height: 40px;
+    }
+    &:nth-child(even) {
+      background-color: #f4f4f4;
+      border-bottom: 1px solid #111111;
+      height: 70px;
+    }
+  }
+
+  tbody td {
+    padding: 10px;
+    font-weight: regular;
+    font-size: 20px;
+    font-family: "Noto Sans KR", serif;
+    vertical-align: middle;
   }
 `;
 

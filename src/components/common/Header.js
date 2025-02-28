@@ -22,15 +22,21 @@ function Header() {
     },
     {
       name: "병원 소개",
+      path: "/introduce",
       submenu: [
         { path: "/introduce", name: "개요" },
         { path: "/directions", name: "오시는 길" },
         { path: "/department", name: "진료과 소개" },
       ],
     },
-    { name: "공지사항", submenu: [{ path: "/notice", name: "공지사항" }] },
+    {
+      name: "공지사항",
+      path: "/notice",
+      submenu: [{ path: "/notice", name: "공지사항" }],
+    },
     {
       name: "온라인예약",
+      path: "/userreserv",
       submenu: [
         { path: "/userreserv", name: "회원예약" },
         { path: "#/nonuserreserve", name: "비회원예약" },
@@ -38,9 +44,14 @@ function Header() {
     },
     {
       name: "온라인상담",
+      path: "/onlineCounsel",
       submenu: [{ path: "/onlineCounsel", name: "온라인상담" }],
     },
-    { name: "고객 리뷰", submenu: [{ path: "/review", name: "리뷰" }] },
+    {
+      name: "고객 리뷰",
+      path: "/review",
+      submenu: [{ path: "/review", name: "리뷰" }],
+    },
   ];
 
   const [showBox, setShowBox] = useState(true);

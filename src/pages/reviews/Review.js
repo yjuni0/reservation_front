@@ -3,26 +3,41 @@ import styled from "styled-components";
 import axios from "axios";
 import CommonTable from "../../components/common/CommonTable";
 import CustomPagination from "../../components/common/CustomPagination";
+import { jwtDecode } from "jwt-decode"; // jwt-decode 라이브러리 import
 
 function Notice() {
   const [bbsList, setBbsList] = useState([]);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalCnt, setTotalCnt] = useState(0);
-
+  const token = localStorage.getItem("access_token");
+  let useRole = null;
+  if (token) {
+    try {
+      // 토큰 디코딩
+      console.log(token);
+      const decodedToken = jwtDecode(token);
+      console.log(decodedToken);
+      useRole = decodedToken.roles;
+    } catch (e) {
+      console.log("토큰 디코딩 오류 : ", e);
+    }
+  }
+  const linkValue = useRole === "ROLE_ADMIN" ? "/admin/review" : "/review";
   const columns = [
     { label: "No", field: "id" },
     { label: "제목", field: "title", link: true },
-    { label: "작성자", field: "writerName" },
+    { label: "작성자", field: "nickName" },
     { label: "작성일", field: "createdDate" },
     { label: "조회수", field: "views" },
     { label: "좋아요", field: "likes" },
   ];
   const getBbsList = async (page) => {
     try {
-      const response = await axios.get("/api/member/review", {
+      const response = await axios.get("/api/member/review/list", {
         params: { page: page - 1 },
       });
+      console.log(response.data);
       setBbsList(response.data.content || []); // 응답이 없을 경우 빈 배열 처리
       setPageSize(response.data.pageSize || 10);
       setTotalCnt(response.data.totalElements);
@@ -30,7 +45,6 @@ function Notice() {
       console.error("Error fetching board data:", error);
     }
   };
-
   useEffect(() => {
     getBbsList(page);
   }, [page]);
@@ -38,7 +52,11 @@ function Notice() {
   return (
     <Container>
       <ContentWrapper>
-        <CommonTable bbsList={bbsList} columns={columns} />
+        <CommonTable
+          bbsList={bbsList}
+          columns={columns}
+          linkPrefix={linkValue}
+        />
         <PaginationBox>
           <CustomPagination
             page={page}

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import Pagination from "react-js-pagination";
-import search from "./imgs/search.png";
+import search from "../../../assets/imgs/header_search.png";
 
 function AdminUserList() {
   //BbsList
@@ -74,6 +74,12 @@ function AdminUserList() {
 
   return (
     <Container>
+      {/* 제목 표시 */}
+      <HomeSectionA>
+        <HomeTitle>
+          <h1>회원 관리</h1>
+        </HomeTitle>
+      </HomeSectionA>
       <SearchBox>
         <img src={search} />
         <SearchField type="text" placeholder="검색 할 것을 적어보세요." />
@@ -161,6 +167,27 @@ const SearchBox = styled.div`
   input:focus {
     outline: none;
   }
+`;
+
+const HomeSectionA = styled.div`
+  background-color: #111111;
+  grid-column: 3;
+  grid-row: 1;
+  top: 50px;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  width: 1000px;
+  height: 70px;
+`;
+
+const HomeTitle = styled.div`
+  color: #ffffff;
+  padding: 20px;
+  font-size: 32px;
+  font-weight: 700;
+  display: flex;
 `;
 
 //  검색 필드 스타일

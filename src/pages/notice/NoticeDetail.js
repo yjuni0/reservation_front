@@ -31,7 +31,7 @@ function NoticeDetail() {
         `/api/admin/notice/${noticeId}/delete`
       );
       console.log(response);
-      console.log("deleteNotice seccess");
+      console.log("deleteNotice success");
       if (response.status == 200) {
         alert("게시글을 삭제 하였습니다.");
         navigate("/notice");

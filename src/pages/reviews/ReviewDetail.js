@@ -5,39 +5,39 @@ import styled from "styled-components";
 import { AuthContext, HttpHeadersContext } from "../../context";
 import File from "../file/File";
 
-function NoticeDetail() {
+function ReviewDetail() {
   const { headers, setHeaders } = useContext(HttpHeadersContext);
-  const [notice, setNotice] = useState({});
-  const { noticeId } = useParams();
+  const [review, setReview] = useState({});
+  const { reviewId } = useParams();
   const navigate = useNavigate();
 
   const getBbsDetail = async () => {
     try {
-      const response = await axios.get(`/api/member/notice/${noticeId}`);
+      const response = await axios.get(`/api/member/review/${reviewId}`);
 
-      console.log("[NoticeDetail.js] getBbsDetail() success :D");
+      console.log("[reviewDetail.js] getBbsDetail() success :D");
       console.log(response.data);
 
-      setNotice(response.data);
+      setReview(response.data);
     } catch (error) {
-      console.log("[NoticeDetail.js] getBbsDetail() error :<");
+      console.log("[reviewDetail.js] getBbsDetail() error :<");
       console.error(error);
     }
   };
 
-  const deleteNotice = async () => {
+  const deleteReview = async () => {
     try {
       const response = await axios.delete(
-        `/api/admin/notice/${noticeId}/delete`
+        `/api/member/review/${reviewId}/delete`
       );
       console.log(response);
-      console.log("deleteNotice seccess");
+      console.log("deleteReview success");
       if (response.status == 200) {
         alert("게시글을 삭제 하였습니다.");
-        navigate("/notice");
+        navigate("/review");
       }
     } catch (error) {
-      console.log("deleteNotice error");
+      console.log("deleteReview error");
       console.error(error);
     }
   };
@@ -51,9 +51,9 @@ function NoticeDetail() {
   }, []);
 
   useEffect(() => {
-    console.log("noticeId:", noticeId); // 콘솔로 확인
-    if (!noticeId) return;
-    console.log("noticeId:", noticeId);
+    console.log("reviewId:", reviewId); // 콘솔로 확인
+    if (!reviewId) return;
+    console.log("reviewId:", reviewId);
     getBbsDetail();
   }, []);
 
@@ -64,15 +64,10 @@ function NoticeDetail() {
           <Table>
             <tbody>
               <tr>
-                <TableTitle>{notice.title}</TableTitle>
+                <TableTitle>{review.title}</TableTitle>
               </tr>
               <tr>
-                <td>
-                  <File></File>
-                </td>
-              </tr>
-              <tr>
-                <TableContent>{notice.content} </TableContent>
+                <TableContent>{review.content} </TableContent>
               </tr>
             </tbody>
           </Table>
@@ -81,12 +76,12 @@ function NoticeDetail() {
         <coment></coment>
 
         <BottomBox>
-          <Button onClick={deleteNotice}>삭제</Button>
+          <Button onClick={deleteReview}>삭제</Button>
 
-          <Link to={`/notice/update/${noticeId}`}>
+          <Link to={`/review/${reviewId}/update`} state={{ bbs: review }}>
             <Button>수정</Button>
           </Link>
-          <Link to="/notice">
+          <Link to="/review">
             <Button>취소</Button>
           </Link>
         </BottomBox>
@@ -183,4 +178,4 @@ const Button = styled.button`
   }
 `;
 
-export default NoticeDetail;
+export default ReviewDetail;
