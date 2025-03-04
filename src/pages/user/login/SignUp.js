@@ -1,9 +1,15 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
+<<<<<<< HEAD
 import logo_b from "../../../assets/imgs/logo_b.png";
 import DaumPostcode from "react-daum-postcode";
 import { useNavigate } from "react-router-dom";
+=======
+import DaumPostcode from "react-daum-postcode";
+import { useNavigate } from "react-router-dom";
+import line from "../../../assets/imgs//line.svg";
+>>>>>>> master
 
 function SignUp() {
   const [forms, setForms] = useState([
@@ -73,7 +79,11 @@ function SignUp() {
     }
   };
 
+<<<<<<< HEAD
   const handlepasswordCheckdChange = (e) => {
+=======
+  const handlePasswordCheckdChange = (e) => {
+>>>>>>> master
     setpasswordCheck(e.target.value);
     // 비밀번호 확인 값 일치 여부 검사
     if (password !== e.target.value) {
@@ -237,6 +247,7 @@ function SignUp() {
 
   return (
     <SignupContainer>
+<<<<<<< HEAD
       <SignupSection>
         <SignupLogo>
           <img src={logo_b} />
@@ -314,6 +325,113 @@ function SignUp() {
                   value={passwordCheck}
                   onChange={handlepasswordCheckdChange}
                   placeholder="비밀번호 확인"
+=======
+      <LoginBox>
+        <LoginTitle>일반 회원가입</LoginTitle>
+        <LoginSub>
+          회원가입 시 진료예약, 예약조회 등 개인화 서비스를 제공받으실 수
+          있습니다.
+        </LoginSub>
+      </LoginBox>
+
+      <SignupBox>
+        <SignupTitle>회원정보 입력</SignupTitle>
+        <SignupSub>
+          <span className="point">*</span>&nbsp;은 필수 입력 항목입니다.
+        </SignupSub>
+      </SignupBox>
+
+      {/*회원가입 최종 박스*/}
+      <SignupSection>
+        {/* 시작*/}
+        <MailBox>
+          {/*1.아이디*/}
+          <Table>
+            <tr className="th_title">
+              이메일<span className="point">&nbsp;*</span>
+            </tr>
+            <tr className="th_form">
+              <td>
+                <input
+                  type="text"
+                  placeholder="이메일을 입력해주세요"
+                  value={email}
+                  onChange={handleEmailChange}
+                />
+              </td>
+            </tr>
+            <button
+              type="button"
+              onClick={handleSendVerificationEmail}
+              disabled={emailError}
+            >
+              중복확인
+            </button>
+          </Table>
+
+          {/*2.인증*/}
+          <Table>
+            <tr className="th_title">
+              인증코드<span className="point">&nbsp;*</span>
+            </tr>
+            <tr className="th_form">
+              <td>
+                <input
+                  type="text"
+                  placeholder="인증코드를 입력해 주세요"
+                  value={code}
+                  onChange={handleCodeChange}
+                />
+              </td>
+            </tr>
+            <button
+              type="button"
+              onClick={handleVerifyCode}
+              disabled={codeError}
+            >
+              인증코드
+            </button>
+          </Table>
+
+          {/*2.비밀번호*/}
+          <Table>
+            <tr className="th_title">
+              비밀번호<span className="point">&nbsp;*</span>
+            </tr>
+            <tr className="th_form">
+              <td>
+                <input
+                  type="text"
+                  placeholder="비밀번호를 입력해주세요"
+                  value={password}
+                  onChange={handlePasswordChange}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <td>
+                  {passwordError && (
+                    <small style={{ color: "red" }}>{passwordError}</small>
+                  )}
+                </td>
+              </td>
+            </tr>
+          </Table>
+
+          {/* 3.비밀번호 확인 */}
+          <Table>
+            <tr className="th_title">
+              비밀번호 확인<span className="point">&nbsp;*</span>
+            </tr>
+            <tr className="th_form">
+              <td>
+                <input
+                  type="password"
+                  value={passwordCheck}
+                  onChange={handlePasswordCheckdChange}
+                  placeholder="비밀번호를 한번 더 입력해주세요. "
+>>>>>>> master
                   theme="underLine"
                   maxLength={16}
                 />
@@ -322,20 +440,36 @@ function SignUp() {
             <tr>
               <td>
                 <td>
+<<<<<<< HEAD
                   {(passwordError || passwordCheckError) && (
                     <small style={{ color: "red" }}>
                       {passwordError || passwordCheckError}
                     </small>
+=======
+                  {passwordCheckError && (
+                    <small style={{ color: "red" }}>{passwordCheckError}</small>
+>>>>>>> master
                   )}
                 </td>
               </td>
             </tr>
+<<<<<<< HEAD
           </table>
         </PwBox>
 
         <NickBox>
           <table>
             <tr>
+=======
+          </Table>
+
+          {/* 4.닉네임 */}
+          <Table>
+            <tr className="th_title">
+              닉네임<span className="point">&nbsp;*</span>
+            </tr>
+            <tr className="th_form">
+>>>>>>> master
               <td>
                 {" "}
                 <input
@@ -344,6 +478,7 @@ function SignUp() {
                   onChange={handleNickNameChange}
                   placeholder="닉네임을 입력하세요"
                 />
+<<<<<<< HEAD
                 <button type="button" onClick={handleNickNameCheck}>
                   확인
                 </button>
@@ -370,16 +505,65 @@ function SignUp() {
                 <input
                   type="text"
                   placeholder="이름"
+=======
+              </td>
+            </tr>
+
+            <td className="idError">
+              {nickNameError && (
+                <small style={{ color: "red" }}>{nickNameError}</small>
+              )}
+              {nickNameMessage && (
+                <small style={{ color: nickNameError ? "red" : "green" }}>
+                  {nickNameMessage}
+                </small>
+              )}
+            </td>
+
+            <tr>
+              <button type="button" onClick={handleNickNameCheck}>
+                중복 확인
+              </button>
+            </tr>
+          </Table>
+
+          {/* 5.이름*/}
+          <Table>
+            <tr className="th_title">
+              이름<span className="point">&nbsp;*</span>
+            </tr>
+            <tr className="th_form">
+              <td>
+                <input
+                  type="text"
+                  placeholder="이름을 입력해주세요"
+>>>>>>> master
                   value={name}
                   onChange={handleNameChange}
                 />
               </td>
             </tr>
+<<<<<<< HEAD
             <tr>
+=======
+          </Table>
+
+          {/*6.주소*/}
+          <Tabless>
+            <tr className="th_title">
+              주소<span className="point"></span>
+            </tr>
+            <tr className="th_form">
+              <button type="button" onClick={() => setIsOpen(true)}>
+                검색
+              </button>
+
+>>>>>>> master
               <td>
                 <input
                   type="text"
                   value={address} // 우편번호 검색 결과 주소 표시
+<<<<<<< HEAD
                   placeholder="주소"
                   readOnly
                 />
@@ -395,6 +579,25 @@ function SignUp() {
                   value={detailAddress} // 상세 주소 표시 및 변경 가능
                   onChange={handleDetailAddressChange} // 상세 주소 변경 시 addr 업데이트
                   placeholder="상세주소"
+=======
+                  placeholder="우편번호를 검색하세요"
+                  readOnly
+                />
+              </td>
+            </tr>
+          </Tabless>
+
+          {/*6-2.상세주소*/}
+          <TableBox>
+            <tr>
+              <td>
+                <input
+                  className="address"
+                  type="text"
+                  value={detailAddress} // 상세 주소 표시 및 변경 가능
+                  onChange={handleDetailAddressChange} // 상세 주소 변경 시 addr 업데이트
+                  placeholder="상세주소를 입력하세요"
+>>>>>>> master
                 />
                 {isOpen && (
                   <Modal>
@@ -406,27 +609,57 @@ function SignUp() {
                 )}
               </td>
             </tr>
+<<<<<<< HEAD
 
             <tr>
               <td>
                 <input
                   type="text"
                   placeholder="생년월일"
+=======
+          </TableBox>
+
+          {/*7.생년월일*/}
+          <Table>
+            <tr className="th_title">
+              생년월일<span className="point">&nbsp;*</span>
+            </tr>
+            <tr className="th_form">
+              <td>
+                <input
+                  type="text"
+                  placeholder="연도-월-일"
+>>>>>>> master
                   value={birth}
                   onChange={handleBirthChange}
                 />
               </td>
             </tr>
+<<<<<<< HEAD
             <tr>
               <td>
                 <input
                   type="text"
                   placeholder="전화번호"
+=======
+          </Table>
+
+          {/*8.전화번호*/}
+          <Table>
+            <tr className="th_title">
+              전화번호<span className="point">&nbsp;*</span>
+            </tr>
+            <tr className="th_form">
+              <td>
+                <input
+                  type="text"
+>>>>>>> master
                   value={phoneNum}
                   onChange={handlePhoneNumChange}
                 />
               </td>
             </tr>
+<<<<<<< HEAD
           </table>
         </OtherBox>
         <AnimalBox>
@@ -504,6 +737,88 @@ function SignUp() {
             </Formtable>
           ))}
         </AnimalBox>
+=======
+          </Table>
+        </MailBox>
+
+        {/*<AnimalBox>*/}
+        {/*  <table>*/}
+        {/*    <tr>*/}
+        {/*      <td>*/}
+        {/*      {" "}*/}
+        {/*        <AnimalBoxButton>*/}
+        {/*          <button onClick={addForm}>추가</button>*/}
+        {/*        </AnimalBoxButton>{" "}*/}
+        {/*      </td>*/}
+        {/*      {" "}*/}
+        {/*    </tr>*/}
+        {/*  </table>*/}
+        {/*  {forms.map((form) => (*/}
+        {/*      <Formtable key={form.id}>*/}
+        {/*        <tr>*/}
+        {/*          <td>*/}
+        {/*          <AnimalH1>*/}
+        {/*            <h1>반려동물정보</h1>*/}
+        {/*          </AnimalH1>*/}
+        {/*        </td>*/}
+        {/*      </tr>*/}
+        {/*      <tr>*/}
+        {/*        <td>*/}
+        {/*          <input*/}
+        {/*            type="text"*/}
+        {/*            placeholder="동물이름"*/}
+        {/*            value={form.petName}*/}
+        {/*            onChange={(e) => handlePetInfoChange(e, form.id, "petName")}*/}
+        {/*          />*/}
+        {/*        </td>*/}
+        {/*      </tr>*/}
+        {/*      <tr>*/}
+        {/*        <td>*/}
+        {/*          <select*/}
+        {/*            value={form.breed}*/}
+        {/*            onChange={(e) => handlePetInfoChange(e, form.id, "breed")}*/}
+        {/*          >*/}
+        {/*            {" "}*/}
+        {/*            <option value="선택" disabled>*/}
+        {/*              선택*/}
+        {/*            </option>*/}
+        {/*            <option value="DOG">DOG</option>*/}
+        {/*            <option value="CAT">CAT</option>*/}
+        {/*          </select>*/}
+        {/*          <input*/}
+        {/*            className="selectInput"*/}
+        {/*            type="text"*/}
+        {/*            value={form.breed}*/}
+        {/*            disabled // input을 disabled 상태로 변경*/}
+        {/*            placeholder="종류 (선택)" // placeholder 변경*/}
+        {/*          />*/}
+        {/*        </td>*/}
+        {/*      </tr>*/}
+        {/*      <tr>*/}
+        {/*        <td>*/}
+        {/*          <input*/}
+        {/*            type="text"*/}
+        {/*            placeholder="동물나이"*/}
+        {/*            value={form.age}*/}
+        {/*            onChange={(e) => handlePetInfoChange(e, form.id, "age")}*/}
+        {/*          />*/}
+        {/*        </td>*/}
+        {/*      </tr>*/}
+
+        {/*      <tr>*/}
+        {/*        <td>*/}
+        {/*          <AnimalBoxButton>*/}
+        {/*            <button danger onClick={() => removeForm(form.id)}>*/}
+        {/*              삭제*/}
+        {/*            </button>*/}
+        {/*          </AnimalBoxButton>{" "}*/}
+        {/*        </td>{" "}*/}
+        {/*      </tr>*/}
+        {/*    </Formtable>*/}
+        {/*  ))}*/}
+        {/*</AnimalBox>*/}
+
+>>>>>>> master
         <SignupSectionE>
           <button type="submit" onClick={handleSubmit}>
             회원가입
@@ -515,6 +830,7 @@ function SignUp() {
 }
 
 const SignupContainer = styled.div`
+<<<<<<< HEAD
   width: 1920px;
   height: 100%;
   min-height: 1340px;
@@ -577,10 +893,149 @@ const MailBox = styled.div`
   justify-content: center;
   background-color: #f4f4f4;
 
+=======
+  width: 1200px;
+  margin: 0 auto;
+
+  padding-bottom: 90px;
+`;
+
+// 1.로그인 문구_박스
+const LoginBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 20vh;
+  pointer-events: none;
+  margin-top: 60px;
+  margin-bottom: 30px;
+`;
+const LoginTitle = styled.h1`
+  font-weight: 700;
+  line-height: 1.3em;
+  font-size: 42px;
+  color: #111;
+  text-align: center;
+`;
+const LoginSub = styled.p`
+  display: block;
+  margin-top: 1.5em;
+  color: #888888;
+  font-size: 14px;
+  text-align: center;
+`;
+
+//2.회원가입_하위타이틀_박스
+const SignupBox = styled.div`
+  width: 900px;
+  margin: 0 auto;
+  margin-top: 45px;
+`;
+const SignupTitle = styled.h3`
+  height: 43px;
+  margin-bottom: 20px;
+  font-size: 27px;
+  color: #111;
+  font-weight: 900;
+  text-align: left;
+`;
+const SignupSub = styled.p`
+  height: 14px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #888;
+  font-weight: 300;
+  text-align: right;
+
+  .point {
+    color: #ff27a3;
+  }
+`;
+
+//3 회원가입 최종 박스
+const SignupSection = styled.div`
+  width: 900px;
+  margin: 0 auto;
+  margin-top: 40px;
+  padding: 45px 20px 20px 20px;
+  border-top: 1.5px solid #000;
+  border-bottom: 1.5px solid #eeeeee;
+`;
+
+const Table = styled.div`
+  width: 900px;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  margin-bottom: 30px;
+
+  .th_title {
+    min-width: 92px;
+    font-size: 14px;
+    color: #111;
+    margin-right: 40px;
+  }
+
+  .th_form {
+    margin-right: 20px;
+  }
+`;
+
+//상세주소 (TableBox)
+const TableBox = styled.div`
+  width: 900px;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  margin-left: 135px;
+  margin-bottom: 35px;
+
+  //인풋
+  .address {
+    width: 630px;
+    height: 53px;
+    padding: 0 32px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    outline: none;
+    font-size: 14.2px;
+    color: #111;
+    font-weight: 400;
+  }
+
+  .th_title {
+    min-width: 92px;
+    font-size: 14px;
+    color: #111;
+    margin-right: 40px;
+  }
+
+  .th_form {
+    margin-right: 20px;
+  }
+`;
+
+const MailBox = styled.div`
+  width: 900px;
+  //display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 20px 20px 20px;
+
+  .th_title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111;
+  }
+  .point {
+    color: #ff27a3;
+  }
+>>>>>>> master
   td {
     position: relative;
   }
 
+<<<<<<< HEAD
   input {
     font-family: "Noto Sans KR", serif;
     outline: none;
@@ -606,10 +1061,50 @@ const MailBox = styled.div`
     padding-top: 8px;
     width: 460px;
     height: 20px;
+=======
+  //인풋
+  input {
+    width: 477px;
+    height: 54px;
+    padding: 0 32px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    outline: none;
+    font-size: 14.2px;
+    color: #111;
+    font-weight: 400;
+  }
+
+  //버튼
+  button {
+    width: 144px;
+    height: 54px;
+    background-color: transparent;
+    border: 1px solid #000;
+    border-radius: 5px;
+    max-width: 16rem;
+    color: #111;
+    font-size: 16px;
+    font-weight: 600;
+
+    &:hover {
+      background-color: #0d326f;
+      border: 1px solid #0d326f;
+      color: #fff;
+    }
+  }
+
+  .idError {
+    display: none;
+    //padding-top: 8px;
+    //width: 460px;
+    //height: 20px;
+>>>>>>> master
   }
   small {
     padding-left: 10px;
     font-size: 12px;
+<<<<<<< HEAD
   }
 `;
 // ------------------------------------------------------------------------
@@ -711,10 +1206,74 @@ const OtherBox = styled.div`
   justify-content: center;
   background-color: #f4f4f4;
 
+=======
+    color: #ff27a3;
+  }
+`;
+
+//주소 검색(버튼 왼쪽(Tabless)
+const Tabless = styled.div`
+  width: 900px;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  margin-bottom: 15px;
+
+  .th_title {
+    min-width: 92px;
+    font-size: 14px;
+    color: #111;
+    margin-right: 40px;
+  }
+
+  .th_form {
+    margin-right: 20px;
+  }
+
+  //버튼
+  button {
+    width: 144px;
+    height: 54px;
+    background-color: transparent;
+    border: 1px solid #000;
+    border-radius: 5px;
+    max-width: 16rem;
+    color: #111;
+    font-size: 16px;
+    font-weight: 600;
+    float: left;
+    margin-right: 10px;
+
+    &:hover {
+      background-color: #0d326f;
+      border: 1px solid #0d326f;
+      color: #fff;
+    }
+  }
+`;
+
+// ------------------------------------------------------------------------
+const OtherBox = styled.div`
+  width: 900px;
+  //display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 20px 20px 20px;
+
+  .th_title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111;
+  }
+  .point {
+    color: #ff27a3;
+  }
+>>>>>>> master
   td {
     position: relative;
   }
 
+<<<<<<< HEAD
   input {
     font-family: "Noto Sans KR", serif;
     outline: none;
@@ -735,14 +1294,61 @@ const OtherBox = styled.div`
     top: 14px;
     right: 14px;
     font-size: 20px;
+=======
+  //인풋
+  input {
+    width: 477px;
+    height: 54px;
+    padding: 0 32px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    outline: none;
+    font-size: 14.2px;
+    color: #111;
+    font-weight: 400;
+  }
+
+  //버튼
+  button {
+    width: 144px;
+    height: 54px;
+    background-color: transparent;
+    border: 1px solid #000;
+    border-radius: 5px;
+    max-width: 16rem;
+    color: #111;
+    font-size: 16px;
+    font-weight: 600;
+
+    &:hover {
+      background-color: #0d326f;
+      border: 1px solid #0d326f;
+      color: #fff;
+    }
+  }
+
+  .idError {
+    display: none;
+    //padding-top: 8px;
+    //width: 460px;
+    //height: 20px;
+  }
+  small {
+    padding-left: 10px;
+    font-size: 12px;
+    color: #ff27a3;
+>>>>>>> master
   }
 `;
 // -----------------------------------------------------------------
 const AnimalBox = styled.div`
   width: 100%;
   max-width: 600px;
+<<<<<<< HEAD
   background-color: #f4f4f4;
 
+=======
+>>>>>>> master
   display: flex;
   flex-direction: column; /* 세로 정렬 */
   align-items: center;
@@ -764,7 +1370,10 @@ const AnimalBox = styled.div`
 `;
 
 const AnimalBoxButton = styled.div`
+<<<<<<< HEAD
   background-color: #f4f4f4;
+=======
+>>>>>>> master
   display: flex;
   justify-content: center;
   align-items: center;
@@ -794,7 +1403,10 @@ const AnimalH1 = styled.div`
 const Formtable = styled.table`
   width: 100%;
   max-width: 800px;
+<<<<<<< HEAD
   background-color: #f4f4f4;
+=======
+>>>>>>> master
   margin: 10px auto;
   border-collapse: collapse;
 
