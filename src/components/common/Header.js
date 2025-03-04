@@ -1,9 +1,5 @@
-import React, { useState, useEffect, useContext, use } from "react";
-import { useLocation } from "react-router-dom";
-import { jwtDecode } from "jwt-decode"; // jwt-decode 라이브러리 import
 import { Link } from "react-router-dom";
 import React, { useState, useEffect, useContext } from "react";
-import { useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode"; // jwt-decode 라이브러리 import
 import header_logo from "../../assets/imgs/logo_w.svg";
 import header_menu_stroke from "../../assets/imgs/header_menu.svg";
@@ -211,17 +207,20 @@ function Header() {
 const HeaderContainer = styled.div`
   display: block;
   width: 100%;
+  height: 100px;
+  background-color: #0d326f;
 `;
+
 const HeaderSection = styled.div`
+  //display: flex;
+  //align-items: center;
+  //justify-content: center;
+  //min-width: 1480px;
+  //height: 122px;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 1480px;
-  height: 122px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1440px;
+  //min-width: 1440px;
   height: 100px;
   float: left;
   //margin-left: 120px;
@@ -245,8 +244,9 @@ const Logo = styled.h1`
 
 //
 const Navigation = styled.nav`
+
    z-index: 99 ;
-width: 820px;
+// width: 820px;
   height: 100px;
   font-weight: 500;
   text-align: center;
@@ -262,7 +262,6 @@ width: 820px;
     list-style: none;
   }
   ul:first-child {
-
     padding: 40px 50px 20px 20px;
 
   }
@@ -273,16 +272,21 @@ width: 820px;
     //width: 140px;
     position: relative;
     margin-left: 20px;
+    
     &:hover ul {
       display: block;
     }
   }
+  ul ul li a{
+    margin-right: 20px;
+  }
+  
   ul ul {
     display: none;
     position: absolute;
     top: 80px;
     left: 0;
-    background: rgb(255, 255, 255);
+    //background: rgb(255, 255, 255);
     width: 100%;
     visibility: hidden;
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
@@ -292,7 +296,7 @@ width: 820px;
     //하위메뉴 스타일
     li{
       width: 100px;
-      position: relative;
+      //position: relative;
       margin-bottom: 10px;
       font-size: 14px;
       color: rgb(0, 0, 0);
@@ -302,12 +306,12 @@ width: 820px;
       text-align: left;
       float: left;
       
-    border-bottom:1px solid black;
-    text-align: left;
-    right:-15px;
-    position: relative;
-    width: 95px;
-    padding-top:20px;
+    //border-bottom:1px solid black;
+    //text-align: left;
+    //right:-15px;
+    //position: relative;
+    //width: 95px;
+    //padding-top:20px;
     }
   }
   li:first-child{
@@ -334,6 +338,8 @@ width: 820px;
       flex-direction: row;
       padding: 10px;
       box-sizing: border-box;
+   
+ 
     }
     &:hover div {
       display: block;
@@ -345,7 +351,7 @@ const MenuLink = styled(Link)`
   text-decoration: none;
   color: #fff;
   font-size: 16px;
-  lineheight: 16;
+  //lineheight: 16;
 
   &:hover {
     color: #ffa228;
@@ -362,10 +368,11 @@ const SubLink = styled(Link)`
 `;
 //네비)오른쪽
 const HederSectionB = styled.div`
-  width: 230px;
-  height: 122px;
-  padding: 45px 50px 20px 20px;
+  //width: 230px;
+  //height: 122px;
+  //padding: 45px 50px 20px 20px;
   margin-bottom: 25px;
+
   &:hover {
     color: #ffa228;
   }
@@ -377,7 +384,7 @@ const LoginBox = styled.div`
   float: right;
   position: relative;
   color: #fff;
-  lineheight: 16;
+  //lineheight: 16;
   margin-left: 40px;
 
   a {
@@ -396,6 +403,9 @@ const LoginBox = styled.div`
   a:nth-child(2) img {
     top: 3px;
     position: relative;
+    &:hover {
+      color: #ffa228;
+    }
   }
 `;
 // ---------------------------------------------------------------
@@ -410,12 +420,12 @@ const LoginButton = styled.button`
 `;
 
 const SearchBox = styled.button`
-  right: 5px;
+  //right: 5px;
   top: 20px;
   float: right;
-  width: 190px;
-  height: 25px;
-  background-color: transparent;
+  //width: 190px;
+  //height: 25px;
+  //background-color: transparent;
   border: none;
   font-size: 12px;
   cursor: pointer;
@@ -427,11 +437,11 @@ const SearchBox = styled.button`
 
   outline: none;
   input {
-    height: 25px;
-    width: 190px;
-    border: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-    padding-bottom: 2px;
+    //height: 25px;
+    //width: 190px;
+    //border: none;
+    //border-bottom: 1px solid rgba(0,0,0,0.2);
+    //padding-bottom: 2px;
 
     font-size: 13px;
     font-weight: 300;

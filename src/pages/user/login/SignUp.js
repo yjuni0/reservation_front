@@ -1,16 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
-<<<<<<< HEAD
-import logo_b from "../../../assets/imgs/logo_b.png";
-import DaumPostcode from "react-daum-postcode";
-import { useNavigate } from "react-router-dom";
-=======
 import DaumPostcode from "react-daum-postcode";
 import { useNavigate } from "react-router-dom";
 import line from "../../../assets/imgs//line.svg";
->>>>>>> master
-
 function SignUp() {
   const [forms, setForms] = useState([
     { id: Date.now(), petName: "", breed: "", age: "" },
@@ -79,11 +72,7 @@ function SignUp() {
     }
   };
 
-<<<<<<< HEAD
-  const handlepasswordCheckdChange = (e) => {
-=======
   const handlePasswordCheckdChange = (e) => {
->>>>>>> master
     setpasswordCheck(e.target.value);
     // 비밀번호 확인 값 일치 여부 검사
     if (password !== e.target.value) {
@@ -247,85 +236,6 @@ function SignUp() {
 
   return (
     <SignupContainer>
-<<<<<<< HEAD
-      <SignupSection>
-        <SignupLogo>
-          <img src={logo_b} />
-        </SignupLogo>
-
-        <SignupTitle>
-          <h1>회원가입</h1>
-        </SignupTitle>
-
-        <MailBox>
-          <table>
-            <tr></tr>
-            <tr>
-              <td>
-                <input
-                  type="text"
-                  placeholder="이메일"
-                  value={email}
-                  onChange={handleEmailChange}
-                />
-                <button
-                  type="button"
-                  onClick={handleSendVerificationEmail}
-                  disabled={emailError}
-                >
-                  인증
-                </button>
-              </td>
-            </tr>
-
-            <tr>
-              <td>
-                <input
-                  type="text"
-                  placeholder="인증 코드"
-                  value={code}
-                  onChange={handleCodeChange}
-                />
-                <button type="button" onClick={handleVerifyCode}>
-                  확인
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td className="idError">
-                {(emailError || message) && (
-                  <small style={{ color: emailError ? "red" : "green" }}>
-                    {emailError || message}
-                  </small>
-                )}
-              </td>
-            </tr>
-          </table>
-        </MailBox>
-
-        <PwBox>
-          <table>
-            <tr>
-              <td>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={handlePasswordChange}
-                  placeholder="비밀번호 "
-                  theme="underLine"
-                  maxLength={16}
-                />
-              </td>
-            </tr>
-
-            <tr>
-              <td>
-                <input
-                  type="password"
-                  value={passwordCheck}
-                  onChange={handlepasswordCheckdChange}
-                  placeholder="비밀번호 확인"
-=======
       <LoginBox>
         <LoginTitle>일반 회원가입</LoginTitle>
         <LoginSub>
@@ -431,7 +341,6 @@ function SignUp() {
                   value={passwordCheck}
                   onChange={handlePasswordCheckdChange}
                   placeholder="비밀번호를 한번 더 입력해주세요. "
->>>>>>> master
                   theme="underLine"
                   maxLength={16}
                 />
@@ -440,36 +349,19 @@ function SignUp() {
             <tr>
               <td>
                 <td>
-<<<<<<< HEAD
-                  {(passwordError || passwordCheckError) && (
-                    <small style={{ color: "red" }}>
-                      {passwordError || passwordCheckError}
-                    </small>
-=======
                   {passwordCheckError && (
                     <small style={{ color: "red" }}>{passwordCheckError}</small>
->>>>>>> master
                   )}
                 </td>
               </td>
             </tr>
-<<<<<<< HEAD
-          </table>
-        </PwBox>
-
-        <NickBox>
-          <table>
-            <tr>
-=======
           </Table>
-
           {/* 4.닉네임 */}
           <Table>
             <tr className="th_title">
               닉네임<span className="point">&nbsp;*</span>
             </tr>
             <tr className="th_form">
->>>>>>> master
               <td>
                 {" "}
                 <input
@@ -478,34 +370,6 @@ function SignUp() {
                   onChange={handleNickNameChange}
                   placeholder="닉네임을 입력하세요"
                 />
-<<<<<<< HEAD
-                <button type="button" onClick={handleNickNameCheck}>
-                  확인
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td className="idError">
-                {nickNameError && (
-                  <small style={{ color: "red" }}>{nickNameError}</small>
-                )}
-                {nickNameMessage && (
-                  <small style={{ color: nickNameError ? "red" : "green" }}>
-                    {nickNameMessage}
-                  </small>
-                )}
-              </td>
-            </tr>
-          </table>
-        </NickBox>
-        <OtherBox>
-          <table>
-            <tr>
-              <td>
-                <input
-                  type="text"
-                  placeholder="이름"
-=======
               </td>
             </tr>
 
@@ -537,15 +401,11 @@ function SignUp() {
                 <input
                   type="text"
                   placeholder="이름을 입력해주세요"
->>>>>>> master
                   value={name}
                   onChange={handleNameChange}
                 />
               </td>
             </tr>
-<<<<<<< HEAD
-            <tr>
-=======
           </Table>
 
           {/*6.주소*/}
@@ -557,29 +417,10 @@ function SignUp() {
               <button type="button" onClick={() => setIsOpen(true)}>
                 검색
               </button>
-
->>>>>>> master
               <td>
                 <input
                   type="text"
                   value={address} // 우편번호 검색 결과 주소 표시
-<<<<<<< HEAD
-                  placeholder="주소"
-                  readOnly
-                />
-                <button type="button" onClick={() => setIsOpen(true)}>
-                  검색
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <input
-                  type="text"
-                  value={detailAddress} // 상세 주소 표시 및 변경 가능
-                  onChange={handleDetailAddressChange} // 상세 주소 변경 시 addr 업데이트
-                  placeholder="상세주소"
-=======
                   placeholder="우편번호를 검색하세요"
                   readOnly
                 />
@@ -597,7 +438,6 @@ function SignUp() {
                   value={detailAddress} // 상세 주소 표시 및 변경 가능
                   onChange={handleDetailAddressChange} // 상세 주소 변경 시 addr 업데이트
                   placeholder="상세주소를 입력하세요"
->>>>>>> master
                 />
                 {isOpen && (
                   <Modal>
@@ -609,14 +449,6 @@ function SignUp() {
                 )}
               </td>
             </tr>
-<<<<<<< HEAD
-
-            <tr>
-              <td>
-                <input
-                  type="text"
-                  placeholder="생년월일"
-=======
           </TableBox>
 
           {/*7.생년월일*/}
@@ -629,19 +461,11 @@ function SignUp() {
                 <input
                   type="text"
                   placeholder="연도-월-일"
->>>>>>> master
                   value={birth}
                   onChange={handleBirthChange}
                 />
               </td>
             </tr>
-<<<<<<< HEAD
-            <tr>
-              <td>
-                <input
-                  type="text"
-                  placeholder="전화번호"
-=======
           </Table>
 
           {/*8.전화번호*/}
@@ -653,91 +477,11 @@ function SignUp() {
               <td>
                 <input
                   type="text"
->>>>>>> master
                   value={phoneNum}
                   onChange={handlePhoneNumChange}
                 />
               </td>
             </tr>
-<<<<<<< HEAD
-          </table>
-        </OtherBox>
-        <AnimalBox>
-          <table>
-            <tr>
-              <td>
-                {" "}
-                <AnimalBoxButton>
-                  <button onClick={addForm}>추가</button>
-                </AnimalBoxButton>{" "}
-              </td>{" "}
-            </tr>
-          </table>
-          {forms.map((form) => (
-            <Formtable key={form.id}>
-              <tr>
-                <td>
-                  <AnimalH1>
-                    <h1>반려동물정보</h1>
-                  </AnimalH1>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <input
-                    type="text"
-                    placeholder="동물이름"
-                    value={form.petName}
-                    onChange={(e) => handlePetInfoChange(e, form.id, "petName")}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <select
-                    value={form.breed}
-                    onChange={(e) => handlePetInfoChange(e, form.id, "breed")}
-                  >
-                    {" "}
-                    <option value="선택" disabled>
-                      선택
-                    </option>
-                    <option value="DOG">DOG</option>
-                    <option value="CAT">CAT</option>
-                  </select>
-                  <input
-                    className="selectInput"
-                    type="text"
-                    value={form.breed}
-                    disabled // input을 disabled 상태로 변경
-                    placeholder="종류 (선택)" // placeholder 변경
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <input
-                    type="text"
-                    placeholder="동물나이"
-                    value={form.age}
-                    onChange={(e) => handlePetInfoChange(e, form.id, "age")}
-                  />
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  <AnimalBoxButton>
-                    <button danger onClick={() => removeForm(form.id)}>
-                      삭제
-                    </button>
-                  </AnimalBoxButton>{" "}
-                </td>{" "}
-              </tr>
-            </Formtable>
-          ))}
-        </AnimalBox>
-=======
           </Table>
         </MailBox>
 
@@ -817,8 +561,6 @@ function SignUp() {
         {/*    </Formtable>*/}
         {/*  ))}*/}
         {/*</AnimalBox>*/}
-
->>>>>>> master
         <SignupSectionE>
           <button type="submit" onClick={handleSubmit}>
             회원가입
@@ -830,70 +572,6 @@ function SignUp() {
 }
 
 const SignupContainer = styled.div`
-<<<<<<< HEAD
-  width: 1920px;
-  height: 100%;
-  min-height: 1340px;
-  width: 100%;
-  max-width: 1920px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const SignupSection = styled.div`
-  margin: auto;
-  align-items: center;
-  margin-top: 130px;
-  padding-top: 30px;
-  width: 600px;
-  min-height: 1074px;
-  background-color: #f4f4f4;
-  margin-bottom: 100px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-`;
-// -------------------------------------------------------------------
-const SignupLogo = styled.div`
-  justify-content: center;
-  display: flex;
-  align-items: center;
-  width: 600px;
-  height: 40px;
-  background-color: #f4f4f4;
-  margin-bottom: 30px;
-  img {
-    width: 145px;
-    height: 35px;
-  }
-`;
-
-const SignupTitle = styled.div`
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  width: 600px;
-  height: 40px;
-  margin-bottom: 30px;
-  h1 {
-    font-size: 36px;
-    color: #111111;
-    font-weight: bold;
-  }
-`;
-
-// -----------------------------------------------------------------
-const MailBox = styled.div`
-  width: 600px;
-
-  align-items: center;
-  display: flex;
-  margin-bottom: 10px;
-  justify-content: center;
-  background-color: #f4f4f4;
-
-=======
   width: 1200px;
   margin: 0 auto;
 
@@ -1030,38 +708,10 @@ const MailBox = styled.div`
   .point {
     color: #ff27a3;
   }
->>>>>>> master
   td {
     position: relative;
   }
 
-<<<<<<< HEAD
-  input {
-    font-family: "Noto Sans KR", serif;
-    outline: none;
-    font-weight: 300;
-    margin-bottom: 2px;
-    border: none;
-    padding-left: 20px;
-    font-size: 20px;
-    width: 460px;
-    height: 60px;
-  }
-  button {
-    width: 50px;
-    height: 26px;
-    background-color: #f4f4f4;
-    font-weight: 500;
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    font-size: 20px;
-  }
-  .idError {
-    padding-top: 8px;
-    width: 460px;
-    height: 20px;
-=======
   //인풋
   input {
     width: 477px;
@@ -1099,114 +749,10 @@ const MailBox = styled.div`
     //padding-top: 8px;
     //width: 460px;
     //height: 20px;
->>>>>>> master
   }
   small {
     padding-left: 10px;
     font-size: 12px;
-<<<<<<< HEAD
-  }
-`;
-// ------------------------------------------------------------------------
-const PwBox = styled.div`
-  width: 600px;
-
-  align-items: center;
-  display: flex;
-  margin-bottom: 10px;
-  justify-content: center;
-  background-color: #f4f4f4;
-
-  td {
-    position: relative;
-  }
-
-  input {
-    font-family: "Noto Sans KR", serif;
-    outline: none;
-    font-weight: 300;
-    margin-bottom: 2px;
-    border: none;
-    padding-left: 20px;
-    font-size: 20px;
-    width: 460px;
-    height: 60px;
-  }
-  button {
-    width: 50px;
-    height: 26px;
-    background-color: #f4f4f4;
-    font-weight: 500;
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    font-size: 20px;
-  }
-  .idError {
-    padding-top: 8px;
-    width: 460px;
-    height: 20px;
-  }
-  small {
-    padding-left: 10px;
-    font-size: 12px;
-  }
-`;
-// ------------------------------------------------------------------------
-
-const NickBox = styled.div`
-  width: 600px;
-  align-items: center;
-  display: flex;
-  margin-bottom: 10px;
-  justify-content: center;
-  background-color: #f4f4f4;
-
-  td {
-    position: relative;
-  }
-
-  input {
-    font-family: "Noto Sans KR", serif;
-    outline: none;
-    font-weight: 300;
-    margin-bottom: 2px;
-    border: none;
-    padding-left: 20px;
-    font-size: 20px;
-    width: 460px;
-    height: 60px;
-  }
-  button {
-    width: 50px;
-    height: 26px;
-    background-color: #f4f4f4;
-    font-weight: 500;
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    font-size: 20px;
-  }
-  .idError {
-    padding-top: 8px;
-    width: 460px;
-    height: 20px;
-  }
-  small {
-    padding-left: 10px;
-    font-size: 12px;
-  }
-`;
-// ------------------------------------------------------------------------
-const OtherBox = styled.div`
-  width: 600px;
-  align-items: center;
-  display: flex;
-  margin-bottom: 10px;
-  justify-content: center;
-  background-color: #f4f4f4;
-
-=======
     color: #ff27a3;
   }
 `;
@@ -1268,33 +814,10 @@ const OtherBox = styled.div`
   .point {
     color: #ff27a3;
   }
->>>>>>> master
   td {
     position: relative;
   }
 
-<<<<<<< HEAD
-  input {
-    font-family: "Noto Sans KR", serif;
-    outline: none;
-    font-weight: 300;
-    margin-bottom: 2px;
-    border: none;
-    padding-left: 20px;
-    font-size: 20px;
-    width: 460px;
-    height: 60px;
-  }
-  button {
-    width: 50px;
-    height: 26px;
-    background-color: #f4f4f4;
-    font-weight: 500;
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    font-size: 20px;
-=======
   //인풋
   input {
     width: 477px;
@@ -1337,18 +860,12 @@ const OtherBox = styled.div`
     padding-left: 10px;
     font-size: 12px;
     color: #ff27a3;
->>>>>>> master
   }
 `;
 // -----------------------------------------------------------------
 const AnimalBox = styled.div`
   width: 100%;
   max-width: 600px;
-<<<<<<< HEAD
-  background-color: #f4f4f4;
-
-=======
->>>>>>> master
   display: flex;
   flex-direction: column; /* 세로 정렬 */
   align-items: center;
@@ -1370,10 +887,6 @@ const AnimalBox = styled.div`
 `;
 
 const AnimalBoxButton = styled.div`
-<<<<<<< HEAD
-  background-color: #f4f4f4;
-=======
->>>>>>> master
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1403,10 +916,6 @@ const AnimalH1 = styled.div`
 const Formtable = styled.table`
   width: 100%;
   max-width: 800px;
-<<<<<<< HEAD
-  background-color: #f4f4f4;
-=======
->>>>>>> master
   margin: 10px auto;
   border-collapse: collapse;
 
