@@ -7,10 +7,10 @@ import { AuthContext, HttpHeadersContext } from "../../context";
 
 function Review() {
   const [bbsList, setBbsList] = useState([]);
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(8);
   const [totalCnt, setTotalCnt] = useState(0);
-
+  const [totalPages, setTotalPages] = useState(0);
   const linkValue = "/review";
 
   const columns = [
@@ -22,21 +22,22 @@ function Review() {
     { label: "좋아요", field: "likes" },
   ];
 
-  const getBbsList = async (page) => {
+  const getBbsList = async () => {
     try {
       const response = await axios.get("/api/review", {
         params: { page: page - 1 },
       });
       console.log(response.data);
       setBbsList(response.data.content || []); // 응답이 없을 경우 빈 배열 처리
-      setPageSize(response.data.pageSize || 10);
+      setPageSize(response.data.pageSize || 8);
       setTotalCnt(response.data.totalElements);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error("Error fetching board data:", error);
     }
   };
   useEffect(() => {
-    getBbsList(page);
+    getBbsList();
   }, [page]);
 
   return (
@@ -53,6 +54,7 @@ function Review() {
             setPage={setPage}
             pageSize={pageSize}
             totalCnt={totalCnt}
+            totalPages={totalPages}
           />
         </PaginationBox>
       </ContentWrapper>

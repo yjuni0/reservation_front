@@ -4,11 +4,14 @@ import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { AuthContext, HttpHeadersContext } from "../../context";
 import File from "../file/File";
-
+import CommentList from "../comment/CommentList";
+import CommentWrite from "../comment/CommentWrite";
 function ReviewDetail() {
   const { headers, setHeaders } = useContext(HttpHeadersContext);
   const [review, setReview] = useState({});
   const { reviewId } = useParams();
+  const [comments, setComments] = useState([]);
+
   const navigate = useNavigate();
 
   const getBbsDetail = async () => {
@@ -71,7 +74,9 @@ function ReviewDetail() {
           </Table>
         </TableBox>
 
-        <coment></coment>
+        <CommentList reviewId={reviewId} comments={comments} />
+
+        <CommentWrite reviewId={reviewId} />
 
         <BottomBox>
           <Button onClick={deleteReview}>삭제</Button>

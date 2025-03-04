@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { AuthContext, HttpHeadersContext } from "../../context";
@@ -19,20 +19,32 @@ function ReviewWrite() {
   const changeContent = (event) => {
     setContent(event.target.value);
   };
-
+  useEffect(() => {
+    // 컴포넌트가 렌더링될 때마다 localStorage의 토큰 값으로 headers를 업데이트
+    setHeaders({
+      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+    });
+    const nick_name = localStorage.getItem("nick_name");
+    console.log("LocalStorage ID:", localStorage.getItem("nick_name"));
+    // 로그인한 사용자인지 체크
+    if (!auth) {
+      alert("로그인 한 사용자만 게시글을 작성할 수 있습니다 !");
+      navigate(-1);
+    }
+  }, []);
   const createReview = async () => {
     const req = {
       title: title,
       content: content,
-      nickName: auth ? auth.nickName : "",
     };
     console.log("보내는 데이터", req);
 
     await axios
-      .post("/review", req, { headers: headers })
+      .post("/api/review", req, { headers: headers })
       .then((response) => {
         console.log("리뷰 작성 성공", response.data);
         alert("리뷰가 성공적으로 작성되었습니다.");
+        navigate("/review");
       })
       .catch((error) => {
         console.error("리뷰 작성 실패", error);
@@ -75,7 +87,7 @@ function ReviewWrite() {
 
         <BottomBox>
           <div>
-            <Button>등록</Button>
+            <Button onClick={createReview}>등록</Button>
             <Link to="/review">
               <Button>취소</Button>
             </Link>

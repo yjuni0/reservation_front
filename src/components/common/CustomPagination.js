@@ -2,12 +2,11 @@ import React from "react";
 import styled from "styled-components";
 import Pagination from "react-js-pagination";
 
-function CustomPagination({ page, setPage, pageSize, totalCnt }) {
+function CustomPagination({ page, setPage, pageSize, totalPages, totalCnt }) {
   // 페이지 변경 처리
   const changePage = (page) => {
-    setPage(page); // 부모에서 관리하는 setPage를 사용
+    setPage(page);
   };
-
   return (
     <Container>
       <PaginationBox>
@@ -15,7 +14,8 @@ function CustomPagination({ page, setPage, pageSize, totalCnt }) {
           className="pagination"
           activePage={page}
           itemsCountPerPage={pageSize}
-          totalItemsCount={totalCnt === 0 ? 1 : totalCnt}
+          totalItemsCount={totalCnt}
+          pageRangeDisplayed={totalPages}
           prevPageText={"<"}
           nextPageText={">"}
           onChange={changePage}

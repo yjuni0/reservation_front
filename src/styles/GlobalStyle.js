@@ -2,19 +2,6 @@ import styled, { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
 
-<<<<<<< HEAD
-    //영문 폰트 - Montserrat
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nanum+Gothic&family=Noto+Sans+KR:wght@100..900&display=swap');
-    
-
-
-    * {
-        font-family: "Nanum Gothic", serif;
-        font-family: "Noto Sans KR", serif;
-        font-family: "Montserrat", serif;
-        
-        //
-=======
     //국문 폰트 - Noto+Sans
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
 
@@ -25,7 +12,6 @@ const GlobalStyle = createGlobalStyle`
         font-family: "Noto Sans KR", serif;
         font-optical-sizing: auto;
         font-style: normal;
->>>>>>> master
         font-size: inherit;
         color: inherit;
         -webkit-box-sizing: border-box;
@@ -53,11 +39,7 @@ const GlobalStyle = createGlobalStyle`
     body {
         overflow-x: hidden;
         line-height: 1.5;
-<<<<<<< HEAD
-        font-family: 'Nanum Barun Gothic', sans-serif;
-=======
         //font-family: 'Nanum Barun Gothic', sans-serif;
->>>>>>> master
         font-size: 12px;
     }
 
