@@ -1,53 +1,31 @@
-<<<<<<< HEAD
 import React, { useState, useEffect, useContext, use } from "react";
 import { useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode"; // jwt-decode 라이브러리 import
 import { Link } from "react-router-dom";
-import header_logo from "../../assets/imgs/header_logo.png";
-import header_menu_stroke from "../../assets/imgs/header_menu_stroke.png";
-import myIcon from "../../assets/imgs/header_mypage.png";
-import userIcon from "../../assets/imgs/header_user.png";
-import searchIcon from "../../assets/imgs/header_search.png";
-=======
 import React, { useState, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode"; // jwt-decode 라이브러리 import
-
-import { Link } from "react-router-dom";
 import header_logo from "../../assets/imgs/logo_w.svg";
 import header_menu_stroke from "../../assets/imgs/header_menu.svg";
 import myIcon from "../../assets/imgs/header_mypage.svg";
 import userIcon from "../../assets/imgs/header_user.svg";
 import searchIcon from "../../assets/imgs/header_search.svg";
->>>>>>> master
 import { useNavigate } from "react-router-dom";
 // import AdminHome from "../admin/adminHome";
 import styled from "styled-components";
-import axios from "axios";
 import { AuthContext } from "../../context";
 // --------------------------------------------------------------------------------------------------------------------
 
 function Header() {
   const navItems = [
-<<<<<<< HEAD
     {
       name: "홈",
       path: "/",
     },
     {
       name: "병원 소개",
-      path: "/introduce",
-      submenu: [
-=======
-    // {
-    //   name: "홈",
-    //   path: "/",
-    // },
-    {
-      name: "병원 소개",
       submenu: [
         { path: "/home", name: "병원 소개" },
->>>>>>> master
         { path: "/introduce", name: "개요" },
         { path: "/directions", name: "오시는 길" },
         { path: "/department", name: "진료과 소개" },
@@ -55,17 +33,7 @@ function Header() {
     },
     {
       name: "공지사항",
-<<<<<<< HEAD
       path: "/notice",
-      submenu: [{ path: "/notice", name: "공지사항" }],
-    },
-    {
-      name: "온라인예약",
-      path: "/userreserv",
-      submenu: [
-        { path: "/userreserv", name: "회원예약" },
-        { path: "#/nonuserreserve", name: "비회원예약" },
-=======
       submenu: [
         { path: "/notice", name: "공지 사항" },
         { path: "/notice", name: "목록" },
@@ -78,26 +46,18 @@ function Header() {
         { path: "/userreserv", name: "온라인 예약" },
         { path: "/userreserv", name: "회원 예약" },
         { path: "#/nonuserreserve", name: "비회원 예약" },
->>>>>>> master
       ],
     },
     {
       name: "온라인상담",
-<<<<<<< HEAD
       path: "/onlineCounsel",
-      submenu: [{ path: "/onlineCounsel", name: "온라인상담" }],
-    },
-    {
-      name: "고객 리뷰",
-      path: "/review",
-      submenu: [{ path: "/review", name: "리뷰" }],
-=======
       submenu: [
         { path: "/onlineCounsel", name: "온라인 상담" },
         { path: "/onlineCounsel", name: "목록" },
         { path: "/onlineCounsel", name: "관리자" },
       ],
     },
+
     {
       name: "고객 리뷰",
       submenu: [
@@ -105,7 +65,6 @@ function Header() {
         { path: "/review", name: "목록" },
         { path: "/review", name: "관리자" },
       ],
->>>>>>> master
     },
   ];
 
@@ -141,27 +100,17 @@ function Header() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-<<<<<<< HEAD
 
-=======
->>>>>>> master
   const handleLogout = () => {
     const confirmLogout = window.confirm("로그아웃 하시겠습니까?");
     if (confirmLogout) {
       localStorage.removeItem("access_token");
-<<<<<<< HEAD
       localStorage.removeItem("nick_name");
-=======
-      localStorage.removeItem("id");
->>>>>>> master
       setAuth(false);
       navigate("/");
     }
   };
-<<<<<<< HEAD
 
-=======
->>>>>>> master
   const handleMyPageClick = (e) => {
     if (!auth) {
       e.preventDefault(); // 기본 링크 동작 방지
@@ -198,10 +147,6 @@ function Header() {
             {navItems.map((item) => (
               <li key={item.name}>
                 <article>
-<<<<<<< HEAD
-=======
-                  {" "}
->>>>>>> master
                   <MenuLink to={item.path || "#"}>{item.name}</MenuLink>
                 </article>
                 {item.submenu && showBox && (
@@ -266,32 +211,17 @@ function Header() {
 const HeaderContainer = styled.div`
   display: block;
   width: 100%;
-<<<<<<< HEAD
-  height: 122px;
-  border-bottom: 1px solid #111111;
 `;
-
 const HeaderSection = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 1280px;
+  min-width: 1480px;
   height: 122px;
-=======
-  height: 100px;
-  background-color: #0d326f;
-`;
-
-const HeaderSection = styled.div`
-  //display: flex;
-  //align-items: center;
-  //justify-content: center;
-  //min-width: 1480px;
-  //height: 122px;
   display: flex;
   align-items: center;
   justify-content: center;
-  //min-width: 1440px;
+  min-width: 1440px;
   height: 100px;
   float: left;
   //margin-left: 120px;
@@ -300,39 +230,24 @@ const HeaderSection = styled.div`
   z-index: 999999999;
   background-color: #0d326f;
   //backdrop-filter: blur(20px);
->>>>>>> master
 `;
 
 const Logo = styled.h1`
   display: flex;
   align-items: center;
   width: 150px;
-<<<<<<< HEAD
-  height: 122px;
-=======
   height: 100px;
->>>>>>> master
   img {
     margin-left: 5px;
     margin-top: 5px;
   }
 `;
 
-<<<<<<< HEAD
-// ---------------------------------------------------------------------------------------------
-const Navigation = styled.nav`
-
-   z-index: 99 ;
-  width: 820px;
-  height: 122px;
-=======
 //
 const Navigation = styled.nav`
-
    z-index: 99 ;
-// width: 820px;
+width: 820px;
   height: 100px;
->>>>>>> master
   font-weight: 500;
   text-align: center;
   position: relative;
@@ -347,19 +262,7 @@ const Navigation = styled.nav`
     list-style: none;
   }
   ul:first-child {
-<<<<<<< HEAD
-    padding: 50px 50px 20px 50px;
 
-  }
-  a{   
-  font-family: "Nanum Gothic", serif;
-  font-weight: 600;
-  }
-  ul li {
-  
-    width: 140px;
-    position: relative;
-=======
     padding: 40px 50px 20px 20px;
 
   }
@@ -370,63 +273,16 @@ const Navigation = styled.nav`
     //width: 140px;
     position: relative;
     margin-left: 20px;
-    
->>>>>>> master
     &:hover ul {
       display: block;
     }
   }
-<<<<<<< HEAD
-
-=======
-  ul ul li a{
-    margin-right: 20px;
-  }
-  
->>>>>>> master
   ul ul {
     display: none;
     position: absolute;
     top: 80px;
     left: 0;
-<<<<<<< HEAD
-    background-color: #fff;
-    width: 360px;
-
-    
-    visibility: hidden;
-    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-
-    li{
-    border-bottom:1px solid black;
-    //font-family: "Nanum Gothic", serif;
-    text-align: left;
-    right:-15px;
-    position: relative;
-    width: 95px;
-    padding-top:20px;
-    }
-  }
-
-  li:hover ul,
-  &:hover ul ul {
-    display: block;
-   
-    visibility: visible;
-  }
-
- div {
- background-color: #ffffff;
-      display: none;
-      position: fixed;
-      height: 225px;
-      top: 122px;
-      left:0px;
-      min-width :100vw;
-      width: 100%;
-  border-bottom: 1px solid #111111;
-=======
-    //background: rgb(255, 255, 255);
+    background: rgb(255, 255, 255);
     width: 100%;
     visibility: hidden;
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
@@ -436,7 +292,7 @@ const Navigation = styled.nav`
     //하위메뉴 스타일
     li{
       width: 100px;
-      //position: relative;
+      position: relative;
       margin-bottom: 10px;
       font-size: 14px;
       color: rgb(0, 0, 0);
@@ -446,12 +302,12 @@ const Navigation = styled.nav`
       text-align: left;
       float: left;
       
-    //border-bottom:1px solid black;
-    //text-align: left;
-    //right:-15px;
-    //position: relative;
-    //width: 95px;
-    //padding-top:20px;
+    border-bottom:1px solid black;
+    text-align: left;
+    right:-15px;
+    position: relative;
+    width: 95px;
+    padding-top:20px;
     }
   }
   li:first-child{
@@ -474,44 +330,25 @@ const Navigation = styled.nav`
       left:0px;
       min-width :100vw;
       width: 100%;
->>>>>>> master
       z-index: -1;
       flex-direction: row;
       padding: 10px;
       box-sizing: border-box;
-<<<<<<< HEAD
     }
     &:hover div {
-
-=======
-   
- 
-    }
-    &:hover div {
->>>>>>> master
       display: block;
     }
   }
 `;
-<<<<<<< HEAD
-const MenuLink = styled(Link)`
-  text-decoration: none;
-  color: #111111;
-  font-size: 18px;
-  lineheight: 16;
-
-  &:hover {
-=======
 
 const MenuLink = styled(Link)`
   text-decoration: none;
   color: #fff;
   font-size: 16px;
-  //lineheight: 16;
+  lineheight: 16;
 
   &:hover {
     color: #ffa228;
->>>>>>> master
   }
 `;
 
@@ -520,36 +357,15 @@ const SubLink = styled(Link)`
   color: #111;
 
   &:hover {
-<<<<<<< HEAD
-    color: #fc9664;
-  }
-`;
-
-const HederSectionB = styled.div`
-  width: 230px;
-  height: 122px;
-`;
-
-const LoginBox = styled.div`
-  padding-top: 22px;
-  font-size: 12ppx;
-  float: right;
-  position: relative;
-  color: #111111;
-  lineheight: 16;
-  a:first-child {
-    padding: 16px;
-=======
     color: #ffa228;
   }
 `;
 //네비)오른쪽
 const HederSectionB = styled.div`
-  //width: 230px;
-  //height: 122px;
-  //padding: 45px 50px 20px 20px;
+  width: 230px;
+  height: 122px;
+  padding: 45px 50px 20px 20px;
   margin-bottom: 25px;
-
   &:hover {
     color: #ffa228;
   }
@@ -561,7 +377,7 @@ const LoginBox = styled.div`
   float: right;
   position: relative;
   color: #fff;
-  //lineheight: 16;
+  lineheight: 16;
   margin-left: 40px;
 
   a {
@@ -575,29 +391,17 @@ const LoginBox = styled.div`
     &:hover {
       color: #ffa228;
     }
->>>>>>> master
   }
 
   a:nth-child(2) img {
     top: 3px;
     position: relative;
-<<<<<<< HEAD
-=======
-    &:hover {
-      color: #ffa228;
-    }
->>>>>>> master
   }
 `;
 // ---------------------------------------------------------------
 const LoginButton = styled.button`
-<<<<<<< HEAD
-  font-family: "Nanum Gothic", serif;
-  margin-left: 20px;
-=======
   font-family: "Noto Sans KR", serif;
   margin-left: 8px;
->>>>>>> master
   background-color: transparent;
   border: none;
   font-size: 14px;
@@ -606,36 +410,16 @@ const LoginButton = styled.button`
 `;
 
 const SearchBox = styled.button`
-<<<<<<< HEAD
   right: 5px;
-  top: 22px;
+  top: 20px;
   float: right;
   width: 190px;
   height: 25px;
   background-color: transparent;
-=======
-  //right: 5px;
-  top: 20px;
-  float: right;
-  //width: 190px;
-  //height: 25px;
-  //background-color: transparent;
->>>>>>> master
   border: none;
   font-size: 12px;
   cursor: pointer;
   position: relative;
-<<<<<<< HEAD
-  input {
-    letter-spacing: 0.1em;
-    height: 25px;
-    font-size: 12px;
-    width: 190px;
-    font-family: "Nanum Gothic", serif;
-    border: none;
-    border-bottom: 1px solid #666;
-    padding-bottom: 5px;
-=======
 
   width: 260px;
   height: 30px;
@@ -643,11 +427,11 @@ const SearchBox = styled.button`
 
   outline: none;
   input {
-    //height: 25px;
-    //width: 190px;
-    //border: none;
-    //border-bottom: 1px solid rgba(0,0,0,0.2);
-    //padding-bottom: 2px;
+    height: 25px;
+    width: 190px;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    padding-bottom: 2px;
 
     font-size: 13px;
     font-weight: 300;
@@ -658,19 +442,14 @@ const SearchBox = styled.button`
     border-radius: 15px 13px;
     outline: none;
     text-align: end;
->>>>>>> master
   }
   input:focus {
     outline: none;
   }
   img {
     bottom: 5px;
-<<<<<<< HEAD
-    right: -2px;
-=======
     left: 0px;
     padding-left: 10px;
->>>>>>> master
     position: absolute;
   }
 `;
