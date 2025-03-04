@@ -19,7 +19,7 @@ function ReviewUpdate() {
       }
 
       await axios.patch(
-        `/api/member/review/${bbs.id}/update`,
+        `/api/review/${bbs.id}`,
         { title, content },
         {
           headers: {

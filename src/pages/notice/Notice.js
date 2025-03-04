@@ -32,7 +32,7 @@ function Notice() {
   ];
   const getBbsList = async (page) => {
     try {
-      const response = await axios.get("/api/member/notice/list", {
+      const response = await axios.get("/api/notice", {
         params: { page: page - 1 },
       });
       setBbsList(response.data.content || []); // 응답이 없을 경우 빈 배열 처리

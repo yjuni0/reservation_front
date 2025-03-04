@@ -38,7 +38,7 @@ function UserReserv() {
     const fetchPetListAndSlots = async () => {
       try {
         if (headers.Authorization) {
-          const petResponse = await axios.get("/api/pet/list", { headers });
+          const petResponse = await axios.get("/api/pet", { headers });
           setPetList(petResponse.data);
 
           if (selectedDate && selectedDepartment) {
@@ -105,7 +105,7 @@ function UserReserv() {
       slotId: selectedSlotData.id,
     };
     await axios
-      .post("/api/member/reservation/register", req)
+      .post("/api/reservation", req)
       .then((response) => {
         console.log("응답 데이터: ", response.data);
         const reserveId = response.data.id;

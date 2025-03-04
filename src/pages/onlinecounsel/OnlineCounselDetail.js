@@ -5,39 +5,37 @@ import styled from "styled-components";
 import { AuthContext, HttpHeadersContext } from "../../context";
 import File from "../file/File";
 
-function NoticeDetail() {
+function QuestionDetail() {
   const { headers, setHeaders } = useContext(HttpHeadersContext);
-  const [notice, setNotice] = useState({});
-  const { noticeId } = useParams();
+  const [question, setQuestion] = useState({});
+  const { questionId } = useParams();
   const navigate = useNavigate();
 
   const getBbsDetail = async () => {
     try {
-      const response = await axios.get(`/api/member/notice/${noticeId}`);
+      const response = await axios.get(`/api/question/${questionId}`);
 
-      console.log("[NoticeDetail.js] getBbsDetail() success :D");
+      console.log("[questionDetail.js] getBbsDetail() success :D");
       console.log(response.data);
 
-      setNotice(response.data);
+      setQuestion(response.data);
     } catch (error) {
-      console.log("[NoticeDetail.js] getBbsDetail() error :<");
+      console.log("[questionDetail.js] getBbsDetail() error :<");
       console.error(error);
     }
   };
 
-  const deleteNotice = async () => {
+  const deleteQuestion = async () => {
     try {
-      const response = await axios.delete(
-        `/api/admin/notice/${noticeId}/delete`
-      );
+      const response = await axios.delete(`/api/question/${questionId}/delete`);
       console.log(response);
-      console.log("deleteNotice seccess");
+      console.log("deletequestion seccess");
       if (response.status == 200) {
         alert("게시글을 삭제 하였습니다.");
-        navigate("/notice");
+        navigate("/question");
       }
     } catch (error) {
-      console.log("deleteNotice error");
+      console.log("deleteQuestion error");
       console.error(error);
     }
   };
@@ -51,9 +49,9 @@ function NoticeDetail() {
   }, []);
 
   useEffect(() => {
-    console.log("noticeId:", noticeId); // 콘솔로 확인
-    if (!noticeId) return;
-    console.log("noticeId:", noticeId);
+    console.log("questionId:", questionId); // 콘솔로 확인
+    if (!questionId) return;
+    console.log("questionId:", questionId);
     getBbsDetail();
   }, []);
 
@@ -64,7 +62,7 @@ function NoticeDetail() {
           <Table>
             <tbody>
               <tr>
-                <TableTitle>{notice.title}</TableTitle>
+                <TableTitle>{question.title}</TableTitle>
               </tr>
               <tr>
                 <td>
@@ -72,7 +70,7 @@ function NoticeDetail() {
                 </td>
               </tr>
               <tr>
-                <TableContent>{notice.content} </TableContent>
+                <TableContent>{question.content} </TableContent>
               </tr>
             </tbody>
           </Table>
@@ -81,12 +79,12 @@ function NoticeDetail() {
         <coment></coment>
 
         <BottomBox>
-          <Button onClick={deleteNotice}>삭제</Button>
+          <Button onClick={deleteQuestion}>삭제</Button>
 
-          <Link to={`/notice/update/${noticeId}`}>
+          <Link to={`/question/${questionId}`}>
             <Button>수정</Button>
           </Link>
-          <Link to="/notice">
+          <Link to="/question">
             <Button>취소</Button>
           </Link>
         </BottomBox>
@@ -183,4 +181,4 @@ const Button = styled.button`
   }
 `;
 
-export default NoticeDetail;
+export default QuestionDetail;

@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 
-function NoticeLayout() {
+function ReviewLayout() {
   return (
     <Container>
       <NoticeTitle>
@@ -31,4 +31,4 @@ const Container = styled.div`
   align-items: center;
 `;
 
-export default NoticeLayout;
+export default ReviewLayout;

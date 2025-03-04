@@ -1,60 +1,71 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import styled from 'styled-components';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import styled from "styled-components";
 
 const AnimalProfile = () => {
-    const [inputValue, setInputValue] = useState([]);
+  const [inputValue, setInputValue] = useState([]);
 
-    useEffect(() => {
-        axios.get('/api/{memerId}/pet')
-            .then(response => {
-                setInputValue([{ name: response.data.name, species: response.data.species, age: response.data.age, weight: response.data.weight }]);
-            })
-            .catch(() => {
-                setInputValue([{ name: '', species: '', age: '', weight: '' }]);
-            });
-    }, []);
+  useEffect(() => {
+    axios
+      .get("/api/pet")
+      .then((response) => {
+        setInputValue([
+          {
+            name: response.data.name,
+            species: response.data.species,
+            age: response.data.age,
+            weight: response.data.weight,
+          },
+        ]);
+      })
+      .catch(() => {
+        setInputValue([{ name: "", species: "", age: "", weight: "" }]);
+      });
+  }, []);
 
-    const addContent = () => {
-        setInputValue([...inputValue, { name: '', species: '', age: '', weight: '' }]);
-    };
+  const addContent = () => {
+    setInputValue([
+      ...inputValue,
+      { name: "", species: "", age: "", weight: "" },
+    ]);
+  };
 
-    const deleteContent = (index) => {
-        setInputValue(inputValue.filter((_, i) => i !== index));
-    };
+  const deleteContent = (index) => {
+    setInputValue(inputValue.filter((_, i) => i !== index));
+  };
 
-    return (
-        <AnimalProfileContainer>
+  return (
+    <AnimalProfileContainer>
+      <AddButton onClick={addContent}>+ 반려동물 추가</AddButton>
 
-            <AddButton onClick={addContent}>+ 반려동물 추가</AddButton>
-
-            {inputValue.map((item, index) => (
-                <AnimalTableWrapper key={index}>
-                    <DeleteButton onClick={() => deleteContent(index)}>삭제</DeleteButton>
-                    <AnimalTable>
-                        <tbody>
-                            {["이름", "종류", "나이"].map((label, i) => (
-                                <TableRow key={i}>
-                                    <TableHead>{label}</TableHead>
-                                    <TableData>
-                                        <Input
-                                            type="text"
-                                            value={item[label.toLowerCase()]}
-                                            onChange={(e) => {
-                                                const newInputValue = [...inputValue];
-                                                newInputValue[index][label.toLowerCase()] = e.target.value;
-                                                setInputValue(newInputValue);
-                                            }}
-                                        />
-                                    </TableData>
-                                </TableRow>
-                            ))}
-                        </tbody>
-                    </AnimalTable>
-                </AnimalTableWrapper>
-            ))}
-        </AnimalProfileContainer>
-    );
+      {inputValue.map((item, index) => (
+        <AnimalTableWrapper key={index}>
+          <DeleteButton onClick={() => deleteContent(index)}>삭제</DeleteButton>
+          <AnimalTable>
+            <tbody>
+              {["이름", "종류", "나이"].map((label, i) => (
+                <TableRow key={i}>
+                  <TableHead>{label}</TableHead>
+                  <TableData>
+                    <Input
+                      type="text"
+                      value={item[label.toLowerCase()]}
+                      onChange={(e) => {
+                        const newInputValue = [...inputValue];
+                        newInputValue[index][label.toLowerCase()] =
+                          e.target.value;
+                        setInputValue(newInputValue);
+                      }}
+                    />
+                  </TableData>
+                </TableRow>
+              ))}
+            </tbody>
+          </AnimalTable>
+        </AnimalTableWrapper>
+      ))}
+    </AnimalProfileContainer>
+  );
 };
 
 // 📌 `UserUpdate` 폼과 일관된 너비 유지
@@ -67,11 +78,7 @@ const AnimalProfileContainer = styled.div`
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   font-family: "Noto Sans KR", serif;
-
-  
 `;
-
-
 
 const AddButton = styled.button`
   display: block;
@@ -107,7 +114,7 @@ const DeleteButton = styled.button`
   font-family: "Noto Sans KR", serif;
   cursor: pointer;
   border-radius: 5px;
-  
+
   &:hover {
     background-color: darkred;
   }
@@ -135,8 +142,8 @@ const TableHead = styled.th`
   text-align: left;
   border: 1px solid #ddd;
   width: 30%;
-  font-size:16px;
-  font-weight:medium;
+  font-size: 16px;
+  font-weight: medium;
 `;
 
 const TableData = styled.td`
@@ -150,7 +157,7 @@ const Input = styled.input`
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  outline:none;
+  outline: none;
 `;
 
 export default AnimalProfile;

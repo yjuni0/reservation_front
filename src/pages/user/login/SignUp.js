@@ -30,11 +30,11 @@ function SignUp() {
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
-  const [passwordCheck, setpasswordCheck] = useState("");
+  const [passwordCheck, setPasswordCheck] = useState("");
   const [emailError, setEmailError] = useState("");
   const [codeError, setCodeError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [passwordCheckError, setpasswordCheckError] = useState("");
+  const [passwordCheckError, setPasswordCheckError] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
@@ -72,13 +72,13 @@ function SignUp() {
     }
   };
 
-  const handlePasswordCheckdChange = (e) => {
-    setpasswordCheck(e.target.value);
+  const handlePasswordCheckedChange = (e) => {
+    setPasswordCheck(e.target.value);
     // 비밀번호 확인 값 일치 여부 검사
     if (password !== e.target.value) {
-      setpasswordCheckError("비밀번호가 일치하지 않습니다.");
+      setPasswordCheckError("비밀번호가 일치하지 않습니다.");
     } else {
-      setpasswordCheckError("");
+      setPasswordCheckError("");
     }
   };
 
@@ -339,7 +339,7 @@ function SignUp() {
                 <input
                   type="password"
                   value={passwordCheck}
-                  onChange={handlePasswordCheckdChange}
+                  onChange={handlePasswordCheckedChange}
                   placeholder="비밀번호를 한번 더 입력해주세요. "
                   theme="underLine"
                   maxLength={16}

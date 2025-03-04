@@ -1,29 +1,18 @@
-import React, { lazy, useEffect, useState } from "react";
+import React, { lazy, useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import CommonTable from "../../components/common/CommonTable";
 import CustomPagination from "../../components/common/CustomPagination";
-import { jwtDecode } from "jwt-decode"; // jwt-decode 라이브러리 import
+import { AuthContext, HttpHeadersContext } from "../../context";
 
-function Notice() {
+function Review() {
   const [bbsList, setBbsList] = useState([]);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalCnt, setTotalCnt] = useState(0);
-  const token = localStorage.getItem("access_token");
-  let useRole = null;
-  if (token) {
-    try {
-      // 토큰 디코딩
-      console.log(token);
-      const decodedToken = jwtDecode(token);
-      console.log(decodedToken);
-      useRole = decodedToken.roles;
-    } catch (e) {
-      console.log("토큰 디코딩 오류 : ", e);
-    }
-  }
-  const linkValue = useRole === "ROLE_ADMIN" ? "/admin/review" : "/review";
+
+  const linkValue = "/review";
+
   const columns = [
     { label: "No", field: "id" },
     { label: "제목", field: "title", link: true },
@@ -32,9 +21,10 @@ function Notice() {
     { label: "조회수", field: "views" },
     { label: "좋아요", field: "likes" },
   ];
+
   const getBbsList = async (page) => {
     try {
-      const response = await axios.get("/api/member/review/list", {
+      const response = await axios.get("/api/review", {
         params: { page: page - 1 },
       });
       console.log(response.data);
@@ -142,4 +132,4 @@ const WriteBtnBox = styled.div`
   margin-top: 30px;
 `;
 
-export default Notice;
+export default Review;

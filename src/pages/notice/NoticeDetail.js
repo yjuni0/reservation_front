@@ -13,7 +13,7 @@ function NoticeDetail() {
 
   const getBbsDetail = async () => {
     try {
-      const response = await axios.get(`/api/member/notice/${noticeId}`);
+      const response = await axios.get(`/api/notice/${noticeId}`);
 
       console.log("[NoticeDetail.js] getBbsDetail() success :D");
       console.log(response.data);
@@ -27,9 +27,7 @@ function NoticeDetail() {
 
   const deleteNotice = async () => {
     try {
-      const response = await axios.delete(
-        `/api/admin/notice/${noticeId}/delete`
-      );
+      const response = await axios.delete(`/api/admin/notice/${noticeId}`);
       console.log(response);
       console.log("deleteNotice success");
       if (response.status == 200) {

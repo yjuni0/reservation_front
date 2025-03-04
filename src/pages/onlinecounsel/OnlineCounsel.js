@@ -10,20 +10,7 @@ function OnlineCounsel() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalCnt, setTotalCnt] = useState(0);
-  const token = localStorage.getItem("access_token");
-  let useRole = null;
-  if (token) {
-    try {
-      // 토큰 디코딩
-      console.log(token);
-      const decodedToken = jwtDecode(token);
-      console.log(decodedToken);
-      useRole = decodedToken.roles;
-    } catch (e) {
-      console.log("토큰 디코딩 오류 : ", e);
-    }
-  }
-  const linkValue = useRole === "ROLE_ADMIN" ? "/admin/notice" : "/notice";
+  const linkValue = "/onlinecounsel";
   const columns = [
     { label: "No", field: "id" },
     { label: "제목", field: "title", link: true },
@@ -32,7 +19,7 @@ function OnlineCounsel() {
   ];
   const getBbsList = async (page) => {
     try {
-      const response = await axios.get("/api/member/question", {
+      const response = await axios.get("/api/question", {
         params: { page: page - 1 },
       });
       setBbsList(response.data.content || []); // 응답이 없을 경우 빈 배열 처리

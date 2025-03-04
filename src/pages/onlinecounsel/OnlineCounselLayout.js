@@ -6,7 +6,7 @@ function OnlineCounselLayout() {
     <Container>
       <Title>
         <h1>온라인 상담</h1>
-        <Outlet /> {/* 여기에 Notice, NoticeWrite, NoticeUpdate가 렌더링됨 */}
+        <Outlet />
       </Title>
     </Container>
   );

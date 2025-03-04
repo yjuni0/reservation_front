@@ -51,7 +51,7 @@ function NoticelWrite() {
     }
 
     await axios
-      .post(`/api/admin/notice/${noticeId}/file/upload`, fd, {
+      .post(`/api/admin/notice/${noticeId}/file`, fd, {
         headers: headers,
       })
       .then((resp) => {
@@ -74,7 +74,7 @@ function NoticelWrite() {
     };
 
     await axios
-      .post("/api/admin/notice/write", req, { headers: headers })
+      .post("/api/admin/notice", req, { headers: headers })
       .then((resp) => {
         console.log("응답 데이터:", resp.data); // 응답 데이터 확인
         const noticeId = resp.data.id; // `noticeId` 대신 `id` 사용

@@ -29,7 +29,7 @@ function ReviewWrite() {
     console.log("보내는 데이터", req);
 
     await axios
-      .post("/review/write", req, { headers: headers })
+      .post("/review", req, { headers: headers })
       .then((response) => {
         console.log("리뷰 작성 성공", response.data);
         alert("리뷰가 성공적으로 작성되었습니다.");

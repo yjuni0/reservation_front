@@ -61,13 +61,13 @@ function SignIn() {
       const resp = await axios.post("/api/login", req); // axios로 POST 요청
       console.log("Login OK");
       console.log(resp.data);
-      alert(resp.data.email + "님, 성공적으로 로그인 되었습니다요");
+      alert(resp.data.nickName + "님, 성공적으로 로그인 되었습니다요");
 
       // JWT 토큰 저장
       localStorage.setItem("access_token", resp.data.token);
-      localStorage.setItem("id", resp.data.email);
+      localStorage.setItem("nick_name", resp.data.nickName);
 
-      setAuth(resp.data.email);
+      setAuth(resp.data.nickName);
       setHeaders({ Authorization: `Bearer ${resp.data.token}` }); // HttpHeadersContext에 Authorization 헤더 저장
 
       navigate("/"); // 로그인 후 홈으로 리다이렉트

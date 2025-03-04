@@ -13,7 +13,7 @@ function NoticeUpdate() {
 
   const update = async () => {
     try {
-      await axios.patch(`/api/admin/notice/${bbs.id}/update`, {
+      await axios.patch(`/api/admin/notice/${bbs.id}`, {
         title: title,
         content: content,
       });

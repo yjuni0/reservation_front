@@ -13,7 +13,7 @@ function ReviewDetail() {
 
   const getBbsDetail = async () => {
     try {
-      const response = await axios.get(`/api/member/review/${reviewId}`);
+      const response = await axios.get(`/api/review/${reviewId}`);
 
       console.log("[reviewDetail.js] getBbsDetail() success :D");
       console.log(response.data);
@@ -27,9 +27,7 @@ function ReviewDetail() {
 
   const deleteReview = async () => {
     try {
-      const response = await axios.delete(
-        `/api/member/review/${reviewId}/delete`
-      );
+      const response = await axios.delete(`/api/review/${reviewId}`);
       console.log(response);
       console.log("deleteReview success");
       if (response.status == 200) {
@@ -78,7 +76,7 @@ function ReviewDetail() {
         <BottomBox>
           <Button onClick={deleteReview}>삭제</Button>
 
-          <Link to={`/review/${reviewId}/update`} state={{ bbs: review }}>
+          <Link to={`/review/${reviewId}`} state={{ bbs: review }}>
             <Button>수정</Button>
           </Link>
           <Link to="/review">
