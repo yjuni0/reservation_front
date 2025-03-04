@@ -5,8 +5,6 @@ import AnimalProfile from "./AnimalProfile";
 function UserUpdate() {
   return (
     <UserUpdateContainer>
-
-      
       <UserUpdateUserBox>
         <UserUpdateUserTable>
           <thead>
@@ -68,8 +66,6 @@ const UserUpdateContainer = styled.div`
   font-family: "Noto Sans KR", serif;
 `;
 
-
-
 const UserUpdateUserBox = styled.div`
   width: 100%;
   display: flex;
@@ -118,7 +114,7 @@ const Input = styled.input`
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  outline:none;
+  outline: none;
 `;
 
 const ActionButton = styled.button`
@@ -128,14 +124,13 @@ const ActionButton = styled.button`
   border: none;
   cursor: pointer;
   border-radius: 4px;
-   font-weight: medium;
+  font-weight: medium;
   font-size: 16px;
   font-family: "Noto Sans KR", serif;
-  
 
   &:hover {
     background-color: #111111;
-    color: #ffffff
+    color: #ffffff;
   }
 `;
 
@@ -161,7 +156,6 @@ const SubmitButton = styled.button`
   border-radius: 4px;
   font-family: "Noto Sans KR", serif;
 
-
   &:hover {
     background-color: #111111;
   }
@@ -176,7 +170,6 @@ const CancelButton = styled.button`
   cursor: pointer;
   border-radius: 4px;
   font-family: "Noto Sans KR", serif;
-
 
   &:hover {
     background-color: #111111;

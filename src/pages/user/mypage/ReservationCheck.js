@@ -17,9 +17,7 @@ function ReservationCheck() {
               <TableHeader>예약 삭제</TableHeader>
             </TableRow>
           </thead>
-          <tbody>
-            {/* 데이터 추가 예정 */}
-          </tbody>
+          <tbody>{/* 데이터 추가 예정 */}</tbody>
         </ReservCheckTable>
       </ReservCheckTableBox>
     </ReservCheckContainer>

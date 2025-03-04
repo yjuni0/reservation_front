@@ -7,7 +7,7 @@ const AnimalProfile = () => {
 
   useEffect(() => {
     axios
-      .get("/api/pet")
+      .get("/api/{memerId}/pet")
       .then((response) => {
         setInputValue([
           {

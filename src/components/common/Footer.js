@@ -28,6 +28,7 @@ function Footer() {
               <tr>
                 <td>문의</td>
                 <td>
+                  {" "}
                   대표번호 : 02-837-9922 팩스 : 02-3482-8835 이메일:
                   saff@saff.kr
                 </td>
@@ -35,6 +36,7 @@ function Footer() {
               <tr>
                 <td>주소</td>
                 <td>
+                  {" "}
                   서울특별시 구로구 시흥대로 163길 33 2층, 3층 (주호타워)
                   사업자등록번호 : 203-87-00672
                 </td>
@@ -169,4 +171,5 @@ const Copy = styled.div`
     font-family: "Montserrat", serif;
   }
 `;
+
 export default Footer;
