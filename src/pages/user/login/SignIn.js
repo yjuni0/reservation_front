@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -7,6 +7,7 @@ import styled from "styled-components";
 import { AuthContext, HttpHeadersContext } from "../../../context";
 import one from "../../../assets/imgs/one.svg";
 import google from "../../../assets/imgs/google_login.svg";
+import naverLogin from "../../../assets/imgs/naver_login.svg";
 
 function SignIn() {
   const { setAuth } = useContext(AuthContext);
@@ -25,32 +26,12 @@ function SignIn() {
     setPwd(event.target.value);
   };
 
-  const googleLogin = async () => {
-    try {
-      const resp = await axios.get(`/api/auth/google-login`);
-      console.log(resp.data);
-      console.log("[✅ 응답 데이터]", resp.data);
-
-      alert(resp.data.email + "님, 성공적으로 로그인 되었습니다요");
-
-      // JWT 토큰 저장
-      localStorage.setItem("access_token", resp.data.token);
-      localStorage.setItem("id", resp.data.email);
-
-      setAuth(resp.data.email);
-      setHeaders({ Authorization: `Bearer ${resp.data.token}` }); // HttpHeadersContext에 Authorization 헤더 저장
-
-      navigate("/"); // 로그인 후 홈으로 리다이렉트
-    } catch (err) {
-      console.log("Login failed");
-      console.error("Error Details:", err); // 전체 오류 객체 출력
-    }
-  };
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       login();
     }
   };
+
   const login = async () => {
     const req = {
       email: id,
@@ -61,13 +42,14 @@ function SignIn() {
       const resp = await axios.post("/api/login", req); // axios로 POST 요청
       console.log("Login OK");
       console.log(resp.data);
-      alert(resp.data.nickName + "님, 성공적으로 로그인 되었습니다요");
+
+      alert(resp.data.email + "님, 성공적으로 로그인 되었습니다요");
 
       // JWT 토큰 저장
       localStorage.setItem("access_token", resp.data.token);
-      localStorage.setItem("nick_name", resp.data.nickName);
+      localStorage.setItem("id", resp.data.email);
 
-      setAuth(resp.data.nickName);
+      setAuth(resp.data.email);
       setHeaders({ Authorization: `Bearer ${resp.data.token}` }); // HttpHeadersContext에 Authorization 헤더 저장
 
       navigate("/"); // 로그인 후 홈으로 리다이렉트
@@ -144,13 +126,18 @@ function SignIn() {
           <div className="sns">SNS 간편 로그인</div>
           <div className="right"></div>
         </Article>
-
-        <SignButton onClick={googleLogin}>
-          <img src={google} alt="google" />
-          구글 로그인
-        </SignButton>
-
-        {/*<button onClick={googleLogin}>구글 로그인</button>*/}
+        <Link to="http://localhost:8080/oauth2/authorization/google">
+          <SignButton>
+            <img src={google} alt="google" />
+            구글 로그인
+          </SignButton>
+        </Link>
+        <Link to="http://localhost:8080/oauth2/authorization/naver">
+          <SignsButton>
+            <img src={naverLogin} alt="naver" />
+            네이버 로그인
+          </SignsButton>
+        </Link>
       </LoginSection>
     </LoginContainer>
   );
@@ -314,9 +301,10 @@ const IdFind = styled.a`
 //5-3.비밀번호 찾기
 const PwFind = styled.a`
   text-align: center;
-  &:hover {
-    color: #0d326f;
+  &:hover{
+    color: #0D326F;
     font-weight: 600;
+  };
   }
 `;
 
@@ -369,6 +357,36 @@ const SignButton = styled.button`
   font-weight: 500;
   font-size: 15.2px;
   text-align: center;
+  margin-bottom: 20px;
+  position: relative;
+
+  img {
+    float: left;
+    position: absolute;
+    left: 0;
+    margin-left: 20px;
+  }
+
+  &:hover {
+    box-shadow: 0 0 10px 0 rgba(13, 50, 111, 0.15);
+  }
+`;
+//6-3.네이버 로그인(SNS)
+const SignsButton = styled.button`
+  width: 450px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+  border: 1.5px solid #e0e0e0;
+  background-color: #03c75a;
+  color: #fff;
+  outline: none;
+
+  font-weight: 500;
+  font-size: 15.2px;
+  text-align: center;
   margin-bottom: 45px;
   position: relative;
 
@@ -380,10 +398,7 @@ const SignButton = styled.button`
   }
 
   &:hover {
-    border: 1px solid #0d326f;
-    color: #0d326f;
-    font-weight: 600;
-    box-shadow: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 10px 0 rgba(13, 50, 111, 0.15);
   }
 `;
 
