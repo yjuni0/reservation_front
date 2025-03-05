@@ -86,11 +86,8 @@ const Router = () => {
         <Route path="/onlineCounsel" element={<OnlineCounselLayout />}>
           <Route index element={<OnlineCounsel />} />
           <Route path="write" element={<OnlineCounselWrite />} />
-          <Route path=":onlineCounselId" element={<OnlineCounselDetail />} />
-          <Route
-            path=":onlineCounselId/update"
-            element={<OnlineCounselUpdate />}
-          />
+          <Route path=":questionId" element={<OnlineCounselDetail />} />
+          <Route path=":questionId/update" element={<OnlineCounselUpdate />} />
         </Route>
 
         <Route path="/review" element={<ReviewLayout />}>
@@ -110,9 +107,9 @@ const Router = () => {
           <Route path="onlineCounsel" element={<OnlineCounselLayout />}>
             <Route index element={<OnlineCounsel />} />
             <Route path="write" element={<OnlineCounselWrite />} />
-            <Route path=":onlineCounselId" element={<OnlineCounselDetail />} />
+            <Route path=":questionId" element={<OnlineCounselDetail />} />
             <Route
-              path=":onlineCounselId/update"
+              path=":questionId/update"
               element={<OnlineCounselUpdate />}
             />
           </Route>

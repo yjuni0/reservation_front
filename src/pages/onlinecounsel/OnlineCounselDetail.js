@@ -10,26 +10,27 @@ function QuestionDetail() {
   const [question, setQuestion] = useState({});
   const { questionId } = useParams();
   const navigate = useNavigate();
+  console.log("questionId:", questionId);
 
   const getBbsDetail = async () => {
     try {
       const response = await axios.get(`/api/question/${questionId}`);
 
-      console.log("[questionDetail.js] getBbsDetail() success :D");
+      console.log("온라인 상담  문의 등록 성공 ");
       console.log(response.data);
 
       setQuestion(response.data);
     } catch (error) {
-      console.log("[questionDetail.js] getBbsDetail() error :<");
+      console.log("온라인 상담 등록 중 오류 발생 ");
       console.error(error);
     }
   };
 
   const deleteQuestion = async () => {
     try {
-      const response = await axios.delete(`/api/question/${questionId}/delete`);
+      const response = await axios.delete(`/api/question/${questionId}`);
       console.log(response);
-      console.log("deletequestion seccess");
+      console.log("삭제 성공 ");
       if (response.status == 200) {
         alert("게시글을 삭제 하였습니다.");
         navigate("/question");

@@ -1,47 +1,100 @@
 import React, { lazy, useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import CommonTable from "../../components/common/CommonTable";
-import CustomPagination from "../../components/common/CustomPagination";
+import CommonTable from "../../../components/common/CommonTable";
+import CustomPagination from "../../../components/common/CustomPagination";
 import { jwtDecode } from "jwt-decode"; // jwt-decode 라이브러리 import
+import { useNavigate } from "react-router-dom";
 
-function OnlineCounsel() {
+function A_User() {
   const [bbsList, setBbsList] = useState([]);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalCnt, setTotalCnt] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
-
-  const linkValue = "/onlinecounsel";
+  const token = localStorage.getItem("access_token");
+  const navigate = useNavigate();
+  let useRole = null;
+  if (token) {
+    try {
+      // 토큰 디코딩
+      console.log(token);
+      const decodedToken = jwtDecode(token);
+      console.log(decodedToken);
+      useRole = decodedToken.roles;
+    } catch (e) {
+      console.log("토큰 디코딩 오류 : ", e);
+    }
+  }
+  const linkValue = "adminuser";
   const columns = [
     { label: "No", field: "id" },
-    { label: "제목", field: "title", link: true },
-    { label: "작성자", field: "writerName" },
-    { label: "작성일", field: "createdDate" },
+    { label: "email", field: "email" },
+    { label: "nickName", field: "nickName" },
+    { label: "phoneNum", field: "phoneNum" },
+    { label: "Actions", field: "actions" },
   ];
+
   const getBbsList = async (page) => {
     try {
-      const response = await axios.get("/api/question", {
+      const response = await axios.get("/api/admin/member", {
         params: { page: page - 1 },
       });
       setBbsList(response.data.content || []); // 응답이 없을 경우 빈 배열 처리
-      setPageSize(response.data.pageSize || 8);
+      setPageSize(response.data.pageSize || 10);
       setTotalCnt(response.data.totalElements);
-      setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error("Error fetching board data:", error);
     }
   };
 
+  const handleDelete = async (id) => {
+    const isConfirmed = window.confirm("정말로 삭제하시겠습니까?");
+    if (!isConfirmed) return;
+
+    if (id) {
+      // 프론트엔드에서 리스트 삭제
+      setBbsList((prev) => prev.filter((item) => item.id !== id));
+      alert("삭제되었습니다.");
+    } else {
+      // 백엔드 API 호출하여 삭제
+      try {
+        const response = await axios.delete(`/api/admin/deletedMember${id}`);
+        if (response.status === 200) {
+          alert("삭제하였습니다.");
+          navigate("/adminuser");
+        }
+      } catch (error) {
+        console.error("deleteNotice error", error);
+        alert("삭제에 실패하였습니다.");
+      }
+    }
+  };
+
   useEffect(() => {
-    getBbsList();
+    getBbsList(page);
   }, [page]);
+
+  const addEmptyRows = (data) => {
+    const rowsWithEmpty = [];
+    data.forEach((item) => {
+      rowsWithEmpty.push({}); // 빈 데이터 행 추가 (공백 행)
+      rowsWithEmpty.push(item); // 데이터 행 추가
+    });
+    return rowsWithEmpty;
+  };
+  const bbsListWithEmptyRows = addEmptyRows(bbsList);
 
   return (
     <Container>
       <ContentWrapper>
         <CommonTable
-          bbsList={bbsList}
+          bbsList={bbsListWithEmptyRows.map((item) => ({
+            ...item,
+            // 삭제 버튼
+            actions: item.id ? (
+              <button onClick={() => handleDelete(item.id)}>삭제</button>
+            ) : null, // 빈 행일 경우 삭제 버튼 없음
+          }))}
           columns={columns}
           linkPrefix={linkValue}
         />
@@ -51,7 +104,6 @@ function OnlineCounsel() {
             setPage={setPage}
             pageSize={pageSize}
             totalCnt={totalCnt}
-            totalPages={totalPages}
           />
         </PaginationBox>
       </ContentWrapper>
@@ -131,4 +183,4 @@ const WriteBtnBox = styled.div`
   margin-top: 30px;
 `;
 
-export default OnlineCounsel;
+export default A_User;

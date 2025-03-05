@@ -13,6 +13,7 @@ function ReviewDetail() {
   const [comments, setComments] = useState([]);
 
   const navigate = useNavigate();
+  console.log("요청 리뷰 아이디:", reviewId);
 
   const getBbsDetail = async () => {
     try {

@@ -7,7 +7,7 @@ const AdminLayout = () => {
   const [selectedMenu, setSelectedMenu] = useState("users");
 
   const menuItems = [
-    { title: "회원 관리", key: "users", path: "users" },
+    { title: "회원 관리", key: "adminuser", path: "adminuser" },
     { title: "공지사항 관리", key: "notice", path: "notice" },
     { title: "온라인예약 관리", key: "reservations", path: "reservations" },
     { title: "온라인상담 관리", key: "onlineCounsel", path: "onlineCounsel" },
@@ -16,7 +16,7 @@ const AdminLayout = () => {
 
   const getHomeTitle = () => {
     const currentItem = menuItems.find((item) => item.key === selectedMenu);
-    return currentItem ? currentItem.title : "관리자 페이지";
+    return currentItem ? currentItem.title : "";
   };
   const linkPrefix1 = "/admin/";
   return (
@@ -85,7 +85,14 @@ const SidebarMenu = styled.ul`
 
 const ContentArea = styled.div`
   flex: 1;
-  padding: 20px;
+
+  width: 1200px;
+  transform: scale(1);
+  h1 {
+    background-color: #111111;
+    font-size: 50px;
+    color: white;
+  }
 `;
 
 export default AdminLayout;
