@@ -16,8 +16,11 @@ import SignIn from "./pages/user/login/SignIn";
 import SignUp from "./pages/user/login/SignUp";
 import FindId from "./pages/user/login/FindId";
 import FindPw from "./pages/user/login/FindPw";
+import MyPage from "./pages/user/mypage/MyPage";
 
 import AdminHome from "./pages/admin/AdminHome";
+import A_User from "./pages/admin/user/A_User";
+import A_UserLayout from "./pages/admin/user/A_UserLayout";
 
 // 공지사항
 import NoticeLayout from "./pages/notice/NoticeLayout";
@@ -39,30 +42,15 @@ import Review from "./pages/reviews/Review";
 import ReviewWrite from "./pages/reviews/ReviewWrite";
 import ReviewDetail from "./pages/reviews/ReviewDetail";
 import ReviewUpdate from "./pages/reviews/ReviewUpdate";
-import AdminUserList from "./pages/admin/user/AdminUserList";
-import AdminReservationList from "./pages/admin/reservation/AdminReservationList";
-
-import MyPage from "./pages/user/mypage/MyPage";
-import UserProfile from "./pages/user/mypage/UserProfile";
-import UserUpdate from "./pages/user/mypage/UserUpdate";
-import ReservationCheck from "./pages/user/mypage/ReservationCheck";
 
 // admin
-import AdminRouter from "./components/AdminRouter";
-import Oauth2 from "./pages/user/login/oauth2";
+import MyPageCheck from "./pages/user/mypage/myPageCheck";
+
 const Router = () => {
   return (
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path="/oauth2" element={<Oauth2 />}></Route>
-        <Route path="/mypage" element={<MyPage />}></Route>
-        <Route path="/mypage/UserProfile" element={<UserProfile />}></Route>
-        <Route path="/mypage/UserUpdate" element={<UserUpdate />}></Route>
-        <Route
-          path="/mypage/ReservationCheck"
-          element={<ReservationCheck />}
-        ></Route>
         <Route path="/" element={<Home />} />
         <Route path="introduce" element={<Introduce />} />
         <Route path="directions" element={<Directions />} />
@@ -75,8 +63,10 @@ const Router = () => {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/findId" element={<FindId />} />
         <Route path="/findPw" element={<FindPw />} />
+        <Route path="/mypage" element={<MyPage />} />
+        <Route path="/mypagecheck" element={<MyPageCheck />} />
 
-        <Route path="notice" element={<NoticeLayout />}>
+        <Route path="/notice" element={<NoticeLayout />}>
           <Route index element={<Notice />} />
           <Route path="write" element={<NoticeWrite />} />
           <Route path=":noticeId" element={<NoticeDetail />} />
@@ -98,13 +88,17 @@ const Router = () => {
         </Route>
 
         <Route path="/admin" element={<AdminHome />}>
+          <Route path="adminuser" element={<A_UserLayout />}>
+            <Route index element={<A_User />} />
+          </Route>
+
           <Route path="notice" element={<NoticeLayout />}>
             <Route index element={<Notice />} />
             <Route path="write" element={<NoticeWrite />} />
             <Route path=":noticeId" element={<NoticeDetail />} />
             <Route path=":noticeId/update" element={<NoticeUpdate />} />
           </Route>
-          <Route path="onlineCounsel" element={<OnlineCounselLayout />}>
+          <Route path="question" element={<OnlineCounselLayout />}>
             <Route index element={<OnlineCounsel />} />
             <Route path="write" element={<OnlineCounselWrite />} />
             <Route path=":questionId" element={<OnlineCounselDetail />} />

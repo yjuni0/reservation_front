@@ -196,7 +196,7 @@ function Home() {
               </div>
             </LinkBox>
           </Link>
-          <Link to="/nonuserreserv">
+          <Link to="/nonuserreserve">
             <LinkBox>
               <div className="totalBox">
                 <div className="title">

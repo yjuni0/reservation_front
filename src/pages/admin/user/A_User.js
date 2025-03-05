@@ -47,26 +47,40 @@ function A_User() {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (memberId) => {
     const isConfirmed = window.confirm("정말로 삭제하시겠습니까?");
     if (!isConfirmed) return;
 
-    if (id) {
-      // 프론트엔드에서 리스트 삭제
-      setBbsList((prev) => prev.filter((item) => item.id !== id));
-      alert("삭제되었습니다.");
-    } else {
-      // 백엔드 API 호출하여 삭제
-      try {
-        const response = await axios.delete(`/api/admin/deletedMember${id}`);
-        if (response.status === 200) {
-          alert("삭제하였습니다.");
-          navigate("/adminuser");
-        }
-      } catch (error) {
-        console.error("deleteNotice error", error);
+    // 리스트에서 삭제
+    setBbsList((prev) => prev.filter((item) => item.memberId !== memberId));
+
+    const token = localStorage.getItem("access_token");
+
+    if (!token) {
+      alert("로그인 정보가 없습니다.");
+      return;
+    }
+
+    try {
+      // 삭제 요청
+      const response = await axios.delete(`/api/delete`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // 인증 토큰을 헤더에 포함
+        },
+      });
+
+      if (response.status === 200) {
+        alert("삭제하였습니다.");
+        navigate("/adminuser"); // 삭제 후 관리 페이지로 리디렉션
+      } else {
         alert("삭제에 실패하였습니다.");
       }
+    } catch (error) {
+      console.error(
+        "Error during deletion:",
+        error.response ? error.response.data : error
+      );
+      alert("삭제에 실패하였습니다.");
     }
   };
 
@@ -86,6 +100,7 @@ function A_User() {
 
   return (
     <Container>
+      s
       <ContentWrapper>
         <CommonTable
           bbsList={bbsListWithEmptyRows.map((item) => ({

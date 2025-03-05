@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 // import AdminHome from "../admin/adminHome";
 import styled from "styled-components";
 import { AuthContext } from "../../context";
+
 // --------------------------------------------------------------------------------------------------------------------
 
 function Header() {
@@ -41,7 +42,7 @@ function Header() {
       submenu: [
         { path: "/userreserv", name: "온라인 예약" },
         { path: "/userreserv", name: "회원 예약" },
-        { path: "#/nonuserreserve", name: "비회원 예약" },
+        { path: "/nonuserreserve", name: "비회원 예약" },
       ],
     },
     {
@@ -170,7 +171,7 @@ function Header() {
               </>
             ) : (
               <>
-                <Link to="/mypage" onClick={handleMyPageClick}>
+                <Link to="/mypagecheck" onClick={handleMyPageClick}>
                   <img src={myIcon} alt="마이페이지" />
                   <LoginButton>마이페이지</LoginButton>
                 </Link>

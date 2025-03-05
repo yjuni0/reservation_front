@@ -1,7 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function NonUserReserve() {
+  const navigate = useNavigate();
+
+  const [name, setName] = useState("");
+  const [phoneNum, setPhoneNum] = useState("");
+
+  const changeNonMemberName = (event) => {
+    setName(event.target.value);
+  };
+
+  const changeNonMemberPhone = (event) => {
+    setPhoneNum(event.target.value);
+  };
+
+  // 예약 등록
+  const createNonMemberReserve = async () => {
+    const req = {
+      name: name,
+      phoneNum: phoneNum,
+    };
+    console.log("보내는 데이터", req);
+
+    await axios
+      .post("/api/nonMember", req)
+      .then((response) => {
+        console.log("비회원 예약 성공: ", response.data);
+        const reserveId = response.data.id;
+        console.log("nonMemberReserveId: ", reserveId);
+
+        alert("비회원 예약이 등록되었습니다. 곧 관리자가 연락드리겠습니다.");
+        navigate("/");
+      })
+      .catch((error) => {
+        console.log("비회원 예약 실패", error);
+      });
+  };
+
   return (
     <Container>
       <ContentWrapper>
@@ -17,7 +55,12 @@ function NonUserReserve() {
               </tr>
               <tr>
                 <td>
-                  <InputField type="text" placeholder="이름" />
+                  <InputField
+                    type="text"
+                    placeholder="이름"
+                    value={name}
+                    onChange={changeNonMemberName}
+                  />
                 </td>
               </tr>
               <tr>
@@ -25,12 +68,19 @@ function NonUserReserve() {
               </tr>
               <tr>
                 <td>
-                  <InputField type="text" placeholder="전화번호" />
+                  <InputField
+                    type="text"
+                    placeholder="전화번호"
+                    value={phoneNum}
+                    onChange={changeNonMemberPhone}
+                  />
                 </td>
               </tr>
               <tr>
                 <td>
-                  <SubmitButton>등록</SubmitButton>
+                  <SubmitButton onClick={createNonMemberReserve}>
+                    등록
+                  </SubmitButton>
                 </td>
               </tr>
             </tbody>

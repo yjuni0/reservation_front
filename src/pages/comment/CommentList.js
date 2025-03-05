@@ -35,7 +35,7 @@ function CommentList(props) {
 
   useEffect(() => {
     getCommentListRef.current = getCommentList;
-    getCommentList(); // 처음에는 첫 페이지의 댓글 목록을 가져옴
+    getCommentList(1); // 처음에는 첫 페이지의 댓글 목록을 가져옴
   }, [reviewId, page]);
 
   return (
@@ -45,7 +45,8 @@ function CommentList(props) {
           {commentList.map((comment, index) => (
             <CommentBox key={index}>
               <Comment
-                obj={comment}
+                reviewId={reviewId}
+                comment={comment}
                 getCommentList={getCommentListRef.current}
               />
             </CommentBox>

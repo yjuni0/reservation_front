@@ -25,7 +25,7 @@ function ReviewWrite() {
       Authorization: `Bearer ${localStorage.getItem("access_token")}`,
     });
     const nick_name = localStorage.getItem("nick_name");
-    console.log("LocalStorage ID:", localStorage.getItem("nick_name"));
+
     // 로그인한 사용자인지 체크
     if (!auth) {
       alert("로그인 한 사용자만 게시글을 작성할 수 있습니다 !");

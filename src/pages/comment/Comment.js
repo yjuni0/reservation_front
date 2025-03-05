@@ -1,26 +1,53 @@
-import React from "react";
+import axios from "axios";
+import React, { useContext, useEffect } from "react";
 import styled from "styled-components";
+import { HttpHeadersContext, AuthContext } from "../../context";
+import { useNavigate } from "react-router-dom";
 
-function Comment({ obj }) {
+function Comment({ reviewId, comment, getCommentList }) {
+  const { headers, setHeaders } = useContext(HttpHeadersContext);
+  const { auth, setAuth } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const commentId = comment.id;
+
+  const deleteComment = async () => {
+    try {
+      const response = await axios.delete(`/api/comment/${commentId}`, {
+        headers: headers,
+      });
+      console.log(response.data);
+      if (response.data.status == 200) {
+        console.log("댓글 삭제 완료");
+      }
+      getCommentList();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+  useEffect(() => {
+    setHeaders({
+      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+    });
+  }, []);
   return (
     <Container>
       <CommentBox>
         <Table>
           <tbody>
             <tr>
-              <Td>{obj.nickName}</Td>
+              <Td>{comment.nickName}</Td>
             </tr>
             <tr>
-              <Td>{obj.content}</Td>
+              <Td>{comment.content}</Td>
             </tr>
             <tr>
-              <Td>{obj.createdDate}</Td>
+              <Td>{comment.createdDate}</Td>
             </tr>
           </tbody>
         </Table>
 
         <BtnBox>
-          <Btn>삭제</Btn>
+          <Btn onClick={deleteComment}>삭제</Btn>
         </BtnBox>
       </CommentBox>
     </Container>

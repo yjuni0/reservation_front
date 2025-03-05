@@ -43,30 +43,19 @@ function SignIn() {
       console.log("Login OK");
       console.log(resp.data);
 
-      alert(resp.data.email + "님, 성공적으로 로그인 되었습니다요");
+      alert(resp.data.nickName + "님, 성공적으로 로그인 되었습니다요");
 
       // JWT 토큰 저장
       localStorage.setItem("access_token", resp.data.token);
-      localStorage.setItem("id", resp.data.email);
+      localStorage.setItem("nick_name", resp.data.nickName);
 
-      setAuth(resp.data.email);
+      setAuth(resp.data.nickName);
       setHeaders({ Authorization: `Bearer ${resp.data.token}` }); // HttpHeadersContext에 Authorization 헤더 저장
 
       navigate("/"); // 로그인 후 홈으로 리다이렉트
-    } catch (err) {
-      console.log("Login failed");
-      console.error("Error Details:", err); // 전체 오류 객체 출력
-
-      // err.response?.data가 객체라면 JSON.stringify로 문자열로 변환하여 출력
-      const errorMessage = err.response?.data
-        ? JSON.stringify(err.response?.data)
-        : "알 수 없는 오류 발생";
-      alert(
-        "로그인 실패! " +
-          (err.response?.data
-            ? JSON.stringify(err.response?.data)
-            : "알 수 없는 오류 발생")
-      );
+    } catch (e) {
+      alert("이메일 또는 비밀번호가 일치하지 않습니다.");
+      console.error("Error Details:"); // 전체 오류 객체 출력
     }
   };
 

@@ -1,6 +1,8 @@
 import { Outlet, Route, Routes } from "react-router-dom";
 import AdminHome from "../pages/admin/AdminHome";
 
+import A_User from "../pages/admin/user/A_User";
+import A_UserLayout from "../pages/admin/user/A_UserLayout";
 // 공지사항
 import NoticeLayout from "../pages/notice/NoticeLayout";
 import Notice from "../pages/notice/Notice";
@@ -21,7 +23,7 @@ import Review from "../pages/reviews/Review";
 import ReviewWrite from "../pages/reviews/ReviewWrite";
 import ReviewDetail from "../pages/reviews/ReviewDetail";
 import ReviewUpdate from "../pages/reviews/ReviewUpdate";
-import AdminUserList from "../pages/admin/user/AdminUserList";
+
 import AdminReservationList from "../pages/admin/reservation/AdminReservationList";
 import AdminLayout from "../pages/admin/AdminHome";
 
@@ -29,6 +31,10 @@ const AdminRouter = () => {
   return (
     <Routes>
       <Route path="/" element={<AdminHome />}>
+        <Route path="adminuser" element={<A_UserLayout />}>
+          <Route index element={<A_User />} />
+        </Route>
+
         <Route path="notice" element={<NoticeLayout />}>
           <Route index element={<Notice />} />
           <Route path="write" element={<NoticeWrite />} />
@@ -38,14 +44,11 @@ const AdminRouter = () => {
           </Route>
         </Route>
 
-        <Route path="onlineCounsel" element={<OnlineCounselLayout />}>
+        <Route path="question" element={<OnlineCounselLayout />}>
           <Route index element={<OnlineCounsel />} />
           <Route path="write" element={<OnlineCounselWrite />} />
-          <Route path=":onlineCounselId" element={<OnlineCounselDetail />} />
-          <Route
-            path=":onlineCounselId/update"
-            element={<OnlineCounselUpdate />}
-          />
+          <Route path=":questionId" element={<OnlineCounselDetail />} />
+          <Route path=":questionId/update" element={<OnlineCounselUpdate />} />
         </Route>
 
         <Route path="review" element={<ReviewLayout />}>

@@ -31,7 +31,9 @@ function ReviewDetail() {
 
   const deleteReview = async () => {
     try {
-      const response = await axios.delete(`/api/review/${reviewId}`);
+      const response = await axios.delete(`/api/review/${reviewId}`, {
+        headers: headers,
+      });
       console.log(response);
       console.log("deleteReview success");
       if (response.status == 200) {
