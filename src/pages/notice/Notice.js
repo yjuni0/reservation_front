@@ -7,6 +7,7 @@ import { jwtDecode } from "jwt-decode"; // jwt-decode 라이브러리 import
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context"; // AuthContext 불러오기
 import WriteGo from "../../components/button/WriteGo";
+import CommnonSearch from "../../components/common/CommnonSearch";
 
 function Notice() {
   const [bbsList, setBbsList] = useState([]);
@@ -72,6 +73,7 @@ function Notice() {
   return (
     <Container>
       <ContentWrapper>
+        <CommnonSearch></CommnonSearch>
         <CommonTable
           bbsList={bbsListWithEmptyRows}
           columns={columns}

@@ -38,13 +38,13 @@ function UserReserv() {
     const fetchPetListAndSlots = async () => {
       try {
         if (headers.Authorization) {
-          const petResponse = await axios.get("/api/pet", { headers });
+          const petResponse = await axios.get("/api/member/pet", { headers });
           setPetList(petResponse.data);
 
           if (selectedDate && selectedDepartment) {
             const formattedDate = selectedDate.toISOString().split("T")[0];
             const slotResponse = await axios.get(
-              `/api/slot?departmentName=${selectedDepartment}&date=${formattedDate}`,
+              `/api/member/slot?departmentName=${selectedDepartment}&date=${formattedDate}`,
               { headers }
             );
             setTimeSlots(slotResponse.data);
@@ -64,7 +64,7 @@ function UserReserv() {
     // selectedPet 또는 selectedTime 변경 시 로그 출력
     if (selectedPet !== null) {
       const selectedPetName = petList[selectedPet];
-      console.log("selectedPetName:", selectedPetName?.name);
+      console.log("selectedPetName:", selectedPetName?.id);
     }
   }, [selectedPet, petList]);
 
@@ -75,7 +75,7 @@ function UserReserv() {
 
       axios
         .get(
-          `/api/slot?departmentName=${selectedDepartment}&date=${formattedDate}`
+          `/api/member/slot?departmentName=${selectedDepartment}&date=${formattedDate}`
         )
         .then((response) => {
           console.log(response.data);
@@ -101,11 +101,12 @@ function UserReserv() {
     const selectedSlotData = timeSlots[selectedTime];
     console.log("Selected Slot ID:", selectedSlotData.id);
     const req = {
-      petName: selectedPetData.name,
+      petId: selectedPetData.id,
       slotId: selectedSlotData.id,
     };
+    console.log("보낸느 데이터",req)
     await axios
-      .post("/api/reservation", req)
+      .post("/api/member/reservation", req, {headers:headers})
       .then((response) => {
         console.log("응답 데이터: ", response.data);
         const reserveId = response.data.id;

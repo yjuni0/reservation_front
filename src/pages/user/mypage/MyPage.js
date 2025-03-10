@@ -36,7 +36,7 @@ function MyPage() {
         {/*1.UserProfile - 회원프로필*/}
         <MyPageButton
           onClick={() => {
-            navigate(`/mypage/UserProfile`, { state: { userData } });
+            navigate(`/userprofile`, { state: { userData } });
           }}
         >
           <Article>
@@ -51,7 +51,7 @@ function MyPage() {
         {/*2.UserUpdate - 화원정보 수정*/}
         <MyPageButton
           onClick={() => {
-            navigate(`/mypage/UserUpdate`, { state: { userData } });
+            navigate(`/userupdate`, { state: { userData } });
           }}
         >
           <Article>
@@ -66,7 +66,7 @@ function MyPage() {
         {/*3.ReservationCheck - 예약확인*/}
         <MyPageButton
           onClick={() => {
-            navigate(`/mypage/ReservationCheck`, { state: { userData } });
+            navigate(`/rervationcheck`, { state: { userData } });
           }}
         >
           <Article>

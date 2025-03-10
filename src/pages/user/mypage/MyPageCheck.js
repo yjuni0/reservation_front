@@ -32,6 +32,7 @@ function MyPageCheck() {
       .then((response) => {
         console.log("응답 데이터", response.data);
         const profile = response.data;
+        navigate("/mypage", { state: { profile } })
       })
       .catch((error) => {
         console.log("error", error);

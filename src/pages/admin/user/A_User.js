@@ -3,41 +3,33 @@ import styled from "styled-components";
 import axios from "axios";
 import CommonTable from "../../../components/common/CommonTable";
 import CustomPagination from "../../../components/common/CustomPagination";
-import { jwtDecode } from "jwt-decode"; // jwt-decode 라이브러리 import
+import { AuthContext, HttpHeadersContext } from "../../../context";
+import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import { HttpHeadersContext } from "../../../context";
 
 function A_User() {
+    const { auth, setAuth } = useContext(AuthContext);
+    const { headers, setHeaders } = useContext(HttpHeadersContext);
   const [bbsList, setBbsList] = useState([]);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalCnt, setTotalCnt] = useState(0);
-  const { headers, setHeaders } = useContext(HttpHeadersContext);
   const token = localStorage.getItem("access_token");
-  useEffect(() => {
-    // 컴포넌트가 렌더링될 때마다 localStorage의 토큰 값으로 headers를 업데이트
-    setHeaders({
-      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-    });
-  }, []);
   const navigate = useNavigate();
   let useRole = null;
   if (token) {
     try {
-      // 토큰 디코딩
-      console.log(token);
       const decodedToken = jwtDecode(token);
-      console.log(decodedToken);
       useRole = decodedToken.roles;
     } catch (e) {
       console.log("토큰 디코딩 오류 : ", e);
     }
   }
-  const linkValue = "member";
+  const linkValue = "adminuser";
   const columns = [
     { label: "No", field: "id" },
     { label: "이메일", field: "email" },
-    { label: "넥네임", field: "nickName" },
+    { label: "닉네임", field: "nickName" },
     { label: "전화번호", field: "phoneNum" },
     { label: "삭제", field: "actions" },
   ];
@@ -45,10 +37,9 @@ function A_User() {
   const getBbsList = async (page) => {
     try {
       const response = await axios.get("/api/admin/member", {
-        params: { page: page - 1 },
-        headers: headers,
+        params: { page: page - 1 }, headers:headers
       });
-      setBbsList(response.data.content || []); // 응답이 없을 경우 빈 배열 처리
+      setBbsList(response.data.content || []);
       setPageSize(response.data.pageSize || 10);
       setTotalCnt(response.data.totalElements);
     } catch (error) {
@@ -60,27 +51,17 @@ function A_User() {
     const isConfirmed = window.confirm("정말로 삭제하시겠습니까?");
     if (!isConfirmed) return;
 
-    // 리스트에서 삭제
-    setBbsList((prev) => prev.filter((item) => item.memberId !== memberId));
-
-    const token = localStorage.getItem("access_token");
-
-    if (!token) {
-      alert("로그인 정보가 없습니다.");
-      return;
-    }
-
     try {
-      // 삭제 요청 (memberId 동적으로 URL에 포함)
       const response = await axios.delete(`/api/admin/member/${memberId}`, {
         headers: {
-          Authorization: `Bearer ${token}`, // 인증 토큰을 헤더에 포함
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (response.status === 200) {
         alert("삭제하였습니다.");
-        navigate("/admin/member"); // 삭제 후 관리 페이지로 리디렉션
+        // 목록 페이지로 이동
+        navigate("/admin/adminuser");
       } else {
         alert("삭제에 실패하였습니다.");
       }
@@ -99,13 +80,18 @@ function A_User() {
 
   const addEmptyRows = (data) => {
     const rowsWithEmpty = [];
-    data.forEach((item) => {
-      rowsWithEmpty.push({}); // 빈 데이터 행 추가 (공백 행)
-      rowsWithEmpty.push(item); // 데이터 행 추가
+    data.forEach((item, index) => {
+      rowsWithEmpty.push({ key: `empty-${index * 2}` }); // 빈 데이터 행 추가 (공백 행)
+      rowsWithEmpty.push({ ...item, key: `item-${index * 2 + 1}` }); // 데이터 행 추가
     });
     return rowsWithEmpty;
   };
+
   const bbsListWithEmptyRows = addEmptyRows(bbsList);
+
+  const handleEmailClick = (memberId) => {
+    navigate(`/admin/adminuser/member/${memberId}`);
+  };
 
   return (
     <Container>
@@ -113,10 +99,17 @@ function A_User() {
         <CommonTable
           bbsList={bbsListWithEmptyRows.map((item) => ({
             ...item,
-            // 삭제 버튼
+            email: item.email ? (
+              <span
+                style={{ color: "blue", cursor: "pointer" }}
+                onClick={() => handleEmailClick(item.id)}
+              >
+                {item.email}
+              </span>
+            ) : null,
             actions: item.id ? (
               <button onClick={() => handleDelete(item.id)}>삭제</button>
-            ) : null, // 빈 행일 경우 삭제 버튼 없음
+            ) : null,
           }))}
           columns={columns}
           linkPrefix={linkValue}
@@ -133,6 +126,7 @@ function A_User() {
     </Container>
   );
 }
+
 // 스타일 컴포넌트들
 const Container = styled.div`
   height: 100%;

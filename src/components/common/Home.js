@@ -30,8 +30,8 @@ function Home() {
       const response = await axios.get("/api/redis/notices", {
         params: { page: page - 1 },
       });
-      console.log(response.data.content);
-      setNoticeList(response.data.content);
+      console.log(response.data);
+      setNoticeList(response.data);
 
       console.log("notice seccess");
       console.log(response);
@@ -45,8 +45,8 @@ function Home() {
       const response = await axios.get("/api/redis/reviews", {
         params: { page: page - 1 },
       });
-      console.log(response.data.content);
-      setReviewList(response.data.content);
+      console.log(response.data);
+      setReviewList(response.data);
 
       console.log("review seccess");
       console.log(response);
@@ -239,22 +239,15 @@ function Home() {
                   </Link>
                 </div>
               </BoardTitleBox>
-              <BoardContentBox>
-                <BoardContentTitle>강아지 경련 진료 후기</BoardContentTitle>
-                <BoardContent>(2/17) 홍길동 보호자님</BoardContent>
-              </BoardContentBox>
-              <BoardContentBox>
-                <BoardContentTitle>강아지 경련 진료 후기</BoardContentTitle>
-                <BoardContent>(2/17) 홍길동 보호자님</BoardContent>
-              </BoardContentBox>
-              <BoardContentBox>
-                <BoardContentTitle>강아지 경련 진료 후기</BoardContentTitle>
-                <BoardContent>(2/17) 홍길동 보호자님</BoardContent>
-              </BoardContentBox>
-              <BoardContentBox>
-                <BoardContentTitle>강아지 경련 진료 후기</BoardContentTitle>
-                <BoardContent>(2/17) 홍길동 보호자님</BoardContent>
-              </BoardContentBox>
+              {reviewList.map((review) => (
+                <BoardContentBox key={review.id}>
+                  <BoardContentTitle>{review.title}</BoardContentTitle>
+                  <BoardContent>{review.content}</BoardContent>
+                  <BoardContent>
+                    {review.createdDate.substring(0, 10)}
+                  </BoardContent>
+                </BoardContentBox>
+              ))}
             </BoardBox>
 
             <BoardBox>
@@ -273,38 +266,16 @@ function Home() {
                   </Link>
                 </div>
               </BoardTitleBox>
-              <BoardContentBox>
-                {/* {noticeList.map((notice) => (
-                  <BoardContentBox key={notice.id}>
-                    <BoardContentTitle>{notice.title}</BoardContentTitle>
-                    <BoardContent>{notice.content }</BoardContent>
 
-                  </BoardContentBox>
-                  
-                ))} */}
-                <BoardContentTitle>
-                  1월 27일(월) 임시공휴일 정상 진료 안내
-                </BoardContentTitle>
-                <BoardContent>안녕하십니까?...</BoardContent>
-              </BoardContentBox>
-              <BoardContentBox>
-                <BoardContentTitle>
-                  1월 27일(월) 임시공휴일 정상 진료 안내
-                </BoardContentTitle>
-                <BoardContent>안녕하십니까?...</BoardContent>
-              </BoardContentBox>
-              <BoardContentBox>
-                <BoardContentTitle>
-                  1월 27일(월) 임시공휴일 정상 진료 안내
-                </BoardContentTitle>
-                <BoardContent>안녕하십니까?...</BoardContent>
-              </BoardContentBox>
-              <BoardContentBox>
-                <BoardContentTitle>
-                  1월 27일(월) 임시공휴일 정상 진료 안내
-                </BoardContentTitle>
-                <BoardContent>안녕하십니까?...</BoardContent>
-              </BoardContentBox>
+              {noticeList.map((notice) => (
+                <BoardContentBox key={notice.id}>
+                  <BoardContentTitle>{notice.title}</BoardContentTitle>
+                  <BoardContent>{notice.content}</BoardContent>
+                  <BoardContent>
+                    {notice.createdDate.substring(0, 10)}
+                  </BoardContent>
+                </BoardContentBox>
+              ))}
             </BoardBox>
           </SectionC>
         </ContentWrapper>

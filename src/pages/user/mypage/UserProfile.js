@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
@@ -12,6 +12,10 @@ function UserProfile() {
   const goToPage = (path) => {
     navigate(path);
   };
+
+
+
+
 
   return (
     <ProfileContainer>

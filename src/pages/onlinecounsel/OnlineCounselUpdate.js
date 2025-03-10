@@ -9,11 +9,14 @@ function OnlineCounselUpdate() {
   const location = useLocation();
   const { bbs } = location.state || {}; // location.state에서 bbs가 없을 수 있음
   const navigate = useNavigate();
-  const [pageNumber, setPageNumber] = useState(1);
+  const [pageNumber, setPageNumber] = useState(2);
   // 상태값을 useState로 관리하며 기본값은 빈 문자열로 설정
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const questionId = bbs?.id;
+  const questionId = bbs?.id; // bbs가 없으면 null로 설정
+
+  
+
   // bbs 데이터가 올 때 useEffect로 상태 설정
   useEffect(() => {
     console.log(location.state); // state 확인
@@ -62,7 +65,7 @@ function OnlineCounselUpdate() {
 
         <BottomBox>
           <Update
-            noticeId={questionId}
+            questionId={questionId}
             navigate={navigate}
             title={title}
             content={content}

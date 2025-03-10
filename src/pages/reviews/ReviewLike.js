@@ -40,7 +40,7 @@ function ReviewLike() {
 
     try {
       const response = await axios
-      .post(`/api/review/${reviewId}/like/toggle`, req, { headers:headers });
+      .post(`/member/review/${reviewId}/like/toggle`, req, { headers:headers });
 
       // 서버 응답에 따라 좋아요 상태 업데이트
       if (response.status === 200) {
@@ -55,7 +55,7 @@ function ReviewLike() {
   useEffect(() => {
     const checkLikeStatus = async () => {
       try {
-        const response = await axios.get(`/api/review/${reviewId}/like/status`, {
+        const response = await axios.get(`/member/review/${reviewId}/like/status`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           },

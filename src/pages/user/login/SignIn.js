@@ -224,7 +224,7 @@ const InputBox = styled.div`
 
     //
     font-size: 14.2px;
-    color: #e6e6e6;
+    color: #0d326f;
     font-weight: 400;
   }
 

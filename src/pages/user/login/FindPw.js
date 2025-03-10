@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+
 import styled from "styled-components";
-import logo_b from "../../../assets/imgs/logo_b.png";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function FindPassword() {
   const [email, setEmail] = useState("");
@@ -9,81 +10,104 @@ function FindPassword() {
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isCodeVerified, setIsCodeVerified] = useState(false);
   const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
+  const [newPasswordCheck, setNewPasswordCheck] = useState("");
+  const navigate = useNavigate();
+  const handleSendCode = async () => {
+    try {
+      await axios.post("/api/findPw", { email });
+      alert("인증 메일이 전송되었습니다.");
+      setIsCodeSent(true);
+    } catch (error) {
+      alert(error.response?.data || "이메일 전송에 실패했습니다.");
+    }
   };
-
-  const handleSendCode = () => {
-    setIsCodeSent(true);
-  };
-
-  const handleCodeChange = (e) => {
-    setVerificationCode(e.target.value);
-  };
-
-  const handleVerifyCode = () => {
-    if (verificationCode === "123456") {
+  const handleVerifyCode = async () => {
+    console.log("Email:", email);
+    console.log("Verification Code:", verificationCode); // 입력된 인증코드 확인
+    try {
+      await axios.post("api/findPw/verify", { email, code: verificationCode });
       alert("인증번호가 확인되었습니다.");
       setIsCodeVerified(true);
-    } else {
-      alert("인증번호가 잘못되었습니다.");
+      console.log("isCodeVerified 상태:", isCodeVerified); // 디버깅용 로그
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data || "잘못된 인증번호입니다.");
     }
   };
-
-  const handlePasswordChange = (e) => {
-    setNewPassword(e.target.value);
-  };
-
-  const handleConfirmPasswordChange = (e) => {
-    setConfirmPassword(e.target.value);
-  };
-
-  const handleSubmit = () => {
-    if (newPassword === confirmPassword) {
-      alert("비밀번호가 변경되었습니다.");
-    } else {
+  const handleSubmit = async () => {
+    if (newPassword !== newPasswordCheck) {
       alert("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      alert("비밀번호는 8자 이상이어야 합니다.");
+      return;
+    }
+
+    if (!/[A-Za-z]/.test(newPassword) || !/\d/.test(newPassword)) {
+      alert("비밀번호는 문자와 숫자를 포함해야 합니다.");
+      return;
+    }
+
+    try {
+      await axios.post("api/findPw/resetPw", {
+        email,
+        code: verificationCode,
+        newPassword,
+        newPasswordCheck,
+      });
+      alert("비밀번호가 성공적으로 변경되었습니다.");
+      navigate("/signIn"); // 로그인 화면으로 이동
+    } catch (error) {
+      alert(error.response?.data || "비밀번호 변경에 실패했습니다.");
     }
   };
+  useEffect(() => {
+    if (isCodeVerified) {
+      // 인증번호가 확인되었을 때 비밀번호 창을 보여주는 로직
+      console.log("isCodeVerified 상태:", isCodeVerified);
+    }
+  }, [isCodeVerified]);
 
   return (
     <FindPasswordContainer>
+      <FindPwBox>
+        <FindPwTitle>비밀번호 찾기</FindPwTitle>
+        <FindPwSub>
+          이메일을 인증하면 새로운 비밀번호를 입력 할 수 있습니다.
+        </FindPwSub>
+      </FindPwBox>
+
       <FindPasswordSection>
-        <FindLogo>
-          <img src={logo_b} alt="Logo" />
-        </FindLogo>
-
-        <Title>
-          <h4>비밀번호 찾기</h4>
-        </Title>
-
+        <div className="logo_t">응급 24시 하이펫 반려동물 전문 메디컬센터</div>
         <FindInput>
           <div>
             <input
               type="email"
               placeholder="이메일"
               value={email}
-              onChange={handleEmailChange}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={isCodeSent} // 발송 후 이메일 입력 비활성화
             />
-            <button onClick={handleSendCode}>발송</button>
+            {!isCodeSent && <button onClick={handleSendCode}>발송</button>}
           </div>
         </FindInput>
 
-        {isCodeSent && (
+        {isCodeSent && !isCodeVerified && (
           <VerificationSection>
             <div>
               <input
                 type="text"
                 placeholder="인증번호"
                 value={verificationCode}
-                onChange={handleCodeChange}
+                onChange={(e) => setVerificationCode(e.target.value)}
               />
               <button onClick={handleVerifyCode}>인증번호 확인</button>
             </div>
           </VerificationSection>
         )}
+
         {isCodeVerified && (
           <PasswordSection>
             <div>
@@ -91,13 +115,13 @@ function FindPassword() {
                 type="password"
                 placeholder="새 비밀번호"
                 value={newPassword}
-                onChange={handlePasswordChange}
+                onChange={(e) => setNewPassword(e.target.value)}
               />
               <input
                 type="password"
                 placeholder="새 비밀번호 확인"
-                value={confirmPassword}
-                onChange={handleConfirmPasswordChange}
+                value={newPasswordCheck}
+                onChange={(e) => setNewPasswordCheck(e.target.value)}
               />
             </div>
           </PasswordSection>
@@ -124,164 +148,227 @@ const FindPasswordContainer = styled.div`
   align-items: center;
 `;
 
-const FindPasswordSection = styled.div`
-  margin: auto;
-  margin-top: 200px;
+const FindPwBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 30px;
-  width: 600px;
-  background-color: #f4f4f4;
-  padding-bottom: 40px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-
-  margin-bottom: 200px;
+  justify-content: center;
+  height: 20vh;
+  pointer-events: none;
+  margin-top: 30px;
+  margin-bottom: 30px;
 `;
 
-const FindLogo = styled.div`
-  justify-content: center;
-  display: flex;
-  align-items: center;
-  width: 600px;
-  height: 40px;
-  background-color: #f4f4f4;
-  margin-bottom: 30px;
-  img {
-    width: 145px;
-    height: 35px;
-  }
+const FindPwTitle = styled.h1`
+  font-weight: 700;
+  line-height: 1.3em;
+  font-size: 42px;
+  color: #111;
 `;
 
-const Title = styled.div`
-  justify-content: center;
-  align-items: center;
+const FindPwSub = styled.p`
+  display: block;
+  margin-top: 1.5em;
+  color: #888888;
+  font-size: 14px;
+  text-align: center;
+`;
+
+const FindPasswordSection = styled.div`
+  max-width: 1280px;
+  background-color: #f5f7f9;
+  height: 600px;
+  margin: auto;
   display: flex;
-  width: 600px;
-  height: 40px;
-  margin-bottom: 30px;
-  h4 {
-    font-size: 36px;
-    color: #111111;
-    font-weight: bold;
+  flex-direction: column;
+  align-items: center;
+  padding: 65px 0px;
+  width: 800px;
+
+  .logo_t {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0d326f;
+    text-align: center;
+    //font-family: "Montserrat", serif;
   }
 `;
 
 const FindInput = styled.div`
-  width: 600px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 10px;
-  justify-content: center;
-  background-color: #f4f4f4;
-  position: relative;
-  div {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+ margin-top: 60px;
+  width: 450px;
+  box-sizing: border-box;
+  text-align: center;
+  
+
   input {
-    font-family: "Noto Sans KR", serif;
+    width: 450px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 32px;
+    border-radius: 5px;
+    border: 1.5px solid #e0e0e0;
+    background-color: #fff;
     outline: none;
-    font-weight: 300;
-    border: none;
-    padding-left: 20px;
-    font-size: 20px;
-    width: 460px;
-    height: 60px;
-    margin: 0 auto;
+
+    //
+    font-size: 14.2px;
+    color:  #0D326F;
+    font-weight: 400;
   }
-  button {
-    right: 90px;
-    position: absolute;
-    background-color: #f4f4f4;
-    color: #111111;
-    border: none;
-    padding: 10px 10px;
-    font-size: 16px;
-    cursor: pointer;
-  }
+
+  button{
+   margin-top: 60px;
+   width: 450px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+  border-radius: 5px;
+  border: none;
+  background-color: #0D326F;
+  outline: none;
+  
+  color: #fff;
+  font-weight: 500;
+  font-size: 17px;
+  margin-bottom: 85px;
+  text-align: center;
+  
+  &:hover{
+    border: 1px solid #FFA228;
+    background-color: #FFA228;
+  };
 `;
 
 const VerificationSection = styled.div`
-  width: 600px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 10px;
-  justify-content: center;
-  background-color: #f4f4f4;
-  position: relative;
-  div {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+  margin-top: 60px;
+  width: 450px;
+  box-sizing: border-box;
+  text-align: center;
+  
+
   input {
-    font-family: "Noto Sans KR", serif;
+    width: 450px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 32px;
+    border-radius: 5px;
+    border: 1.5px solid #e0e0e0;
+    background-color: #fff;
     outline: none;
-    font-weight: 300;
-    border: none;
-    padding-left: 20px;
-    font-size: 20px;
-    width: 460px;
-    height: 60px;
-    margin: 0 auto;
+
+    //
+    font-size: 14.2px;
+    color:  #0D326F;
+    font-weight: 400;
   }
-  button {
-    right: 90px;
-    position: absolute;
-    background-color: #f4f4f4;
-    color: #111111;
-    border: none;
-    padding: 10px 10px;
-    font-size: 16px;
-    cursor: pointer;
-  }
+
+  button{
+   margin-top: 60px;
+   width: 450px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+  border-radius: 5px;
+  border: none;
+  background-color: #0D326F;
+  outline: none;
+  
+  color: #fff;
+  font-weight: 500;
+  font-size: 17px;
+  margin-bottom: 85px;
+  text-align: center;
+  
+  &:hover{
+    border: 1px solid #FFA228;
+    background-color: #FFA228;
+  };
 `;
 
 const PasswordSection = styled.div`
-  width: 600px;
-  margin-top: 20px;
-  div {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
+  margin-top: 60px;
+  width: 450px;
+  box-sizing: border-box;
+  text-align: center;
+  
+
   input {
-    font-family: "Noto Sans KR", serif;
+  margin-bottom:15px;
+    width: 450px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 32px;
+    border-radius: 5px;
+    border: 1.5px solid #e0e0e0;
+    background-color: #fff;
     outline: none;
-    font-weight: 300;
-    border: none;
-    padding-left: 20px;
-    font-size: 20px;
-    width: 460px;
-    height: 60px;
-    margin: 0 auto;
+
+    //
+    font-size: 14.2px;
+    color:  #0D326F;
+    font-weight: 400;
   }
+    
+
+  button{
+   margin-top: 60px;
+   width: 450px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+  border-radius: 5px;
+  border: none;
+  background-color: #0D326F;
+  outline: none;
+  
+  color: #fff;
+  font-weight: 500;
+  font-size: 17px;
+  margin-bottom: 85px;
+  text-align: center;
+  
+  &:hover{
+    border: 1px solid #FFA228;
+    background-color: #FFA228;
+  };
 `;
 
 const CheckBox = styled.div`
-  justify-content: center;
-  align-items: center;
+  margin-top: 30px;
   display: flex;
-  width: 600px;
-  height: 60px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  justify-content: center;
+  width: 450px;
+
   button {
-    font-size: 20px;
-    font-weight: 700;
-    width: 460px;
-    height: 60px;
-    background-color: #111111;
+    width: 100%;
+    height: 54px;
+    border-radius: 5px;
+    border: none;
+    background-color: #0d326f;
     color: #fff;
+    font-weight: 500;
+    font-size: 17px;
+    text-align: center;
+    outline: none;
+    cursor: pointer;
+
+    &:hover {
+      border: 1px solid #ffa228;
+      background-color: #ffa228;
+    }
   }
 `;
 

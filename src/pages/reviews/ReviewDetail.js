@@ -8,12 +8,12 @@ import List from "../../components/button/List";
 import CommentList from "../comment/CommentList";
 import CommentWrite from "../comment/CommentWrite";
 import UpdateGo from "../../components/button/UpdateGo";
+import ReviewLike from "../../pages/reviews/ReviewLike";
 
 function ReviewDetail() {
   const { headers, setHeaders } = useContext(HttpHeadersContext);
   const [review, setReview] = useState({});
   const { reviewId } = useParams();
-  const { member } = useContext(AuthContext); // AuthContext에서 member 객체 가져오기
   const navigate = useNavigate();
   const [comments, setComments] = useState([]);
   const [postType, setPostType] = useState(3);
@@ -55,6 +55,7 @@ function ReviewDetail() {
             </tbody>
           </Table>
         </TableBox>
+        <ReviewLike></ReviewLike>
 
         <CommentList reviewId={reviewId} comments={comments} />
 

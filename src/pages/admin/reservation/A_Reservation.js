@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import CommonTable from "../../../components/common/CommonTable";
 import CustomPagination from "../../../components/common/CustomPagination";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate, Link } from "react-router-dom";
+import { AuthContext, HttpHeadersContext } from "../../../context";
 
 const A_Reservation = () => {
   const [bbsList, setBbsList] = useState([]);
@@ -14,7 +15,10 @@ const A_Reservation = () => {
   const navigate = useNavigate();
   const [linkValue, setLinkValue] = useState("/a_reservation"); // linkValue 상태 추가
   const token = localStorage.getItem("access_token");
+    const { auth, setAuth } = useContext(AuthContext);
+    const { headers, setHeaders } = useContext(HttpHeadersContext);
   let useRole = null;
+  
 
   if (token) {
     try {
@@ -24,6 +28,7 @@ const A_Reservation = () => {
       console.error("토큰 디코딩 오류: ", e);
     }
   }
+  console.log(useRole)
 
   const columns = [
     { label: "No", field: "id" },
@@ -37,7 +42,7 @@ const A_Reservation = () => {
   const getBbsList = async (page) => {
     try {
       const response = await axios.get("/api/admin/reservation", {
-        params: { page: page - 1 }, // Spring pageable 처리
+        params: { page: page - 1 },headers // Spring pageable 처리
       });
       setBbsList(response.data.content || []);
       setPageSize(response.data.pageSize || 8);

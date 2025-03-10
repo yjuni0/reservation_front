@@ -5,9 +5,7 @@ import DaumPostcode from "react-daum-postcode";
 import { useNavigate } from "react-router-dom";
 
 function SignUp() {
-  const [forms, setForms] = useState([
-    { petName: "", breed: "", age: "" },
-  ]);
+  const [forms, setForms] = useState([{ petName: "", breed: "", age: "" }]);
   const [hasPet, setHasPet] = useState(true); // 반려동물 유무 상태 추가
 
   const addForm = () => {
@@ -24,7 +22,6 @@ function SignUp() {
     const value = e.target.value;
     setForms(
       forms.map((form) => (form.id === id ? { ...form, [field]: value } : form))
-      
     );
     console.log("변경된 forms:", forms); // ✅ 상태 업데이트 확인
   };
@@ -39,6 +36,7 @@ function SignUp() {
   const [passwordCheckError, setPasswordCheckError] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   //하이픈 자동
   const [phoneNum, setPhoneNum] = useState("");
@@ -97,19 +95,35 @@ function SignUp() {
 
   const handleSendVerificationEmail = async () => {
     if (emailError) {
-      return; // 이메일 형식이 잘못되었으면 전송하지 않음
+      return; // 이메일 형식이 잘못되었으면 실행 안 함
     }
+
+    setIsLoading(true); // 로딩 시작
 
     try {
-      const response = await axios.post("/api/email/send", null, {
+      // 🔹 1. 이메일 중복 체크
+      await axios.get("/api/checkEmail", { params: { email } });
+
+      // 🔹 2. 중복이 아니면 인증 메일 전송
+      const sendResponse = await axios.post("/api/email/send", null, {
         params: { receiver: email },
       });
-      setMessage(response.data);
+
+      setMessage(sendResponse.data); // 성공 메시지 표시
     } catch (error) {
-      setMessage("메일 전송 실패");
+      if (error.response && error.response.status === 400) {
+        console.error("메일 전송 실패:", error);
+        setMessage("메일 전송 실패");
+      } else {
+        console.log("이미 사용 중인 이메일 주소입니다.");
+        alert("이미 사용 중인 이메일 주소입니다.");
+        setMessage("이미 사용 중인 이메일 주소입니다.");
+      }
+    } finally {
+      setIsLoading(false); // 로딩 종료
     }
   };
-
+  // ---------------------------------------------------------
   const handleVerifyCode = async () => {
     if (codeError || !code) {
       return; // 코드가 없거나 형식에 오류가 있으면 전송하지 않음
@@ -117,9 +131,12 @@ function SignUp() {
 
     try {
       const response = await axios.post("/api/email/verify", null, {
-        params: { receiver: email, code: code },
+        params: { receiver: email, code: code }, // 사용자가 입력한 코드 검증
       });
-      setMessage(response.data);
+
+      if (response.status === 200) {
+        setMessage("인증이 완료되었습니다.");
+      }
     } catch (error) {
       setMessage("인증 코드 확인 실패");
     }
@@ -171,13 +188,9 @@ function SignUp() {
     setBirth(e.target.value);
   };
 
-  const handlePhoneNumChange = (e) => {
-    setPhoneNum(e.target.value);
-  };
   const handleSubmit = async () => {
-    console.log("버튼 클릭됨");
     if (passwordError || passwordCheckError) {
-      
+      alert("비밀번호가 유효하지 않습니다.");
     }
     if (
       emailError ||
@@ -194,9 +207,20 @@ function SignUp() {
       !birth ||
       !phoneNum
     ) {
-      
-    }
+      let missingFields = [];
 
+      if (!email || emailError) missingFields.push("이메일");
+      if (!password || passwordError) missingFields.push("비밀번호");
+      if (!passwordCheck || passwordCheckError)
+        missingFields.push("비밀번호 확인");
+      if (!nickName || nickNameError) missingFields.push("닉네임");
+      if (!name) missingFields.push("이름");
+      if (!addr) missingFields.push("주소");
+      if (!birth) missingFields.push("생년월일");
+      if (!phoneNum) missingFields.push("전화번호");
+
+      alert(`${missingFields.join(", ")}을(를) 모두 입력해주세요.`);
+    }
     const memberData = {
       email,
       password: password,
@@ -206,20 +230,18 @@ function SignUp() {
       birth,
       phoneNum,
       pets: hasPet
-      ? forms.map((form) => ({
-        name: form.petName,  // ✅ 필드명 변경 (petName → name)
-        breed: form.breed,   // ✅ breed는 그대로
-        age: parseInt(form.age, 10)  // ✅ 문자열을 숫자로 변환
-    }))
+        ? forms.map((form) => ({
+            name: form.petName, // ✅ 필드명 변경 (petName → name)
+            breed: form.breed, // ✅ breed는 그대로
+            age: parseInt(form.age, 10), // ✅ 문자열을 숫자로 변환
+          }))
         : [], // hasPet 상태에 따라 pets 정보 포함 여부 결정
-
-      };
-      console.log("보내는데이처:", memberData);
+    };
+    console.log("보내는데이처:", memberData);
 
     try {
       const response = await axios.post("/api/register", memberData);
       console.log("회원가입 성공:", response.data); // 성공 로그 추가
-      
 
       navigate("/signIn");
     } catch (error) {

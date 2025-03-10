@@ -42,121 +42,79 @@ function NonUserReserve() {
 
   return (
     <Container>
-      <ContentWrapper>
-        <Title>
-          <h1>비회원 예약</h1>
-        </Title>
-
-        <TableBox>
-          <Table>
-            <tbody>
-              <tr>
-                <td>이름</td>
-              </tr>
-              <tr>
-                <td>
-                  <InputField
-                    type="text"
-                    placeholder="이름"
-                    value={name}
-                    onChange={changeNonMemberName}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>전화번호</td>
-              </tr>
-              <tr>
-                <td>
-                  <InputField
-                    type="text"
-                    placeholder="전화번호"
-                    value={phoneNum}
-                    onChange={changeNonMemberPhone}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <SubmitButton onClick={createNonMemberReserve}>
-                    등록
-                  </SubmitButton>
-                </td>
-              </tr>
-            </tbody>
-          </Table>
-        </TableBox>
-      </ContentWrapper>
+      <Title>비회원 예약</Title>
+      <Form>
+        <InputField
+          type="text"
+          placeholder="이름을 입력해주세요."
+          value={name}
+          onChange={changeNonMemberName}
+        />
+        <InputField
+          type="text"
+          placeholder="전화번호를 입력해주세요."
+          value={phoneNum}
+          onChange={changeNonMemberPhone}
+        />
+        <SubmitButton onClick={createNonMemberReserve}>예약하기</SubmitButton>
+      </Form>
     </Container>
   );
 }
 
 // 전체 컨테이너
 const Container = styled.div`
-  width: 100%;
-  max-width: 1920px;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-`;
-
-// 내부 콘텐츠
-const ContentWrapper = styled.div`
-  width: 100%;
-  max-width: 1280px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-`;
-
-//제목 섹션
-const Title = styled.div`
-  margin-top: 100px;
-  width: 100%;
-  text-align: left;
-`;
-
-//테이블 박스
-const TableBox = styled.div`
-  width: 100%;
-  margin-bottom: 20px;
-  display: flex;
   justify-content: center;
+  height: 100vh;
+  background-color: #f8f9fa;
 `;
 
-//테이블
-const Table = styled.table`
-  width: 60%;
-  height: 400px;
-  border: 1px solid black;
-  border-radius: 15px;
-  text-align: center;
-  padding: 10px;
+// 제목
+const Title = styled.h1`
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 25px;
 `;
 
-//입력 필드
+// 폼 스타일
+const Form = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: white;
+  padding: 50px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 500px;
+`;
+
+// 입력 필드
 const InputField = styled.input`
   width: 100%;
-  height: 40px;
-  padding: 5px;
+  padding: 14px;
+  margin-bottom: 12px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 6px;
+  font-size: 18px;
 `;
 
 // 버튼 스타일
 const SubmitButton = styled.button`
-  padding: 10px 20px;
+  width: 100%;
+  padding: 14px;
   border: none;
-  border-radius: 5px;
-  background-color: #007bff;
+  border-radius: 6px;
+  background-color: #002f6c;
   color: white;
+  font-size: 18px;
   cursor: pointer;
-  margin-top: 10px;
+  transition: background 0.3s;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: #001f4d;
   }
 `;
 

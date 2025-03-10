@@ -13,15 +13,13 @@ import { AuthContext } from "../../context";
 // --------------------------------------------------------------------------------------------------------------------
 
 function Header() {
+  
   const navItems = [
-    {
-      name: "홈",
-      path: "/",
-    },
+
     {
       name: "병원 소개",
       submenu: [
-        { path: "/home", name: "병원 소개" },
+        { path: "/introduce", name: "병원 소개" },
         { path: "/introduce", name: "개요" },
         { path: "/directions", name: "오시는 길" },
         { path: "/department", name: "진료과 소개" },
@@ -41,16 +39,16 @@ function Header() {
       submenu: [
         { path: "/userreserv", name: "온라인 예약" },
         { path: "/userreserv", name: "회원 예약" },
-        { path: "#/nonuserreserve", name: "비회원 예약" },
+        { path: "/nonuserreserve", name: "비회원 예약" },
       ],
     },
     {
       name: "온라인상담",
-      path: "/onlineCounsel",
+      path: "/question",
       submenu: [
-        { path: "/onlineCounsel", name: "온라인 상담" },
-        { path: "/onlineCounsel", name: "목록" },
-        { path: "/onlineCounsel", name: "관리자" },
+        { path: "/question", name: "온라인 상담" },
+        { path: "/question", name: "목록" },
+        { path: "/question", name: "관리자" },
       ],
     },
 
@@ -69,13 +67,22 @@ function Header() {
   const { auth, setAuth } = useContext(AuthContext);
   const token = localStorage.getItem("access_token");
 
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      setAuth(true); // 토큰이 있으면 로그인 상태로 설정
+    } else {
+      setAuth(false); // 토큰이 없으면 로그인하지 않은 상태로 설정
+    }
+  }, [setAuth]);
+
   let useRole = null;
   if (token) {
     try {
       // 토큰 디코딩
-      console.log(token);
+
       const decodedToken = jwtDecode(token);
-      console.log(decodedToken);
+
       useRole = decodedToken.roles;
     } catch (e) {
       console.log("토큰 디코딩 오류 : ", e);
@@ -163,14 +170,14 @@ function Header() {
           <LoginBox>
             {useRole === "ROLE_ADMIN" ? (
               <>
-                <Link to="/admin" onClick={handleAdminPageClick}>
+                <Link to="/admin/adminuser" onClick={handleAdminPageClick}>
                   <img src={myIcon} alt="관리자페이지" />
                   <LoginButton>관리자</LoginButton>
                 </Link>
               </>
             ) : (
               <>
-                <Link to="/mypage/Check" onClick={handleMyPageClick}>
+                <Link to="/mypagecheck" onClick={handleMyPageClick}>
                   <img src={myIcon} alt="마이페이지" />
                   <LoginButton>마이페이지</LoginButton>
                 </Link>
@@ -190,10 +197,11 @@ function Header() {
             )}
           </LoginBox>
           <SearchBox>
-            <Link to="/">
+            
               <input type="search" placeholder="검색어를 입력해주세요."></input>
+              <Link to="/">
               <img src={searchIcon} />
-              <LoginButton></LoginButton>
+             
             </Link>
           </SearchBox>
         </HederSectionB>

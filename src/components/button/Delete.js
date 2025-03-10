@@ -32,7 +32,7 @@ function Delete() {
       // 3️⃣ 리뷰 삭제
       else if (location.pathname.includes("/review/")) {
         const isAdmin = location.pathname.includes("/admin");
-        apiUrl = `/api/review/${reviewId}`;
+        apiUrl = `/api/member/review/${reviewId}`;
         redirectUrl = isAdmin ? "/admin/review" : "/review";
       }
 
@@ -72,6 +72,7 @@ const Button = styled.button`
   margin-left: 10px;
   background-color: #000; /* 검정색 배경 */
   color: white;
+  margin-bottom: 50px;
 
   &:hover {
     background-color: #333; /* hover 시 더 어두운 검정색 */

@@ -17,6 +17,11 @@ import SignUp from "./pages/user/login/SignUp";
 import FindId from "./pages/user/login/FindId";
 import FindPw from "./pages/user/login/FindPw";
 import MyPage from "./pages/user/mypage/MyPage";
+import MyPageCheck from "./pages/user/mypage/MyPageCheck";
+import UserProfile from "./pages/user/mypage/UserProfile";
+import UserUpdate from "./pages/user/mypage/UserUpdate";
+import ReservationCheck from "./pages/user/mypage/ReservationCheck";
+import ReserveationDetail from "./pages/user/mypage/ReserveationDetail";
 
 import AdminHome from "./pages/admin/AdminHome";
 import A_User from "./pages/admin/user/A_User";
@@ -46,8 +51,8 @@ import ReviewDetail from "./pages/reviews/ReviewDetail";
 import ReviewUpdate from "./pages/reviews/ReviewUpdate";
 
 // admin
-import MyPageCheck from "./pages/user/mypage/myPageCheck";
-
+import MemberDetail from "./pages/admin/user/MemberDetail";
+import A_ReservationDetail from "../src/pages/admin/reservation/A_ReservationDetail";
 import SessionTimeout from "../src/SessionTimeout";
 const Router = () => {
   return (
@@ -69,6 +74,13 @@ const Router = () => {
         <Route path="/findPw" element={<FindPw />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/mypagecheck" element={<MyPageCheck />} />
+        <Route path="/userprofile" element={<UserProfile />} />
+        <Route path="/userupdate" element={<UserUpdate />} />
+        <Route path="/rervationcheck" element={<ReservationCheck />} />
+        <Route
+          path="/reserveationdetail/:reservationId"
+          element={<ReserveationDetail />}
+        />
 
         <Route path="/notice" element={<NoticeLayout />}>
           <Route index element={<Notice />} />
@@ -92,13 +104,14 @@ const Router = () => {
         </Route>
 
         <Route path="/admin" element={<AdminHome />}>
-          <Route path="member" element={<A_UserLayout />}>
+          <Route path="adminuser" element={<A_UserLayout />}>
             <Route index element={<A_User />} />
+            <Route path="member/:memberId" element={<MemberDetail />} />{" "}
           </Route>
 
           <Route path="a_reservation" element={<A_ReservationLayout />}>
             <Route index element={<A_Reservation />} />
-            {/* <Route path=":reservationId" element={<A_ReservationDetail />} /> */}
+            <Route path=":reservationId" element={<A_ReservationDetail />} />
           </Route>
 
           <Route path="notice" element={<NoticeLayout />}>

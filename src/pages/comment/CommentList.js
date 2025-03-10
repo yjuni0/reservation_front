@@ -19,7 +19,7 @@ function CommentList(props) {
   // 댓글 목록 가져오는 함수
   const getCommentList = async () => {
     try {
-      const response = await axios.get(`/api/member/review/${reviewId}/comment`, {
+      const response = await axios.get(`/api/review/${reviewId}/comment`, {
         params: { page: page - 1 },
       });
       console.log("CommentList success", response.data);

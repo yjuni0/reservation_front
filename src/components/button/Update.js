@@ -1,11 +1,27 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { HttpHeadersContext } from "../../context";
 
-function Update({ noticeId, questionId, reviewId, navigate, title, content }) {
-  const { httpHeaders } = useContext(HttpHeadersContext);
+function Update({
+  noticeId,
+  questionId,
+  reviewId,
+  navigate,
+  title,
+  content,
+  fileUpload,
+}) {
+  const { headers,setHeaders } = useContext(HttpHeadersContext);
+
+  useEffect(() => {
+    setHeaders({
+      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+    });
+
+  }, [setHeaders]);
+
 
   const handleEditClick = async () => {
     try {
@@ -17,24 +33,27 @@ function Update({ noticeId, questionId, reviewId, navigate, title, content }) {
         apiUrl = `/api/admin/notice/${noticeId}`;
         redirectUrl = `/admin/notice/${noticeId}`;
       } else if (questionId) {
-        apiUrl = `/api/question/${questionId}`;
-        redirectUrl = `/question/${questionId}`;
+        apiUrl = `/api/member/question/${questionId}`;
+        redirectUrl = `/admin/question/${questionId}`;
       } else if (reviewId) {
-        apiUrl = `/api/review/${reviewId}`;
-        redirectUrl = `/review/${reviewId}`;
+        apiUrl = `/api/member/review/${reviewId}`;
+        redirectUrl = `/admin/review/${reviewId}`;
       } else {
         alert("수정할 게시글이 없습니다.");
         return;
       }
 
-      const response = await axios.patch(
+      const response = await axios.put(
         apiUrl,
         { title, content },
-        { headers: httpHeaders }
+        { headers: headers }
       );
-
       if (response.status === 200) {
-        alert("수정되었습니다.");
+        // 파일 업로드 함수 호출
+        if (fileUpload) {
+          await fileUpload(noticeId); // files 상태를 사용하여 파일 업로드
+        }
+
         navigate(redirectUrl); // 해당 게시글에 맞는 URL로 리디렉션
       } else {
         throw new Error("수정 실패");
@@ -55,6 +74,7 @@ const Button = styled.button`
   margin-left: 10px;
   background-color: #000; /* 검정색 배경 */
   color: white;
+  margin-bottom: 50px;
 
   &:hover {
     background-color: #333; /* hover 시 더 어두운 검정색 */

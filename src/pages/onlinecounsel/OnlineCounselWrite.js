@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { AuthContext, HttpHeadersContext } from "../../context";
 import axios from "axios";
+import Write from "../../components/button/Write";
+import List from "../../components/button/List";
 
 //관리자 공지작성으로
 
@@ -15,6 +17,7 @@ function OnlineCounselWrite() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [password, setPassword] = useState("");
+  const [postType, setPostType] = useState(2);
 
   const changeTitle = (event) => {
     setTitle(event.target.value);
@@ -23,34 +26,8 @@ function OnlineCounselWrite() {
   const changeContent = (event) => {
     setContent(event.target.value);
   };
-  const changePassword = (event) => {
+  const chsangePassword = (event) => {
     setPassword(event.target.value);
-  };
-
-  const createBbs = async () => {
-    const req = {
-      title: title,
-      content: content,
-
-      // password: password,
-    };
-
-    console.log("📌 보내는 데이터:", req); // 요청 데이터 확인
-    await axios
-      .post("/api/member/question", req, { headers: headers })
-      .then((resp) => {
-        console.log("받는 데이터", resp.data);
-
-        const questionId = resp.data.id;
-
-        console.log("onlineCounselId:", questionId);
-        alert("새로운 게시글을 성공적으로 등록했습니다 :D");
-        navigate(`/question/${questionId}`);
-      })
-      .catch((err) => {
-        console.log("[onlineCounselWrite.js] createBbs() error :<");
-        console.log(err);
-      });
   };
 
   useEffect(() => {
@@ -70,10 +47,6 @@ function OnlineCounselWrite() {
   return (
     <Container>
       <ContentWrapper>
-        <Title>
-          <h1>온라인 상담</h1>
-        </Title>
-
         <TableBox>
           <Table>
             <tbody>
@@ -105,13 +78,18 @@ function OnlineCounselWrite() {
             type="password"
             placeholder="비밀번호"
             value={password}
-            onChange={changePassword}
+            onChange={chsangePassword}
           />
           <div>
-            <Button onClick={createBbs}>등록</Button>
-            <Link to="/OnlineCounsel">
-              <Button>취소</Button>
-            </Link>
+            <Write
+              title={title}
+              content={content}
+              setTitle={setTitle}
+              setContent={setContent}
+              headers={headers}
+              postType={postType}
+            />
+            <List postType={postType} />
           </div>
         </BottomBox>
       </ContentWrapper>
@@ -221,6 +199,7 @@ const PasswordInput = styled.input`
   font-size: 16px;
   font-family: "Noto Sans KR", serif;
   outline: none;
+  
 `;
 
 export default OnlineCounselWrite;

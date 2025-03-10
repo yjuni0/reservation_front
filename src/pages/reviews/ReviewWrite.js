@@ -1,8 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { AuthContext, HttpHeadersContext } from "../../context";
 import axios from "axios";
+import List from "../../components/button/List";
+import Write from "../../components/button/Write";
 
 function ReviewWrite() {
   const { auth, setAuth } = useContext(AuthContext);
@@ -11,6 +13,7 @@ function ReviewWrite() {
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [postType, setPostType] = useState(3);
 
   const changeTitle = (event) => {
     setTitle(event.target.value);
@@ -19,38 +22,21 @@ function ReviewWrite() {
   const changeContent = (event) => {
     setContent(event.target.value);
   };
+
+
   useEffect(() => {
+    console.log("access_token:", localStorage.getItem("access_token"));
     // 컴포넌트가 렌더링될 때마다 localStorage의 토큰 값으로 headers를 업데이트
     setHeaders({
       Authorization: `Bearer ${localStorage.getItem("access_token")}`,
     });
-    const nick_name = localStorage.getItem("nick_name");
-    console.log("LocalStorage ID:", localStorage.getItem("nick_name"));
+
     // 로그인한 사용자인지 체크
     if (!auth) {
       alert("로그인 한 사용자만 게시글을 작성할 수 있습니다 !");
       navigate(-1);
     }
   }, []);
-  const createReview = async () => {
-    const req = {
-      title: title,
-      content: content,
-    };
-    console.log("보내는 데이터", req);
-
-    await axios
-      .post("/api/member/review", req, { headers: headers })
-      .then((response) => {
-        console.log("리뷰 작성 성공", response.data);
-        alert("리뷰가 성공적으로 작성되었습니다.");
-        navigate("/review");
-      })
-      .catch((error) => {
-        console.error("리뷰 작성 실패", error);
-        alert("리뷰 작성에 실패했습니다.");
-      });
-  };
 
   return (
     <Container>
@@ -87,10 +73,15 @@ function ReviewWrite() {
 
         <BottomBox>
           <div>
-            <Button onClick={createReview}>등록</Button>
-            <Link to="/review">
-              <Button>취소</Button>
-            </Link>
+            <Write
+              title={title}
+              content={content}
+              setTitle={setTitle}
+              setContent={setContent}
+              headers={headers}
+              postType={postType}
+            />
+            <List postType={postType} />
           </div>
         </BottomBox>
       </ContentWrapper>
