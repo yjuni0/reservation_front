@@ -16,15 +16,6 @@ function AdminCounselAnswer() {
   useEffect(() => {
     if (questionId) {
       fetchAnswer();
-
-      // localStorage에서 기존 답변을 불러오기
-      const savedAnswer = localStorage.getItem(`answer_${questionId}`);
-      if (savedAnswer) {
-        const { content, answerId, isRegistered } = JSON.parse(savedAnswer);
-        setContent(content);
-        setAnswerId(answerId);
-        setIsRegistered(isRegistered);
-      }
     }
   }, [questionId]);
 
@@ -32,7 +23,7 @@ function AdminCounselAnswer() {
   const fetchAnswer = async () => {
     try {
       const response = await axios.get(
-        `/api/question/${questionId}/answer/${answerId}`,
+        `/api/member/question/${questionId}/answer`, // questionId로 answer 조회
         {
           headers: {
             Authorization: `Bearer ${token}`, // 토큰을 Authorization 헤더에 추가
@@ -45,14 +36,12 @@ function AdminCounselAnswer() {
         setAnswerId(response.data.id);
         setIsRegistered(true);
       } else {
-        // 답변이 없을 경우에는 아무 작업도 하지 않음
         setIsRegistered(false);
         setContent(""); // 답변이 없다면 내용도 초기화
         setAnswerId(null);
       }
     } catch (error) {
       console.error("답변 불러오기 실패:", error);
-      // 알람을 띄우지 않음
     }
   };
 
@@ -75,23 +64,13 @@ function AdminCounselAnswer() {
       );
       setAnswerId(response.data.id);
       setIsRegistered(true);
-
-      // localStorage에 답변 등록 정보 저장
-      localStorage.setItem(
-        `answer_${questionId}`,
-        JSON.stringify({
-          content: response.data.content,
-          answerId: response.data.id,
-          isRegistered: true,
-        })
-      );
-
       alert("답변이 등록되었습니다.");
     } catch (error) {
       console.error("답변 등록 실패:", error);
       alert("답변 등록에 실패했습니다.");
     }
   };
+
   // 답변 수정
   const handleUpdate = async () => {
     if (!answerId) return;
@@ -107,22 +86,13 @@ function AdminCounselAnswer() {
         }
       );
 
-      // 수정된 내용 localStorage에 저장
-      localStorage.setItem(
-        `answer_${questionId}`,
-        JSON.stringify({
-          content,
-          answerId,
-          isRegistered: true,
-        })
-      );
-
       alert("답변이 수정되었습니다.");
     } catch (error) {
       console.error("답변 수정 실패:", error);
       alert("답변 수정에 실패했습니다.");
     }
   };
+
   // 답변 삭제
   const handleDelete = async () => {
     if (!answerId) return;
@@ -137,15 +107,13 @@ function AdminCounselAnswer() {
       setIsRegistered(false);
       setAnswerId(null);
 
-      // 삭제된 내용 localStorage에서 제거
-      localStorage.removeItem(`answer_${questionId}`);
-
       alert("답변이 삭제되었습니다.");
     } catch (error) {
       console.error("답변 삭제 실패:", error);
       alert("답변 삭제에 실패했습니다.");
     }
   };
+
   return (
     <NoticeContainer>
       <h2>상담 답변</h2>
@@ -180,6 +148,7 @@ function AdminCounselAnswer() {
     </NoticeContainer>
   );
 }
+
 const NoticeContainer = styled.div`
   margin: auto;
   display: block;
