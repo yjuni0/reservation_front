@@ -1,25 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Outlet } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+
 const AdminLayout = () => {
   const [selectedMenu, setSelectedMenu] = useState("");
-  const navigate = useNavigate();
+
   const menuItems = [
-    { title: "회원 관리", key: "member", path: "member" },
+    { title: "회원 관리", key: "adminuser", path: "adminuser" },
     { title: "공지사항 관리", key: "notice", path: "notice" },
     { title: "온라인예약 관리", key: "reservations", path: "a_reservation" },
-    { title: "온라인상담 관리", key: "question", path: "question" },
+    { title: "온라인상담 관리", key: "onlineCounsel", path: "question" },
     { title: "고객 리뷰 관리", key: "review", path: "review" },
   ];
-  useEffect(() => {
-    navigate("/admin/member");
-  }, []);
+
   // const getHomeTitle = () => {
   //   const currentItem = menuItems.find((item) => item.key === selectedMenu);
   //   return currentItem ? currentItem.title : "";
   // };
+  const linkPrefix1 = "/admin/";
   return (
     <LayoutContainer>
       {/* 사이드바 */}
@@ -97,6 +96,7 @@ const SidebarMenu = styled.ul`
     }
 
     a {
+      width: 250px;
       color: white;
       text-decoration: none;
       display: block; /* 링크가 li의 크기 전체를 차지하도록 */

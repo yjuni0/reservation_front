@@ -39,34 +39,53 @@ function SignIn() {
     };
 
     try {
-      const resp = await axios.post("/api/login", req); // axios로 POST 요청
-      console.log("Login OK");
-      console.log(resp.data);
+      const resp = await axios.post("/api/login", req);
+      console.log("Login OK", resp.data);
 
-      alert(resp.data.nickName + "님, 성공적으로 로그인 되었습니다요");
+      alert(resp.data.nickName + "님, 성공적으로 로그인 되었습니다!");
 
-      // JWT 토큰 저장
+      // **기존 토큰 삭제 후 새 토큰 저장**
+      localStorage.removeItem("access_token");
       localStorage.setItem("access_token", resp.data.token);
       localStorage.setItem("nick_name", resp.data.nickName);
+      localStorage.setItem("id", resp.data.id);
 
       setAuth(resp.data.nickName);
-      setHeaders({ Authorization: `Bearer ${resp.data.token}` }); // HttpHeadersContext에 Authorization 헤더 저장
+      setHeaders({ Authorization: `Bearer ${resp.data.token}` });
 
-      navigate("/"); // 로그인 후 홈으로 리다이렉트
+      navigate("/");
     } catch (err) {
-      console.log("Login failed");
-      console.error("Error Details:", err); // 전체 오류 객체 출력
+      console.error("Login failed:", err);
+      alert("로그인 실패입니다. 다시 확인해 주세요.");
+    }
+  };
 
-      // err.response?.data가 객체라면 JSON.stringify로 문자열로 변환하여 출력
-      const errorMessage = err.response?.data
-        ? JSON.stringify(err.response?.data)
-        : "알 수 없는 오류 발생";
-      alert(
-        "로그인 실패! " +
-          (err.response?.data
-            ? JSON.stringify(err.response?.data)
-            : "알 수 없는 오류 발생")
-      );
+  // **로그인 후에도 일정 간격으로 중복 로그인 체크**
+  useEffect(() => {
+    const interval = setInterval(() => {
+      checkDuplicateLogin();
+    }, 30000); // 30초마다 체크
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const checkDuplicateLogin = async () => {
+    const storedToken = localStorage.getItem("access_token");
+
+    if (!storedToken) return; // 로그인된 사용자가 없으면 실행 X
+
+    try {
+      const resp = await axios.get("/api/check-token", {
+        headers: { Authorization: `Bearer ${storedToken}` },
+      });
+
+      if (!resp.data.valid) {
+        alert("다른 곳에서 로그인되었습니다.");
+        localStorage.removeItem("access_token");
+        window.location.href = "/login";
+      }
+    } catch (error) {
+      console.error("토큰 체크 중 오류 발생:", error);
     }
   };
 
@@ -224,7 +243,7 @@ const InputBox = styled.div`
 
     //
     font-size: 14.2px;
-    color: #e6e6e6;
+    color: #0d326f;
     font-weight: 400;
   }
 

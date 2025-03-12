@@ -2,12 +2,13 @@ import React, { useContext, useState } from "react";
 import styled from "styled-components";
 
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { HttpHeadersContext } from "../../context";
+import { HttpHeadersContext, AuthContext } from "../../context";
 import axios from "axios";
 
 function CommentWrite(props) {
   const { headers, setHeaders } = useContext(HttpHeadersContext);
   const reviewId = props.reviewId;
+  const { auth, setAuth } = useContext(AuthContext);
 
   const nickName = localStorage.getItem("nick_name");
 
@@ -20,6 +21,10 @@ function CommentWrite(props) {
   };
 
   const createComment = async () => {
+    if (!auth) {
+      alert("회원만 작성이 가능합니다.");
+      return;
+    }
     const req = {
       content: content,
     };
@@ -85,6 +90,14 @@ const WriteBtn = styled.button`
   width: 50px;
   height: 30px;
   border: 1px solid #111111;
+  cursor: pointer;
+  background-color: #000; /* 검정색 배경 */
+  border-radius: 5px;
+  color: white;
+
+  &:hover {
+    background-color: #333; /* hover 시 더 어두운 검정색 */
+  }
 `;
 
 export default CommentWrite;

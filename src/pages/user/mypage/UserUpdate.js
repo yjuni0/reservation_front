@@ -1,34 +1,51 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import AnimalProfile from "./AnimalProfile";
-import { useLocation } from "react-router-dom";
+import { redirect, useLocation,useNavigate } from "react-router-dom";
 import DaumPostcode from "react-daum-postcode";
 import { AuthContext, HttpHeadersContext } from "../../../context";
 import axios from "axios";
 
 function UserUpdate() {
     const { headers, setHeaders } = useContext(HttpHeadersContext);
-
+      const { auth, setAuth } = useContext(AuthContext);
+  const navigate = useNavigate();
 
 
   const location = useLocation();
-  const userData = location.state?.userData;
-  console.log("회원 정보",userData);
+  const userData = location.state?.profile;
+  console.log("회원 정보",userData.addr);
 
   const [petData, setPetData] = useState(userData.pets);
   console.log("펫 정보" , petData);
+
   const memberId = userData.id;
 
   const [addr, setAddr] = useState("");
   const [nickName, setNickName] = useState(userData.nickName)
-  const [phone, setPhone] = useState(userData.phoneNum)
+
 
   const changeNickName = (event) => {
     setNickName(event.target.value);
   }
-  const changePhoneNum = (event) => {
-    setPhone(event.target.value);
-  }
+
+
+
+  useEffect(() => {
+    console.log("access_token:", localStorage.getItem("access_token"));
+    // 컴포넌트가 렌더링될 때마다 localStorage의 토큰 값으로 headers를 업데이트
+    setHeaders({
+      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+    });
+
+    // 로그인한 사용자인지 체크
+    if (!auth) {
+      alert("로그인 한 사용자만 게시글을 작성할 수 있습니다 !");
+      navigate(-1);
+    }
+  }, []);
+
+
 // 🔹 정규식을 사용해 기본 주소와 상세 주소 분리
 const match = userData.addr.match(/^(\d{5}\s[^\d]+[\d-]+)\s(.+)$/);
 const baseAddr = match ? match[1] : userData.addr; // 기본 주소
@@ -40,16 +57,30 @@ const [address, setAddress] = useState(baseAddr); // 기본 주소
 const [detailAddress, setDetailAddress] = useState(detailAddr); // 상세 주소
 
 const [isOpen, setIsOpen] = useState(false);
+ const [phoneNum, setPhoneNum] = useState(userData.phoneNum);
+ function regPhoneNumber(e) {
+  const result = e.target.value
+    .replace(/[^0-9.]/g, "")
+    .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3")
+    .replace(/(-{1,2})$/g, "");
+  setPhoneNum(result);
+}
 
-
-// 🔹 주소 검색 완료 시 실행되는 함수
 const handleComplete = (data) => {
   const newBaseAddr = data.zonecode + " " + data.address; // 새 기본 주소 설정
   setPostcode(data.zonecode);
   setAddress(newBaseAddr);
   setIsOpen(false);
-  setAddr(newBaseAddr + " " + detailAddress); 
+  
+  // 기존 detailAddress 값을 유지하면서 addr 업데이트
+  setAddr(newBaseAddr + " " + detailAddress);
 };
+
+// 주소 또는 상세 주소가 변경될 때 전체 주소를 업데이트
+useEffect(() => {
+  setAddr(address + " " + detailAddress);
+}, [address, detailAddress]);
+
 
 // 🔹 상세 주소 입력 변경 시 전체 주소 업데이트
 const handleDetailAddressChange = (e) => {
@@ -58,12 +89,23 @@ const handleDetailAddressChange = (e) => {
 };
 
 const handlePetDataChange = (updatedPetData) => {
-  setPetData(updatedPetData); // 반려동물 데이터 업데이트
+  console.log("변경된 펫 데이터:", updatedPetData);  // 추가
+  setPetData(updatedPetData);
 };
 const handleUpdate = ()=>{
   userUpdate();
   petUpdate();
+  navigate("/mypage");
+  alert("수정이 완료되었습니다.")
 }
+
+// useEffect(()=>{
+//   const getPetList
+
+
+// },[])
+
+
 
   const userUpdate = async()=>{
     try{
@@ -76,7 +118,7 @@ const handleUpdate = ()=>{
       const req = {
         nickName,
         addr : fullAddr,
-        phone,
+        phoneNum,
 
       }
       console.log("보내는 데이터" , req);
@@ -104,16 +146,19 @@ const handleUpdate = ()=>{
         return;
       }
 
-      const req = petData.map(pet => ({
-        id: pet.id,       // 기존 pet ID 유지 (없으면 추가)
-        name: pet.name,
-        breed: pet.breed,
-        age: pet.age,
-        memberId: memberId, // ✅ 어떤 회원의 반려동물인지 명확히 전달
-      }));
+      const req = petData.map((pet, index) => {
+        console.log(`pet[${index}] 데이터:`, pet);
+        return {
+          id: pet.id,  // 여기서 id가 undefined라면 pet 객체 자체를 확인해야 함
+          name: pet.name,
+          breed: pet.breed,
+          age: pet.age,
+        };
+      });
+      console.log("최종 요청 데이터:", req);
       console.log("보내는 데이터" , req);
       await axios
-      .patch(`/api/pet`, req, {headers: {Authorization: `Bearer ${token}`}}
+      .patch(`/api/member/pet`, req, {headers:headers}
       );
 
     }catch (error) {
@@ -123,7 +168,12 @@ const handleUpdate = ()=>{
   
   return (
     <UserUpdateContainer>
+            <LoginBox>
+        <LoginTitle>회원 정보 수정</LoginTitle>
+        <LoginSub>회원 정보 및 반려동물 정보를 수정하세요.</LoginSub>
+      </LoginBox>
       <UserUpdateUserBox>
+        
         <UserUpdateUserTable>
           <thead>
             <tr>
@@ -146,7 +196,7 @@ const handleUpdate = ()=>{
           </TableRow>          
           <TableRow>
             <TableHead>닉네임</TableHead>
-            <TableData><input value={nickName} onChange={changeNickName} ></input></TableData>
+            <TableData><Input value={nickName} onChange={changeNickName} ></Input></TableData>
           </TableRow>
 
           <TableRow className="th_title">
@@ -157,7 +207,7 @@ const handleUpdate = ()=>{
               <AddrBtn type="button" onClick={() => setIsOpen(true)}>
                 검색
               </AddrBtn>
-              <input
+              <Input
                   type="text"
                   value={address} // 우편번호 검색 결과 주소 표
                   readOnly
@@ -168,7 +218,7 @@ const handleUpdate = ()=>{
           <TableRow>
             <TableHead>상세주소</TableHead>
             <TableData>
-              <input
+              <Input
                 className="address"
                 type="text"
                 value={detailAddress} // 상세 주소 표시 및 변경 가능
@@ -188,7 +238,7 @@ const handleUpdate = ()=>{
 
           <TableRow>
             <TableHead>휴대폰번호</TableHead>
-            <TableData><input value={phone} onChange={changePhoneNum} ></input></TableData>
+            <TableData><Input value={phoneNum} maxLength={13} onChange={regPhoneNumber} ></Input></TableData>
           </TableRow>
           <TableRow>
           </TableRow>
@@ -202,7 +252,11 @@ const handleUpdate = ()=>{
 
       <UserUpdateButtonBox>
         <SubmitButton onClick={handleUpdate}>수정</SubmitButton>
-        <CancelButton>취소</CancelButton>
+        <CancelButton
+          onClick={() => {
+            navigate(`/mypage`);
+          }}        
+        >취소</CancelButton>
       </UserUpdateButtonBox>
     </UserUpdateContainer>
   );
@@ -219,6 +273,30 @@ const userFields = [
   { label: "생년월일", type: "date" },
   { label: "핸드폰 번호", type: "text" },
 ];
+
+const LoginBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 20vh;
+  pointer-events: none;
+  margin-top: 60px;
+  margin-bottom: 30px;
+`;
+const LoginTitle = styled.h1`
+  font-weight: 700;
+  line-height: 1.3em;
+  font-size: 42px;
+  color: #111;
+  text-align: center;
+`;
+const LoginSub = styled.p`
+  display: block;
+  margin-top: 1.5em;
+  color: #888888;
+  font-size: 14px;
+  text-align: center;
+`;
 
 const UserUpdateContainer = styled.div`
   width: 100%;
@@ -271,6 +349,7 @@ const TableHead = styled.th`
 `;
 
 const TableData = styled.td`
+  
   padding: 10px;
   border: 1px solid #ddd;
 `;

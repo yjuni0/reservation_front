@@ -2,55 +2,46 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
 
-const AnimalProfile = ({petData,onPetDataChange}) => {
-
-
+const AnimalProfile = ({ petData, onPetDataChange }) => {
   const [inputValue, setInputValue] = useState([]);
+
   useEffect(() => {
     if (petData && Array.isArray(petData)) {
       setInputValue(
         petData.map((pet) => ({
+          id: pet.id,
           name: pet.name || "",
-          breed: pet.breed || "", // breed를 species로 변경
+          breed: pet.species || "DOG", // 기본값 DOG
           age: pet.age || "",
         }))
       );
     }
+    console.log(petData);
   }, [petData]);
 
-  // useEffect(() => {
-  //   axios
-  //     .get("/api/{memerId}/pet")
-  //     .then((response) => {
-  //       setInputValue([
-  //         {
-  //           name: response.data.name,
-  //           species: response.data.species,
-  //           age: response.data.age,
-  //           weight: response.data.weight,
-  //         },
-  //       ]);
-  //     })
-  //     .catch(() => {
-  //       setInputValue([{ name: "", species: "", age: "", weight: "" }]);
-  //     });
-  // }, []);
-
   const addContent = () => {
-    setInputValue([
-      ...inputValue,
-      { name: "", species: "", age: "" },
-    ]);
+    setInputValue([...inputValue, { name: "", species: "DOG", age: "" }]);
   };
 
   const deleteContent = (index) => {
-    setInputValue(inputValue.filter((_, i) => i !== index));
+    setInputValue((prevInputValue) => {
+      const deletedItem = prevInputValue[index]; // 삭제될 항목 저장
+      const updatedValues = prevInputValue.filter((_, i) => i !== index); // 새로운 리스트 생성
+  
+      console.log("삭제된 반려동물 정보:", deletedItem);
+      console.log("업데이트된 반려동물 리스트:", updatedValues);
+  
+      onPetDataChange(updatedValues);
+      return updatedValues;
+    });
   };
+  
+
   const handleInputChange = (e, index, key) => {
     const newInputValue = [...inputValue];
     newInputValue[index][key] = e.target.value;
     setInputValue(newInputValue);
-    onPetDataChange(newInputValue); // 부모에게 새로운 데이터를 전달
+    onPetDataChange(newInputValue);
   };
 
   return (
@@ -62,19 +53,18 @@ const AnimalProfile = ({petData,onPetDataChange}) => {
           <DeleteButton onClick={() => deleteContent(index)}>삭제</DeleteButton>
           <AnimalTable>
             <tbody>
-            {[
-                { key: "name", label: "이름" },
-                { key: "breed", label: "종류" },
-                { key: "age", label: "나이" },
-              ].map(({ key, label }, i) => (
+              {[{ key: "name", label: "이름" }, { key: "breed", label: "종류" }, { key: "age", label: "나이" }].map(({ key, label }, i) => (
                 <TableRow key={i}>
                   <TableHead>{label}</TableHead>
                   <TableData>
-                    <Input
-                      type="text"
-                      value={item[key]}
-                      onChange={(e) => handleInputChange(e, index, key)}
-                    />
+                    {key === "breed" ? (
+                      <Select value={item[key]} onChange={(e) => handleInputChange(e, index, key)}>
+                        <option value="DOG">DOG</option>
+                        <option value="CAT">CAT</option>
+                      </Select>
+                    ) : (
+                      <Input type="text" value={item[key]} onChange={(e) => handleInputChange(e, index, key)} />
+                    )}
                   </TableData>
                 </TableRow>
               ))}
@@ -86,7 +76,6 @@ const AnimalProfile = ({petData,onPetDataChange}) => {
   );
 };
 
-// 📌 `UserUpdate` 폼과 일관된 너비 유지
 const AnimalProfileContainer = styled.div`
   width: 100%;
   max-width: 1000px;
@@ -176,6 +165,16 @@ const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 4px;
   outline: none;
+`;
+
+const Select = styled.select`
+  width: 100%;
+  max-width: 440px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  background-color: white;
 `;
 
 export default AnimalProfile;

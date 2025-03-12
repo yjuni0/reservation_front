@@ -2,16 +2,34 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-// 날짜 포맷팅 함수
-const formatDate = (dateTime) => {
+function formatDate(dateTime) {
   if (dateTime) {
-    const [date] = dateTime.split("T");  // 'T' 기준으로 분리하여 날짜만 추출
-    return date;  // 'YYYY-MM-DD' 형식 반환
+    const [date] = dateTime.split("T"); // 'T' 기준으로 분리하여 날짜만 추출
+    return date; // 'YYYY-MM-DD' 형식 반환
   }
-  return "";  // 날짜가 없다면 빈 문자열 반환
-};
+  return ""; // 날짜가 없다면 빈 문자열 반환
+}
 
-function CommonTable({ bbsList, columns, linkPrefix }) {
+function CommonTable({
+  bbsList = [],
+  columns,
+  linkPrefix,
+  isSearchActive = false,
+  isLoading = false, // 로딩 상태 추가
+  searchKeyword = "", // 검색어 추가
+}) {
+  // 검색어가 있을 경우 해당 검색어로 필터링하는 로직
+  const filteredBbsList = bbsList.filter((response) => {
+    if (searchKeyword) {
+      // 제목(title)에 검색어가 포함된 항목만 필터링
+      return response.title && response.title.includes(searchKeyword);
+    }
+    return true; // 검색어가 없으면 필터링하지 않음
+  });
+
+  // 결과가 없을 경우 "검색 결과가 없습니다." 메시지 표시
+  const noResults = filteredBbsList.length === 0 && isSearchActive;
+
   return (
     <NoticeTableBox>
       <NoticeTabled>
@@ -23,26 +41,36 @@ function CommonTable({ bbsList, columns, linkPrefix }) {
           </tr>
         </thead>
         <tbody>
-          {bbsList.map((response, index) => (
-            <tr key={index}>
-              {columns.map((column, colIndex) => {
-                const data = column.field ? response[column.field] : null;
-
-                // 날짜 포맷팅을 적용할 경우 'createdDate' 필드에 대해 formatDate 함수 사용
-                const formattedData = column.field === "createdDate" ? formatDate(data) : data;
-
-                return (
-                  <td key={colIndex}>
-                    {column.link ? (
-                      <Link to={`${linkPrefix}/${response.id}`}>{formattedData}</Link>
-                    ) : (
-                      formattedData
-                    )}
-                  </td>
-                );
-              })}
+          {isLoading ? (
+            <tr>
+              <td colSpan={columns.length}>데이터 로딩 중...</td>
             </tr>
-          ))}
+          ) : noResults ? (
+            <tr>
+              <td colSpan={columns.length}>검색 결과가 없습니다.</td>
+            </tr>
+          ) : (
+            filteredBbsList.map((response, index) => (
+              <tr key={index}>
+                {columns.map((column, colIndex) => {
+                  const data = column.field ? response[column.field] : null;
+                  const formattedData =
+                    column.field === "createdDate" ? formatDate(data) : data;
+                  return (
+                    <td key={colIndex}>
+                      {column.link ? (
+                        <Link to={`${linkPrefix}/${response.id}`}>
+                          {formattedData}
+                        </Link>
+                      ) : (
+                        formattedData
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))
+          )}
         </tbody>
       </NoticeTabled>
     </NoticeTableBox>

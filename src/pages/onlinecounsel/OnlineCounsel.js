@@ -1,11 +1,13 @@
-import React, { lazy, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import CommonTable from "../../components/common/CommonTable";
 import CustomPagination from "../../components/common/CustomPagination";
 import { jwtDecode } from "jwt-decode"; // jwt-decode 라이브러리 import
-import { Link } from "react-router-dom";
+import WriteGo from "../../components/button/WriteGo";
+import { useNavigate } from "react-router-dom"; // useNavigate 추가
 import { AuthContext, HttpHeadersContext } from "../../context";
+import CommonSearch from "../../components/common/CommonSearch";
 
 function OnlineCounsel() {
   const { headers, setHeaders } = useContext(HttpHeadersContext);
@@ -13,13 +15,20 @@ function OnlineCounsel() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalCnt, setTotalCnt] = useState(0);
-  const [linkValue, setLinkValue] = useState("");
+  const [linkValue, setLinkValue] = useState("/question"); // linkValue 상태 추가
+  const [isSearchActive, setIsSearchActive] = useState(false); // 검색 활성 상태 추가
+  const navigate = useNavigate(); // navigate 훅 추가
+  const type = "question";
+  const memberId = Number(localStorage.getItem("id"));
+
   const columns = [
     { label: "No", field: "id" },
     { label: "제목", field: "title", link: true },
     { label: "작성자", field: "writerName" },
     { label: "작성일", field: "createdDate" },
   ];
+
+  // 게시판 데이터 가져오기
   const getBbsList = async (page) => {
     try {
       const response = await axios.get("/api/member/question", {
@@ -33,6 +42,18 @@ function OnlineCounsel() {
       console.error("Error fetching board data:", error);
     }
   };
+
+  // 검색 후 결과 갱신
+  const updateBbsList = (data) => {
+    if (data && data.content && data.content.length > 0) {
+      setBbsList(data.content); // 검색 결과가 있을 때만 데이터 업데이트
+      setIsSearchActive(true); // 검색 활성화
+    } else {
+      setBbsList([]); // 결과가 없으면 빈 배열로 초기화
+      setIsSearchActive(false); // 검색 비활성화
+    }
+  };
+
   useEffect(() => {
     if (window.location.pathname.includes("/admin")) {
       setLinkValue("/admin/question"); // "/admin/question"으로 설정
@@ -40,17 +61,41 @@ function OnlineCounsel() {
       setLinkValue("/question"); // "/question"으로 설정
     }
   }, []); // 컴포넌트가 처음 렌더링될 때 한번만 실행
+
   useEffect(() => {
     getBbsList(page);
+    setHeaders({
+      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+    });
   }, [page]);
+
+  // 데이터에 빈 행 추가
+  const addEmptyRows = (data) => {
+    const rowsWithEmpty = [];
+    data.forEach((item) => {
+      rowsWithEmpty.push({}); // 빈 데이터 행 추가 (공백 행)
+      rowsWithEmpty.push(item); // 데이터 행 추가
+    });
+    return rowsWithEmpty;
+  };
+
+  const bbsListWithEmptyRows = addEmptyRows(bbsList);
 
   return (
     <Container>
       <ContentWrapper>
         <CommonTable
-          bbsList={bbsList}
+          bbsList={bbsListWithEmptyRows}
           columns={columns}
           linkPrefix={linkValue}
+          isSearchActive={isSearchActive} // 검색 활성 상태 전달
+        />
+        <BottomBox>
+          <WriteGo />
+        </BottomBox>
+        <CommonSearch
+          type={type}
+          onUpdate={updateBbsList} // 검색 후 데이터를 갱신할 수 있도록 onUpdate 전달
         />
         <PaginationBox>
           <CustomPagination
@@ -60,9 +105,6 @@ function OnlineCounsel() {
             totalCnt={totalCnt}
           />
         </PaginationBox>
-        <Link to="/onlinecounsel/write">
-          <button>작성</button>
-        </Link>
       </ContentWrapper>
     </Container>
   );
@@ -85,18 +127,6 @@ const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-`;
-
-const Title = styled.div`
-  width: 100%;
-  height: 50px;
-  margin-top: 100px;
-  text-align: left;
-  h1 {
-    font-weight: bold;
-    font-size: 36px;
-    font-family: "Noto Sans KR", serif;
-  }
 `;
 
 const PaginationBox = styled.div`
@@ -122,22 +152,16 @@ const PaginationBox = styled.div`
   }
 `;
 
-const WriteBtn = styled.button`
-  width: 50px;
-  height: 30px;
-  font-weight: 400;
-  font-size: 16px;
-  font-family: "Noto Sans KR", serif;
-  background-color: #f4f4f4;
-  border: 1px solid #111111;
-`;
-
-const WriteBtnBox = styled.div`
+// 하단 버튼 박스
+const BottomBox = styled.div`
+  display: flex;
   width: 100%;
   max-width: 1000px;
-  display: flex;
-  justify-content: end;
-  margin-top: 30px;
+  justify-content: flex-end;
+  margin-top: 20px;
+
+  padding-left: 140px;
+  padding-right: 140px;
 `;
 
 export default OnlineCounsel;

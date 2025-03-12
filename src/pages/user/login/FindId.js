@@ -1,49 +1,109 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router";
 import styled from "styled-components";
-import logo_b from "../../../assets/imgs/logo_b.png";
-function FindId() {
-  const [emailFound, setEmailFound] = useState(""); // 이메일을 찾은 상태를 저장
-  const [isEmailVisible, setIsEmailVisible] = useState(false); // 이메일을 보여줄지 여부
 
-  const handleFindEmail = () => {
-    // 여기에서 실제 이메일 찾는 로직을 넣을 수 있음
-    const foundEmail = "example@email.com"; // 예시 이메일
-    setEmailFound(foundEmail);
-    setIsEmailVisible(true); // 이메일을 찾으면 폼을 보이도록 설정
+function FindId() {
+  const [name, setName] = useState("");
+  const [phoneNum, setPhoneNum] = useState("");
+  const [emailFound, setEmailFound] = useState(""); // 찾은 이메일 저장
+  const [isEmailVisible, setIsEmailVisible] = useState(false); // 이메일 표시 여부
+  const [error, setError] = useState(""); // 에러 메시지 상태 추가
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
+
+  const handleFindEmail = async () => {
+    setError("");
+    setIsLoading(true);
+
+    if (!name || !phoneNum) {
+      setError("이름과 전화번호를 모두 입력해주세요.");
+      setIsLoading(false);
+      return;
+    }
+
+    console.log("Request data: ", { name, phoneNum }); // 데이터 확인용 로그
+
+    try {
+      const response = await fetch("/api/findId", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, phoneNum }),
+      });
+
+      if (!response.ok) {
+        const errorDetails = await response.text(); // 오류 메시지 받기
+        throw new Error(`아이디를 찾을 수 없습니다.`);
+      }
+      const data = await response.text();
+      console.log("Response data: ", data); // 백엔드 응답 확인용 로그
+
+      const email = data.replace("귀하의 이메일 입니다. : ", "");
+      setEmailFound(email);
+      setIsEmailVisible(true);
+    } catch (err) {
+      setError(err.message);
+      setIsEmailVisible(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const formatPhoneNumber = (value) => {
+    // 하이픈 자동 삽입
+    const cleaned = value.replace(/[^\d]/g, ""); // 숫자만 남기기
+    const match = cleaned.match(/^(\d{3})(\d{3,4})(\d{4})$/);
+    if (match) {
+      return `${match[1]}-${match[2]}-${match[3]}`;
+    }
+    return value;
+  };
+
+  const handlePhoneNumChange = (e) => {
+    const formattedPhone = formatPhoneNumber(e.target.value);
+    setPhoneNum(formattedPhone);
   };
 
   return (
     <FindIdContainer>
+      <FindIdBox>
+        <FindIdTitle>아이디 찾기</FindIdTitle>
+        <FindIdSub>
+          이름과 전화번호를 입력하면 이메일을 찾을 수 있습니다.
+        </FindIdSub>
+      </FindIdBox>
       <FindIdSection>
-        <FindLogo>
-          <img src={logo_b} />
-        </FindLogo>
-
-        <Title>
-          <h4> 아이디찾기 </h4>
-        </Title>
+        <div className="logo_t">응급 24시 하이펫 반려동물 전문 메디컬센터</div>
         <FindiIdInput>
           <div>
-            <input type="text" placeholder="이름"></input>
-            <input type="password" placeholder="전화번호"></input>
+            <input
+              type="text"
+              placeholder="이름"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            ></input>
+            <input
+              type="text"
+              placeholder="전화번호"
+              value={phoneNum}
+              onChange={handlePhoneNumChange}
+            ></input>
           </div>
         </FindiIdInput>
 
+        {error && <ErrorSection>{error}</ErrorSection>}
         {isEmailVisible && (
           <FoundEmailSection>
-            <p>찾은 이메일: {emailFound}</p>
+            <p>찾은 이메일 - {emailFound} - 입니다</p>
           </FoundEmailSection>
         )}
-
         <PwFind>
           <Link to="/findPw">
             <h6>비밀번호찾기 </h6>
           </Link>
         </PwFind>
-
         <CheckBox>
-          <button>확인</button>
+          <CheckButton onClick={handleFindEmail}>확인</CheckButton>
         </CheckBox>
       </FindIdSection>
     </FindIdContainer>
@@ -63,80 +123,83 @@ const FindIdContainer = styled.div`
 
 // ----------------------------------------------------------------------------------
 
+const FindIdBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 20vh;
+  pointer-events: none;
+  margin-top: 30px;
+  margin-bottom: 30px;
+`;
+
+const FindIdTitle = styled.h1`
+  font-weight: 700;
+  line-height: 1.3em;
+  font-size: 42px;
+  color: #111;
+`;
+
+const FindIdSub = styled.p`
+  display: block;
+  margin-top: 1.5em;
+  color: #888888;
+  font-size: 14px;
+  text-align: center;
+`;
+
 const FindIdSection = styled.div`
+  max-width: 1280px;
+  background-color: #f5f7f9;
   margin: auto;
-  align-items: center;
-  margin-top: 130px;
-  padding-top: 30px;
-  width: 600px;
-  min-height: 500px;
-  background-color: #f4f4f4;
-  margin-bottom: 100px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-`;
-const FindLogo = styled.div`
-  justify-content: center;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  width: 600px;
-  height: 40px;
-  background-color: #f4f4f4;
-
-  margin-bottom: 30px;
-  img {
-    width: 145px;
-    height: 35px;
-  }
-`;
-
-const Title = styled.div`
   justify-content: center;
-  align-items: center;
-  display: flex;
-  width: 600px;
-  height: 40px;
-  margin-bottom: 30px;
-  h4 {
-    font-size: 36px;
-    color: #111111;
-    font-weight: bold;
+  padding: 65px 0px;
+  width: 800px;
+
+  .logo_t {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0d326f;
+    text-align: center;
+    //font-family: "Montserrat", serif;
   }
 `;
 
 const FindiIdInput = styled.div`
-  width: 600px;
-  display: flex;
-  flex-direction: column; /* 세로로 정렬 */
-  align-items: center;
-  justify-content: center;
-  background-color: #f4f4f4;
-  gap: 20px; /* input 사이의 간격을 20px로 설정 */
+  margin-top: 60px;
 
-  div {
-    width: 100%;
-    height: 120px;
-  }
-  input:first-child {
-    margin-bottom: 5px;
-  }
+  width: 450px;
+  box-sizing: border-box;
+  text-align: center;
+
   input {
-    font-family: "Noto Sans KR", serif;
+    margin-bottom: 15px;
+    width: 450px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 32px;
+    border-radius: 5px;
+    border: 1.5px solid #e0e0e0;
+    background-color: #fff;
     outline: none;
-    font-weight: 300;
-    border: none;
-    padding-left: 20px;
-    font-size: 20px;
-    width: 460px;
-    height: 60px;
-    display: block;
-    margin: 0 auto;
+
+    //
+    font-size: 14.2px;
+    color: #0d326f;
+    font-weight: 400;
   }
 `;
 
 const FoundEmailSection = styled.div`
-  margin: 20px 0;
+  margin-top: 20px;
   text-align: center;
+
   p {
     font-size: 18px;
     color: #111111;
@@ -144,39 +207,49 @@ const FoundEmailSection = styled.div`
 `;
 
 const PwFind = styled.div`
-  margin: 12px 0;
-  width: 100%; /* Make it take full width */
   display: flex;
-  justify-content: center; /* Center content horizontally */
-  align-items: center; /* Center content vertically */
-  height: 40px;
-
-  a {
-    text-decoration: none;
-  }
-
-  h6 {
-    font-weight: regular;
-    font-size: 16px;
-    color: #111111;
-  }
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #888888;
+  width: 420px;
+  height: 23px;
+  text-align: center;
+  margin: 0 auto;
+  padding: 30px 40px 20px 40px;
 `;
 const CheckBox = styled.div`
-  justify-content: center;
-  align-items: center;
+  width: 450px;
+  height: 54px;
   display: flex;
-  width: 600px;
-  height: 60px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  button {
-    font-size: 20px;
-    font-weight: 700;
-    width: 460px;
-    height: 60px;
-    background-color: #111111;
-    color: #fff;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+  border-radius: 5px;
+  border: none;
+  background-color: #0d326f;
+  outline: none;
+
+  color: #fff;
+  font-weight: 500;
+  font-size: 17px;
+  margin-top: 35px;
+  margin-bottom: 100px;
+  text-align: center;
+
+  &:hover {
+    border: 1px solid #ffa228;
+    background-color: #ffa228;
   }
 `;
-
+const ErrorSection = styled.div`
+  color: red;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 16px;
+`;
+const CheckButton = styled.button`
+  width: 450px;
+  height: 54px;
+`;
 export default FindId;

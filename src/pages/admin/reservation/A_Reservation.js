@@ -1,19 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import CommonTable from "../../../components/common/CommonTable";
 import CustomPagination from "../../../components/common/CustomPagination";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate, Link } from "react-router-dom";
+import { AuthContext, HttpHeadersContext } from "../../../context";
+import CommonSearch from "../../../components/common/CommonSearch";
 
 const A_Reservation = () => {
   const [bbsList, setBbsList] = useState([]);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalCnt, setTotalCnt] = useState(0);
-  const navigate = useNavigate();
+  const [isSearchActive, setIsSearchActive] = useState(false); // 검색 활성 상태 추가
   const [linkValue, setLinkValue] = useState("/a_reservation"); // linkValue 상태 추가
+  const navigate = useNavigate();
   const token = localStorage.getItem("access_token");
+  const { auth, setAuth } = useContext(AuthContext);
+  const { headers, setHeaders } = useContext(HttpHeadersContext);
+  const type = "reservation";
   let useRole = null;
 
   if (token) {
@@ -24,10 +30,11 @@ const A_Reservation = () => {
       console.error("토큰 디코딩 오류: ", e);
     }
   }
+  console.log(useRole);
 
   const columns = [
     { label: "No", field: "id" },
-    { label: "이름", field: "nickName" },
+    { label: "닉네임", field: "nickName" },
     { label: "동물", field: "petName" },
     { label: "예약 날짜", field: "reservationDateTime" },
     { label: "삭제", field: "actions" },
@@ -37,9 +44,11 @@ const A_Reservation = () => {
   const getBbsList = async (page) => {
     try {
       const response = await axios.get("/api/admin/reservation", {
-        params: { page: page - 1 }, // Spring pageable 처리
+        params: { page: page - 1 },
+        headers, // Spring pageable 처리
       });
       setBbsList(response.data.content || []);
+      console.log("받는 데이터", bbsList);
       setPageSize(response.data.pageSize || 8);
       setTotalCnt(response.data.totalElements);
     } catch (error) {
@@ -47,7 +56,18 @@ const A_Reservation = () => {
     }
   };
 
-  const handleDelete = async (reservationId) => {
+  // 검색 후 결과 갱신
+  const updateBbsList = (data) => {
+    if (data && data.content && data.content.length > 0) {
+      setBbsList(data.content); // 검색 결과가 있을 때만 데이터 업데이트
+      setIsSearchActive(true); // 검색 활성화
+    } else {
+      setBbsList([]); // 결과가 없으면 빈 배열로 초기화
+      setIsSearchActive(false); // 검색 비활성화
+    }
+  };
+
+  const handleDelete = async (id) => {
     // 나한테만 확인을 띄우는 부분
     const isConfirmed = window.confirm("정말로 삭제하시겠습니까?");
 
@@ -60,21 +80,11 @@ const A_Reservation = () => {
     }
 
     try {
-      // 예약 데이터 가져오기
-      const getResponse = await axios.get(
-        `/api/admin/reservation/${reservationId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const reservationData = getResponse.data;
+      console.log("받는 아이디", bbsList.id);
 
       // 바로 삭제 진행
       const deleteResponse = await axios.delete(
-        `/api/admin/reservation/${reservationId}`,
+        `/api/member/reservation/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -83,7 +93,7 @@ const A_Reservation = () => {
       );
 
       if (deleteResponse.status === 200) {
-        alert(`예약자: ${reservationData.nickName}님의 예약이 삭제되었습니다.`);
+        alert(`예약이 삭제되었습니다.`);
         getBbsList(page); // 삭제 후 목록 새로고침
       } else {
         alert("삭제에 실패하였습니다.");
@@ -121,13 +131,16 @@ const A_Reservation = () => {
             ...item,
             // 삭제 버튼
             actions: item.id ? (
-              <button onClick={() => handleDelete(item.reservationId)}>
-                삭제
-              </button>
+              <button onClick={() => handleDelete(item.id)}>삭제</button>
             ) : null, // 빈 행일 경우 삭제 버튼 없음
           }))}
           columns={columns}
           linkPrefix={linkValue}
+          isSearchActive={isSearchActive} // 검색 활성 상태 전달
+        />
+        <CommonSearch
+          type={type}
+          onUpdate={updateBbsList} // 검색 후 업데이트 처리
         />
         <PaginationBox>
           <CustomPagination

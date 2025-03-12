@@ -15,6 +15,7 @@ function QuestionDetail() {
   const { questionId } = useParams();
   const navigate = useNavigate();
   const [postType, setPostType] = useState(2);
+  const { member } = useContext(AuthContext);
 
   const getBbsDetail = async () => {
     if (!questionId) {
@@ -24,7 +25,7 @@ function QuestionDetail() {
 
     try {
       const response = await axios.get(`/api/member/question/${questionId}`, {
-        headers: headers,
+        headers,
       });
       console.log("[questionDetail.js] getBbsDetail() success :D");
       console.log(response.data);
@@ -32,27 +33,18 @@ function QuestionDetail() {
     } catch (error) {
       console.log("[questionDetail.js] getBbsDetail() error :<");
       console.error(error);
+      alert("문의 내용은 작성자만 볼 수 있습니다.")
+      navigate(-1);
     }
   };
-
   useEffect(() => {
-    if (!questionId) {
-      console.error("questionId가 존재하지 않습니다.");
-      return;
-    }
-
+    // 컴포넌트가 렌더링될 때마다 localStorage의 토큰 값으로 headers를 업데이트
     setHeaders({
       Authorization: `Bearer ${localStorage.getItem("access_token")}`,
     });
     getBbsDetail();
-  }, [questionId]); // questionId가 변경될 때마다 실행
+  }, [questionId]);
 
-  useEffect(() => {
-    console.log("questionId:", questionId);
-    if (!questionId) return;
-    console.log("questionId:", questionId);
-    getBbsDetail();
-  }, []);
   return (
     <Container>
       <ContentWrapper>

@@ -1,24 +1,57 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import my_0 from "../../../assets/imgs/my_0.svg";
 import my_1 from "../../../assets/imgs/my_1.svg";
 import my_2 from "../../../assets/imgs/my_2.svg";
+import { AuthContext, HttpHeadersContext } from "../../../context";
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+
 
 //MyPage
 function MyPage() {
-  const [page, setPage] = useState("1");
+    const { auth, setAuth } = useContext(AuthContext);
+    const { headers, setHeaders } = useContext(HttpHeadersContext);
+
 
   // 강사 수정(네비)
   const navigate = useNavigate();
   const location = useLocation();
-  const userData = location.state?.profile; // MyPageCheck에서 받은 데이터
-  console.log("회원 정보", userData);
+ const [profile, setProfile] = useState([]);
+  
+    useEffect(() => {
+      console.log("access_token:", localStorage.getItem("access_token"));
+      // 컴포넌트가 렌더링될 때마다 localStorage의 토큰 값으로 headers를 업데이트
+      setHeaders({
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      });
 
-  const goToPage = (path) => {
-    navigate(path);
-  };
+    }, []);
+
+
+    const getProfile = async () => {
+      try{
+  
+        const response = await axios.get(`/api/myProfile`,{headers:headers});
+        console.log("회원정보" , response.data)
+        setProfile(response.data)
+
+      }
+      catch(error) {
+        console.log("회원 정보 불러오기 실패", error);
+      }
+  
+    };
+    useEffect(() => {
+      getProfile();
+  
+    },[]);
+
+
+
+
+
 
   //return
   return (
@@ -36,7 +69,7 @@ function MyPage() {
         {/*1.UserProfile - 회원프로필*/}
         <MyPageButton
           onClick={() => {
-            navigate(`/mypage/UserProfile`, { state: { userData } });
+            navigate(`/userprofile`, { state: { profile } });
           }}
         >
           <Article>
@@ -51,7 +84,7 @@ function MyPage() {
         {/*2.UserUpdate - 화원정보 수정*/}
         <MyPageButton
           onClick={() => {
-            navigate(`/mypage/UserUpdate`, { state: { userData } });
+            navigate(`/userupdate`, { state: { profile } });
           }}
         >
           <Article>
@@ -66,7 +99,7 @@ function MyPage() {
         {/*3.ReservationCheck - 예약확인*/}
         <MyPageButton
           onClick={() => {
-            navigate(`/mypage/ReservationCheck`, { state: { userData } });
+            navigate(`/rervationcheck`);
           }}
         >
           <Article>

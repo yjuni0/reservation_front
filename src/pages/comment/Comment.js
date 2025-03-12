@@ -8,12 +8,11 @@ function Comment(props) {
   const commentId = props.comment.id;
   const page = props.page;
   const { headers, setHeaders } = useContext(HttpHeadersContext);
+  const memberId = Number(localStorage.getItem("id"));
+
   const deleteComment = async () => {
     await axios
-      .delete(
-        `/api/member/comment/${commentId}`,
-        { headers: headers }
-      )
+      .delete(`/api/member/comment/${commentId}`, { headers: headers })
       .then((resp) => {
         console.log("[BbsComment.js] deleteComment() success :D");
         console.log(resp.data);
@@ -27,7 +26,7 @@ function Comment(props) {
         console.log(err);
       });
   };
-
+  console.log("댓글 시간", comment);
 
   return (
     <Container>
@@ -41,13 +40,19 @@ function Comment(props) {
               <Td>{comment.content}</Td>
             </tr>
             <tr>
-              <Td>{comment.createdDate}</Td>
+              <Td>{`${comment.createdDate.split("T")[0]} ${comment.createdDate
+                .split("T")[1]
+                .slice(0, 5)}`}</Td>
             </tr>
           </tbody>
         </Table>
 
         <BtnBox>
-          <Btn onClick={deleteComment}>삭제</Btn>
+          {memberId === comment.memberId && (
+            <>
+              <Btn onClick={deleteComment}>삭제</Btn>
+            </>
+          )}
         </BtnBox>
       </CommentBox>
     </Container>
@@ -93,9 +98,12 @@ const Btn = styled.button`
   height: 30px;
   border: 1px solid #111111;
   cursor: pointer;
+  background-color: #000; /* 검정색 배경 */
+  border-radius: 5px;
+  color: white;
 
   &:hover {
-    background-color: #ddd;
+    background-color: #333; /* hover 시 더 어두운 검정색 */
   }
 `;
 

@@ -60,7 +60,9 @@ function Write({
     const req = { title, content };
 
     try {
-      const response = await axios.post("/api/question", req, { headers });
+      const response = await axios.post("/api/member/question", req, {
+        headers,
+      });
       const questionId = response.data.id;
 
       if (questionId) {
@@ -88,11 +90,11 @@ function Write({
     const req = { title, content };
 
     try {
-      const response = await axios.post("/api/review", req, { headers });
+      const response = await axios.post("/api/member/review", req, { headers });
       const answerId = response.data.id;
 
       if (answerId) {
-        alert("새로운 답변 게시글을 성공적으로 등록했습니다 :D");
+        alert("새로운 리뷰 게시글을 성공적으로 등록했습니다 :D");
 
         // 작성하는 페이지가 어드민 페이지일 경우 이동 경로 설정
         if (window.location.pathname.includes("/admin")) {
@@ -101,7 +103,7 @@ function Write({
           navigate("/review"); // 일반 사용자 답변 페이지로 이동
         }
       } else {
-        alert("답변 게시글 등록에 실패했습니다.");
+        alert("리뷰 게시글 등록에 실패했습니다.");
       }
     } catch (err) {
       console.error("답변 게시글 작성 오류:", err);
@@ -136,7 +138,6 @@ function Write({
 const Button = styled.button`
   padding: 10px 20px;
   border: none;
-
   border-radius: 5px;
   cursor: pointer;
   margin-left: 10px;

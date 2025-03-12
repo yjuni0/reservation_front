@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
@@ -6,12 +6,16 @@ function UserProfile() {
   // 강사 수정(네비)
   const navigate = useNavigate();
   const location = useLocation();
-  const userData = location.state?.userData;
+  const userData = location.state?.profile;
   console.log("회원 정보", userData);
 
   const goToPage = (path) => {
     navigate(path);
   };
+
+
+
+
 
   return (
     <ProfileContainer>
@@ -82,13 +86,7 @@ function UserProfile() {
     ))}
       {/* 버튼*/}
       <AnimalBoxButton>
-        <button
-          onClick={() => {
-            navigate(`/mypage`);
-          }}
-        >
-          이전
-        </button>
+
         <button
           onClick={() => {
             navigate(`/mypage`);

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { jwtDecode } from "jwt-decode"; // jwt-decode 라이브러리 import
 import header_logo from "../../assets/imgs/logo_w.svg";
 import header_menu_stroke from "../../assets/imgs/header_menu.svg";
@@ -7,21 +7,16 @@ import myIcon from "../../assets/imgs/header_mypage.svg";
 import userIcon from "../../assets/imgs/header_user.svg";
 import searchIcon from "../../assets/imgs/header_search.svg";
 import { useNavigate } from "react-router-dom";
-// import AdminHome from "../admin/adminHome";
 import styled from "styled-components";
 import { AuthContext } from "../../context";
-// --------------------------------------------------------------------------------------------------------------------
 
 function Header() {
   const navItems = [
     {
-      name: "홈",
-      path: "/",
-    },
-    {
       name: "병원 소개",
+      path: "/introduce",
       submenu: [
-        { path: "/home", name: "병원 소개" },
+        { path: "/introduce", name: "병원 소개" },
         { path: "/introduce", name: "개요" },
         { path: "/directions", name: "오시는 길" },
         { path: "/department", name: "진료과 소개" },
@@ -33,33 +28,31 @@ function Header() {
       submenu: [
         { path: "/notice", name: "공지 사항" },
         { path: "/notice", name: "목록" },
-        { path: "/notice", name: "관리자" },
       ],
     },
     {
       name: "온라인예약",
+      path: "/userreserv",
       submenu: [
         { path: "/userreserv", name: "온라인 예약" },
         { path: "/userreserv", name: "회원 예약" },
-        { path: "#/nonuserreserve", name: "비회원 예약" },
+        { path: "/nonuserreserve", name: "비회원 예약" },
       ],
     },
     {
       name: "온라인상담",
-      path: "/onlineCounsel",
+      path: "/question",
       submenu: [
-        { path: "/onlineCounsel", name: "온라인 상담" },
-        { path: "/onlineCounsel", name: "목록" },
-        { path: "/onlineCounsel", name: "관리자" },
+        { path: "/question", name: "온라인 상담" },
+        { path: "/question", name: "목록" },
       ],
     },
-
     {
       name: "고객 리뷰",
+      path: "/review",
       submenu: [
         { path: "/review", name: "고객 리뷰" },
         { path: "/review", name: "목록" },
-        { path: "/review", name: "관리자" },
       ],
     },
   ];
@@ -69,21 +62,30 @@ function Header() {
   const { auth, setAuth } = useContext(AuthContext);
   const token = localStorage.getItem("access_token");
 
+  const headerRef = useRef(null); // header 요소를 참조할 ref
+
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      setAuth(true); // 토큰이 있으면 로그인 상태로 설정
+    } else {
+      setAuth(false); // 토큰이 없으면 로그인하지 않은 상태로 설정
+    }
+  }, [setAuth]);
+
   let useRole = null;
   if (token) {
     try {
       // 토큰 디코딩
-      console.log(token);
       const decodedToken = jwtDecode(token);
-      console.log(decodedToken);
       useRole = decodedToken.roles;
     } catch (e) {
       console.log("토큰 디코딩 오류 : ", e);
     }
   }
+
   useEffect(() => {
     const handleScroll = () => {
-      // 100px 아래로 스크롤하면 박스 숨기기
       if (window.scrollY > 0) {
         setShowBox(false);
       } else {
@@ -91,8 +93,30 @@ function Header() {
       }
     };
 
+    const handleMouseEnter = () => {
+      setShowBox(true); // 마우스가 화면에 올라오면 메뉴 다시 보이기
+    };
+
+    const handleMouseLeave = () => {
+      if (window.scrollY > 0) {
+        setShowBox(false); // 스크롤을 내리면 메뉴 숨기기
+      }
+    };
+
+    const headerElement = headerRef.current; // ref를 통해 header 요소를 가져옵니다.
+
+    if (headerElement) {
+      headerElement.addEventListener("mouseenter", handleMouseEnter); // header 영역에 마우스가 올라오면 메뉴 보이게 설정
+      headerElement.addEventListener("mouseleave", handleMouseLeave); // header 영역에서 마우스가 나가면 메뉴 숨기기
+    }
+
     window.addEventListener("scroll", handleScroll);
+
     return () => {
+      if (headerElement) {
+        headerElement.removeEventListener("mouseenter", handleMouseEnter);
+        headerElement.removeEventListener("mouseleave", handleMouseLeave);
+      }
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
@@ -102,6 +126,7 @@ function Header() {
     if (confirmLogout) {
       localStorage.removeItem("access_token");
       localStorage.removeItem("nick_name");
+      localStorage.removeItem("id");
       setAuth(false);
       navigate("/");
     }
@@ -125,7 +150,7 @@ function Header() {
 
   return (
     <HeaderContainer>
-      <HeaderSection>
+      <HeaderSection ref={headerRef}>
         <Logo>
           <Link to="/">
             <img src={header_logo} width="128px" height="36px" alt="logo" />
@@ -163,14 +188,14 @@ function Header() {
           <LoginBox>
             {useRole === "ROLE_ADMIN" ? (
               <>
-                <Link to="/admin" onClick={handleAdminPageClick}>
+                <Link to="/admin/adminuser" onClick={handleAdminPageClick}>
                   <img src={myIcon} alt="관리자페이지" />
                   <LoginButton>관리자</LoginButton>
                 </Link>
               </>
             ) : (
               <>
-                <Link to="/mypage/Check" onClick={handleMyPageClick}>
+                <Link to="/mypagecheck" onClick={handleMyPageClick}>
                   <img src={myIcon} alt="마이페이지" />
                   <LoginButton>마이페이지</LoginButton>
                 </Link>
@@ -190,16 +215,13 @@ function Header() {
             )}
           </LoginBox>
           <SearchBox>
+            <input type="search" placeholder="검색어를 입력해주세요."></input>
             <Link to="/">
-              <input type="search" placeholder="검색어를 입력해주세요."></input>
               <img src={searchIcon} />
-              <LoginButton></LoginButton>
             </Link>
           </SearchBox>
         </HederSectionB>
       </HeaderSection>
-
-      {/* ------------------------------------------------------------------------------------------------ */}
     </HeaderContainer>
   );
 }

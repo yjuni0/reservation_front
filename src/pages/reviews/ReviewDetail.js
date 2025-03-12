@@ -8,23 +8,24 @@ import List from "../../components/button/List";
 import CommentList from "../comment/CommentList";
 import CommentWrite from "../comment/CommentWrite";
 import UpdateGo from "../../components/button/UpdateGo";
+import ReviewLike from "../../pages/reviews/ReviewLike";
 
 function ReviewDetail() {
   const { headers, setHeaders } = useContext(HttpHeadersContext);
   const [review, setReview] = useState({});
   const { reviewId } = useParams();
-  const { member } = useContext(AuthContext); // AuthContext에서 member 객체 가져오기
   const navigate = useNavigate();
   const [comments, setComments] = useState([]);
   const [postType, setPostType] = useState(3);
-
+  const memberId = Number(localStorage.getItem("id"));
+  console.log(memberId)
   const getBbsDetail = async () => {
     try {
       const response = await axios.get(`/api/review/${reviewId}`);
 
       console.log("[reviewDetail.js] getBbsDetail() success :D");
       console.log(response.data);
-
+      
       setReview(response.data);
     } catch (error) {
       console.log("[reviewDetail.js] getBbsDetail() error :<");
@@ -39,7 +40,7 @@ function ReviewDetail() {
     });
     getBbsDetail();
   }, [reviewId]);
-
+  console.log("게시글 멤버 아이디:",review.memberId);
   return (
     <Container>
       <ContentWrapper>
@@ -49,22 +50,26 @@ function ReviewDetail() {
               <tr>
                 <TableTitle>{review.title}</TableTitle>
               </tr>
+
               <tr>
                 <TableContent>{review.content} </TableContent>
               </tr>
             </tbody>
           </Table>
         </TableBox>
+        <ReviewLike></ReviewLike>
 
         <CommentList reviewId={reviewId} comments={comments} />
 
         <CommentWrite reviewId={reviewId} />
 
         <BottomBox>
+        {memberId === review.memberId && (
+        <>
           <Delete />
-
           <UpdateGo />
-
+        </>
+        )}
           <List postType={postType} />
         </BottomBox>
       </ContentWrapper>

@@ -26,8 +26,8 @@ function UserReserv() {
     // headers 설정 및 로그인 상태 체크
     const token = localStorage.getItem("access_token");
     if (!token) {
-      alert("로그인 한 사용자만 게시글을 작성할 수 있습니다 !");
-      navigate(-1);
+      alert("로그인이 필요합니다! 로그인 페이지로 이동합니다.");
+      navigate("/signin");
     } else {
       setHeaders({ Authorization: `Bearer ${token}` });
     }
@@ -38,13 +38,18 @@ function UserReserv() {
     const fetchPetListAndSlots = async () => {
       try {
         if (headers.Authorization) {
-          const petResponse = await axios.get("/api/pet", { headers });
+          const petResponse = await axios.get("/api/member/pet", { headers });
           setPetList(petResponse.data);
 
           if (selectedDate && selectedDepartment) {
-            const formattedDate = selectedDate.toISOString().split("T")[0];
+            const formatDateToKST = (date) => {
+              const kstDate = new Date(date.getTime() + 9 * 60 * 60 * 1000); // UTC → KST 변환
+              return kstDate.toISOString().split("T")[0];
+            };
+            const formattedDate = formatDateToKST(selectedDate);
+            console.log("날짜 선택:", formattedDate);
             const slotResponse = await axios.get(
-              `/api/slot?departmentName=${selectedDepartment}&date=${formattedDate}`,
+              `/api/member/slot?departmentName=${selectedDepartment}&date=${formattedDate}`,
               { headers }
             );
             setTimeSlots(slotResponse.data);
@@ -64,7 +69,7 @@ function UserReserv() {
     // selectedPet 또는 selectedTime 변경 시 로그 출력
     if (selectedPet !== null) {
       const selectedPetName = petList[selectedPet];
-      console.log("selectedPetName:", selectedPetName?.name);
+      console.log("selectedPetName:", selectedPetName?.id);
     }
   }, [selectedPet, petList]);
 
@@ -75,7 +80,7 @@ function UserReserv() {
 
       axios
         .get(
-          `/api/slot?departmentName=${selectedDepartment}&date=${formattedDate}`
+          `/api/member/slot?departmentName=${selectedDepartment}&date=${formattedDate}`
         )
         .then((response) => {
           console.log(response.data);
@@ -101,11 +106,12 @@ function UserReserv() {
     const selectedSlotData = timeSlots[selectedTime];
     console.log("Selected Slot ID:", selectedSlotData.id);
     const req = {
-      petName: selectedPetData.name,
+      petId: selectedPetData.id,
       slotId: selectedSlotData.id,
     };
+    console.log("보낸느 데이터", req);
     await axios
-      .post("/api/reservation", req)
+      .post("/api/member/reservation", req, { headers: headers })
       .then((response) => {
         console.log("응답 데이터: ", response.data);
         const reserveId = response.data.id;
@@ -155,13 +161,13 @@ function UserReserv() {
           ) : timeSlots.length > 0 ? (
             timeSlots.map((slot, index) => (
               <TimeButton
-              key={index}
-              disabled={!slot.isAvailable} // isAvailable이 false면 비활성화
-              active={selectedTime === index && slot.isAvailable}
-              onClick={() => slot.isAvailable && setSelectedTime(index)}
-            >
-              {slot.slotTime.slice(0, 5)}
-            </TimeButton>
+                key={index}
+                disabled={!slot.isAvailable} // isAvailable이 false면 비활성화
+                active={selectedTime === index && slot.isAvailable}
+                onClick={() => slot.isAvailable && setSelectedTime(index)}
+              >
+                {slot.slotTime.slice(0, 5)}
+              </TimeButton>
             ))
           ) : (
             <p>예약 가능한 시간이 없습니다.</p>
@@ -277,8 +283,7 @@ const TimeButton = styled.button`
     props.disabled ? "#111" : props.active ? "#fff" : "#000"};
 
   &:hover {
-    background-color: ${(props) =>
-      props.disabled ? "#f4f4f4" : "#111"};
+    background-color: ${(props) => (props.disabled ? "#f4f4f4" : "#111")};
     color: ${(props) => (props.disabled ? "#111" : "#fff")};
   }
 `;

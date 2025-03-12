@@ -24,7 +24,7 @@ function ReviewUpdate() {
       }
 
       await axios.patch(
-        `/api/member/review/${bbs.id}`,
+        `/api/review/${bbs.id}`,
         { title, content },
         {
           headers: {
@@ -77,7 +77,7 @@ function ReviewUpdate() {
 
         <BottomBox>
           <Update
-            noticeId={reviewId}
+            reviewId={reviewId}
             navigate={navigate}
             title={title}
             content={content}

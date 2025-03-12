@@ -1,37 +1,105 @@
 import axios from "axios";
-import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { HttpHeadersContext } from "../../context";
+import Update from "../../components/button/Update";
+import Back from "../../components/button/Back";
 
 function NoticeUpdate() {
   const location = useLocation();
   const { bbs } = location.state || {};
   console.log(bbs);
-  // const boardId = bbs.boardId;
-  const [title, setTitle] = useState(bbs.title);
-  const [content, setContent] = useState(bbs.content);
+  const navigate = useNavigate();
+  const [title, setTitle] = useState(bbs?.title || "");
+  const [content, setContent] = useState(bbs?.content || "");
+  const [files, setFiles] = useState([]); // 새로 추가할 파일
+  const [existingFiles, setExistingFiles] = useState([]); // 기존 업로드된 파일
+  const [pageNumber] = useState(1);
+  const { headers, setHeaders } = useContext(HttpHeadersContext);
+  const noticeId = bbs?.id;
 
-  const update = async () => {
+
+  useEffect(() => {
+    if (!noticeId) return;
+
+    setHeaders({
+      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+    });
+
+    getBbsDetail();
+  }, [noticeId]);
+
+  // 기존 게시글 정보 가져오기 (파일 포함)
+  const getBbsDetail = async () => {
     try {
-      await axios.patch(`/api/admin/notice/${bbs.id}`, {
-        title: title,
-        content: content,
-      });
-      alert("수정되었습니다.");
-      window.location.href = "/notice";
+      const response = await axios.get(`/api/notice/${noticeId}`);
+      setTitle(response.data.title);
+      setContent(response.data.content);
+
+      if (Array.isArray(response.data.noticeFiles)) {
+        setExistingFiles(response.data.noticeFiles);
+      } else {
+        setExistingFiles([]);
+      }
     } catch (error) {
-      console.error("Error fetching board data:", error);
+      console.log("[NoticeUpdate.js] getBbsDetail() error :<", error);
     }
   };
 
-  //changeTitle
+  // 제목 변경
   const changeTitle = (event) => {
     setTitle(event.target.value);
   };
 
-  //changeContent
+  // 내용 변경
   const changeContent = (event) => {
     setContent(event.target.value);
+  };
+
+  // 새 파일 추가
+  const handleChangeFile = (event) => {
+    const selectedFiles = Array.from(event.target.files).slice(0, 5);
+    setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
+  };
+
+  // 기존 파일 삭제
+  const handleDeleteFile = async (fileId) => {
+    try {
+      await axios.delete(
+        `/api/admin/notice/${noticeId}/file/delete?fileId=${fileId}`,
+        {
+          params: { fileId }, // @RequestParam 방식으로 변경
+          headers,
+        }
+      );
+      setExistingFiles(existingFiles.filter((file) => file.id !== fileId));
+    } catch (error) {
+      console.error("파일 삭제 오류:", error);
+    }
+  };
+
+  /* 파일 업로드 */
+  const fileUpload = async (noticeId) => {
+    const fd = new FormData();
+    files.forEach((file) => fd.append("file", file)); // 파일 추가
+
+    try {
+      const response = await axios.post(
+        `/api/admin/notice/${noticeId}/file`,
+        fd,
+        {
+          headers: {
+            ...headers,
+            "Content-Type": "multipart/form-data", // 파일 전송 시 Content-Type 설정
+          },
+        }
+      );
+      console.log("[file.js] fileUpload() success :D", response.data);
+      alert("파일 업로드 성공 :D");
+    } catch (err) {
+      console.log("[FileData.js] fileUpload() error :<", err);
+    }
   };
 
   return (
@@ -49,6 +117,7 @@ function NoticeUpdate() {
                   />
                 </td>
               </tr>
+              
               <tr>
                 <td>
                   <TableContent value={content} onChange={changeContent} />
@@ -57,12 +126,63 @@ function NoticeUpdate() {
             </tbody>
           </Table>
         </TableBox>
+        <UploadWrapper>
+                <FileInputWrapper>
+                  {/* 기존 파일 목록 표시 (삭제 가능) */}
+                  {existingFiles.length > 0 && (
+                    <div>
+                      {existingFiles.map((file) => (
+                        <div
+                          key={file.id}
+                          style={{ display: "flex", alignItems: "center" }}
+                        >
+                          <span>
+                            {file.originFileName} {file.name}
+                          </span>
+                          <button onClick={() => handleDeleteFile(file.id)}>
+                            삭제
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
+                  {/* 새로 추가된 파일 목록 */}
+                  {files.length > 0 && (
+                    <div>
+                      {files.map((file, index) => (
+                        <div
+                          key={index}
+                          style={{ display: "flex", alignItems: "center" }}
+                        >
+                          <span>{file.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* 새 파일 추가 */}
+                  {files.length < 5 && (
+                    <div>
+                      <InputFile
+                        type="file"
+                        name="file"
+                        onChange={handleChangeFile}
+                        multiple
+                      />
+                    </div>
+                  )}
+                </FileInputWrapper>
+              </UploadWrapper>
         <BottomBox>
-          <Button onClick={update}>확인</Button>
-          <Link to="/notice">
-            <Button>취소</Button>
-          </Link>
+          <Update
+            noticeId={noticeId}
+            navigate={navigate}
+            title={title}
+            content={content}
+            fileUpload={fileUpload} // 파일 업로드 함수 전달
+          />
+          <Back pageNumber={pageNumber} itemId={noticeId} />
         </BottomBox>
       </ContentWrapper>
     </Container>
@@ -139,16 +259,46 @@ const BottomBox = styled.div`
   margin-top: 20px;
   margin-bottom: 100px;
 `;
-
-// 버튼 스타일
-const Button = styled.button`
-  width: 50px;
-  height: 30px;
-  font-weight: 400;
-  font-size: 16px;
-  font-family: "Noto Sans KR", serif;
-  background-color: #f4f4f4;
-  border: 1px solid #111111;
-  margin-left: 20px;
+const UploadWrapper = styled.div`
+  margin-bottom: 10px;
+  width: 1000px;
 `;
+
+const InputFile = styled.input`
+  width: 270px;
+  font-size: 16px;
+  color: #111111;
+  cursor: pointer;
+  position: relative;
+  padding: 10px 20px;
+  border: 1px solid #111111;
+  border-radius: 5px;
+  background-color: white;
+  transition: background-color 0.3s ease;
+  left: 300px;
+  &:hover {
+    background-color: #f0f8f0;
+  }
+`;
+
+const FileInputWrapper = styled.div`
+  border: 2px solid #ccc;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  max-width: 600px;
+  width: 100%;
+  height: auto;
+  min-height: 60px;
+
+  button {
+    padding-left: 40px;
+  }
+
+  span {
+    font-size: 14px;
+    font-weight: 500;
+  }
+`;
+
 export default NoticeUpdate;

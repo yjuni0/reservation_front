@@ -31,13 +31,19 @@ function MyPageCheck() {
       .post("/api/myPage", req, { headers: headers })
       .then((response) => {
         console.log("응답 데이터", response.data);
-        const profile = response.data;
+
+        navigate("/mypage")
       })
       .catch((error) => {
         console.log("error", error);
       });
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      getProfile();
+    }
+  };
   return (
     <MyPageContainer>
       {/*마이페이지_타이틀*/}
@@ -61,6 +67,7 @@ function MyPageCheck() {
             placeholder="비밀번호 입력"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
           <button type="submit" onClick={getProfile}>
             확인
@@ -136,7 +143,7 @@ const Article = styled.div`
   img {
     width: 77px;
     height: auto;
-    cursor: pointer;
+   
   }
   .tit {
     margin-top: 20px;
@@ -153,6 +160,37 @@ const Article = styled.div`
     color: #888;
     text-align: center;
     cursor: pointer;
+  }
+  input {
+    position: relative;
+    left: 50px;
+    width: 200px;
+    height: 40px;
+  }
+
+  button {
+    position: relative;
+    top: 60px;
+    right: 100px;
+
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #3b82f6;
+    border: none;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    height: 40px;
+    width: 100px;
+
+    &:hover {
+      background-color: #2563eb; /* 호버 시 버튼 색 변화 */
+    }
+
+    &:active {
+      background-color: #1d4ed8; /* 클릭 시 버튼 색 변화 */
+    }
   }
 
   &:hover {

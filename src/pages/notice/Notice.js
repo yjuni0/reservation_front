@@ -3,10 +3,11 @@ import styled from "styled-components";
 import axios from "axios";
 import CommonTable from "../../components/common/CommonTable";
 import CustomPagination from "../../components/common/CustomPagination";
-import { jwtDecode } from "jwt-decode"; // jwt-decode 라이브러리 import
+import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context"; // AuthContext 불러오기
+import { AuthContext } from "../../context";
 import WriteGo from "../../components/button/WriteGo";
+import CommonSearch from "../../components/common/CommonSearch";
 
 function Notice() {
   const [bbsList, setBbsList] = useState([]);
@@ -14,10 +15,12 @@ function Notice() {
   const [pageSize, setPageSize] = useState(10);
   const [totalCnt, setTotalCnt] = useState(0);
   const token = localStorage.getItem("access_token");
-  const [role, setRole] = useState(null); // 역할을 state로 설정
+  const [role, setRole] = useState(null);
   const navigate = useNavigate();
+  const type = "notice";
+  const [isSearchActive, setIsSearchActive] = useState(false); // 검색 활성 상태 추가
+  const [linkValue, setLinkValue] = useState("/notice");
 
-  const [linkValue, setLinkValue] = useState("/notice"); // linkValue 상태 추가
   useEffect(() => {
     if (token) {
       try {
@@ -35,25 +38,37 @@ function Notice() {
     { label: "작성자", field: "adminName" },
     { label: "작성일", field: "createdDate" },
   ];
+
   const getBbsList = async (page) => {
     try {
       const response = await axios.get("/api/notice", {
         params: { page: page - 1 },
       });
-      setBbsList(response.data.content || []); // 응답이 없을 경우 빈 배열 처리
+      setBbsList(response.data.content || []);
       setPageSize(response.data.pageSize || 8);
       setTotalCnt(response.data.totalElements);
     } catch (error) {
       console.error("Error fetching board data:", error);
     }
   };
+
+  const updateBbsList = (data) => {
+    if (data && data.content && data.content.length > 0) {
+      setBbsList(data.content); // 검색 결과가 있을 때만 데이터 업데이트
+      setIsSearchActive(true); // 검색 활성화
+    } else {
+      setBbsList([]); // 결과가 없으면 빈 배열로 초기화
+      setIsSearchActive(false); // 검색 비활성화
+    }
+  };
+
   useEffect(() => {
     if (window.location.pathname.includes("/admin")) {
-      setLinkValue("/admin/notice"); // "/admin/question"으로 설정
+      setLinkValue("/admin/notice");
     } else {
-      setLinkValue("/notice"); // "/question"으로 설정
+      setLinkValue("/notice");
     }
-  }, []); // 컴포넌트가 처음 렌더링될 때 한번만 실행
+  }, []);
 
   useEffect(() => {
     getBbsList(page);
@@ -62,26 +77,41 @@ function Notice() {
   const addEmptyRows = (data) => {
     const rowsWithEmpty = [];
     data.forEach((item) => {
-      rowsWithEmpty.push({}); // 빈 데이터 행 추가 (공백 행)
+      rowsWithEmpty.push({}); // 빈 데이터 행 추가
       rowsWithEmpty.push(item); // 데이터 행 추가
     });
     return rowsWithEmpty;
   };
+
   const bbsListWithEmptyRows = addEmptyRows(bbsList);
 
   return (
     <Container>
       <ContentWrapper>
         <CommonTable
-          bbsList={bbsListWithEmptyRows}
+          bbsList={bbsListWithEmptyRows.map((item) => ({
+            ...item,
+            title: item.title ? (
+              <span style={{ color: "blue", cursor: "pointer" }}>
+                {item.title}
+              </span>
+            ) : null,
+          }))}
           columns={columns}
           linkPrefix={linkValue}
+          isSearchActive={isSearchActive}
         />
         {role === "ROLE_ADMIN" && (
           <BottomBox>
             <WriteGo />
           </BottomBox>
         )}
+
+        <CommonSearch
+          type={type}
+          onUpdate={updateBbsList} // 검색 후 업데이트 처리
+        />
+
         <PaginationBox>
           <CustomPagination
             page={page}
@@ -144,7 +174,7 @@ const BottomBox = styled.div`
   max-width: 1000px;
   justify-content: flex-end;
   margin-top: 20px;
-  margin-bottom: 10px;
+
   padding-left: 140px;
   padding-right: 140px;
 `;

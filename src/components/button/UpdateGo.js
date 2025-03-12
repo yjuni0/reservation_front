@@ -5,7 +5,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { HttpHeadersContext } from "../../context"; // HttpHeadersContext import
 
 function UpdateGo() {
-  const { setHeaders } = useContext(HttpHeadersContext); // setHeaders 가져오기
+  const {headers, setHeaders } = useContext(HttpHeadersContext); // setHeaders 가져오기
   const { noticeId, questionId, reviewId } = useParams(); // useParams로 noticeId 받기
   const navigate = useNavigate();
   const location = useLocation();
@@ -25,7 +25,7 @@ function UpdateGo() {
 
   const getQuestionDetail = async () => {
     try {
-      const response = await axios.get(`/api/question/${questionId}`);
+      const response = await axios.get(`/api/member/question/${questionId}`, {headers});
       setQuestion(response.data); // 받아온 데이터를 question 상태에 저장
     } catch (error) {
       console.error("getQuestionDetail() error:", error);
@@ -70,11 +70,11 @@ function UpdateGo() {
     const isAdmin = location.pathname.includes("/admin"); // 어드민 여부 확인
 
     if (question) {
-      navigate(`${isAdmin ? "/admin" : ""}/question/${noticeId}/update`, {
+      navigate(`${isAdmin ? "/admin" : ""}/question/${questionId}/update`, {
         state: { bbs: question },
       });
     } else if (review) {
-      navigate(`${isAdmin ? "/admin" : ""}/review/${noticeId}/update`, {
+      navigate(`${isAdmin ? "/admin" : ""}/review/${reviewId}/update`, {
         state: { bbs: review },
       });
     } else {
@@ -95,6 +95,7 @@ const Button = styled.button`
   margin-left: 10px;
   background-color: #000; /* 검정색 배경 */
   color: white;
+  margin-bottom: 50px;
 
   &:hover {
     background-color: #333; /* hover 시 더 어두운 검정색 */

@@ -1,21 +1,23 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { AuthContext, HttpHeadersContext } from "../../context";
 import axios from "axios";
+import List from "../../components/button/List";
+import Write from "../../components/button/Write";
 
 //관리자 공지작성으로
 
 function NoticelWrite() {
-  const { auth, setAuth } = useContext(AuthContext);
   const { headers, setHeaders } = useContext(HttpHeadersContext);
-
+  const location = useLocation();
   const navigate = useNavigate();
-
+  const { bbs } = location.state || {}; // bbs가 없으면 빈 객체를 사용
+  const noticeId = bbs?.id;
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [password, setPassword] = useState("");
   const [files, setFiles] = useState([]); // 추가: 파일 목록 상태 추가
+  const [postType, setPostType] = useState(1);
 
   const changeTitle = (event) => {
     setTitle(event.target.value);
@@ -24,9 +26,6 @@ function NoticelWrite() {
   const changeContent = (event) => {
     setContent(event.target.value);
   };
-  const changePassword = (event) => {
-    setPassword(event.target.value);
-  };
 
   const handleChangeFile = (event) => {
     // 총 5개까지만 허용
@@ -34,96 +33,57 @@ function NoticelWrite() {
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
   };
 
-  // 주어진 배열의 일부에 대한 얕은 복사본을 생성
-  const handleRemoveFile = (index) => {
-    setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
-  };
-
   /* 파일 업로드 */
   const fileUpload = async (noticeId) => {
-    console.log("업로드할 파일 목록:", files);
-    // 파일 데이터 저장
     const fd = new FormData();
-    files.forEach((file) => fd.append("file", file));
+    files.forEach((file) => fd.append("file", file)); // 파일 추가
 
-    for (let pair of fd.entries()) {
-      console.log(`✅ FormData 확인 -> ${pair[0]}:`, pair[1]);
-    }
-
-    await axios
-      .post(`/api/admin/notice/${noticeId}/file`, fd, {
-        headers: headers,
-      })
-      .then((resp) => {
-        console.log("[file.js] fileUpload() success :D");
-        console.log(resp.data);
-
-        alert("파일 업로드 성공 :D");
-      })
-      .catch((err) => {
-        console.log("[FileData.js] fileUpload() error :<");
-        console.log(err);
-      });
-  };
-
-  const createBbs = async () => {
-    const req = {
-      title: title,
-      content: content,
-      // password: password,
-    };
-
-    await axios
-      .post("/api/admin/notice", req, { headers: headers })
-      .then((resp) => {
-        console.log("응답 데이터:", resp.data); // 응답 데이터 확인
-        const noticeId = resp.data.id; // `noticeId` 대신 `id` 사용
-        console.log("추출한 noticeId:", noticeId);
-        alert("새로운 게시글을 성공적으로 등록했습니다 :D");
-        navigate(`/noticedetail/${noticeId}`);
-
-        if (noticeId) {
-          fileUpload(noticeId); // 올바른 ID를 전달하여 파일 업로드 실행
-        } else {
-          console.error("❌ noticeId가 응답 데이터에 포함되지 않음!");
+    try {
+      const response = await axios.post(
+        `/api/admin/notice/${noticeId}/file`,
+        fd,
+        {
+          headers: {
+            ...headers,
+            "Content-Type": "multipart/form-data", // 파일 전송 시 Content-Type 설정
+          },
         }
-      })
-      .catch((err) => {
-        console.error("[NoticeWrite.js] createBbs() error:", err);
-      });
-
-    // await axios
-    //   .post("/api/admin/notice/write", req, { headers: headers })
-    //   .then((resp) => {
-
-    //     console.log(resp.data);
-
-    //     const noticeId = resp.data.noticeId;
-
-    //     console.log("noticeId:", noticeId);
-    //     fileUpload(noticeId);
-
-    //     alert("새로운 게시글을 성공적으로 등록했습니다 :D");
-    //     navigate(`/noticedetail/${noticeId}`);
-    //   })
-    //   .catch((err) => {
-    //     console.log("[noticeWrite.js] createBbs() error :<");
-    //     console.log(err);
-    //   });
+      );
+      console.log("[file.js] fileUpload() success :D", response.data);
+      alert("파일 업로드 성공 :D");
+    } catch (err) {
+      console.log("[FileData.js] fileUpload() error :<", err);
+    }
   };
+
+  // // 게시글 세부 정보 가져오기 (파일 목록 포함)
+  // const getBbsDetail = async () => {
+  //   try {
+  //     const response = await axios.get(`/api/notice/${noticeId}`);
+  //     console.log("[NoticeDetail.js] getBbsDetail() success :D", response.data);
+
+  //     // 서버에서 받아온 파일 목록이 있으면 설정
+  //     if (
+  //       response.data.noticeFiles &&
+  //       Array.isArray(response.data.noticeFiles)
+  //     ) {
+  //       setFiles(response.data.noticeFiles);
+  //     } else {
+  //       setFiles([]); // 파일 목록이 없으면 빈 배열로 설정
+  //     }
+
+  //     setTitle(response.data.title);
+  //     setContent(response.data.content);
+  //   } catch (error) {
+  //     console.log("[NoticeDetail.js] getBbsDetail() error :<", error);
+  //   }
+  // };
 
   // useEffect(() => {
-  //   // 컴포넌트가 렌더링될 때마다 localStorage의 토큰 값으로 headers를 업데이트
-  //   setHeaders({
-  //     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-  //   });
-
-  //   // 로그인한 사용자인지 체크
-  //   if (!auth) {
-  //     alert("로그인 한 사용자만 게시글을 작성할 수 있습니다 !");
-  //     navigate(-1);
+  //   if (noticeId) {
+  //     getBbsDetail(); // 게시글 세부 정보를 가져옴
   //   }
-  // }, []);
+  // }, [noticeId]);
 
   return (
     <Container>
@@ -158,16 +118,7 @@ function NoticelWrite() {
                         key={index}
                         style={{ display: "flex", alignItems: "center" }}
                       >
-                        {/* <p>
-                          <strong>FileName:</strong> {file.name}
-                        </p> */}
-                        <button
-                          className="delete-button"
-                          type="button"
-                          onClick={() => handleRemoveFile(index)}
-                        >
-                          {/* x */}
-                        </button>
+                        <span>{file.name}</span>
                       </div>
                     ))}
                     {files.length < 5 && (
@@ -186,6 +137,20 @@ function NoticelWrite() {
             </tbody>
           </Table>
         </TableBox>
+        <BottomBox>
+          <Write
+            title={title}
+            content={content}
+            files={files}
+            setTitle={setTitle}
+            setContent={setContent}
+            setFiles={setFiles}
+            headers={headers}
+            postType={postType}
+            fileUpload={fileUpload} // 파일 업로드 함수 전달
+          />
+          <List postType={postType} />
+        </BottomBox>
       </ContentWrapper>
     </Container>
   );
@@ -263,30 +228,38 @@ const InputFile = styled.input`
   font-size: 16px;
   color: #111111;
   cursor: pointer;
-
+  position: relative;
   padding: 10px 20px;
   border: 1px solid #111111;
   border-radius: 5px;
   background-color: white;
   transition: background-color 0.3s ease;
-
+  left: 300px;
   &:hover {
     background-color: #f0f8f0;
   }
 `;
 
 const FileInputWrapper = styled.div`
-  align-items: center;
-  display: flex;
-  padding: 10px;
-  border: 2px dashed #ccc;
+  border: 2px solid #ccc;
+  padding: 10px 16px;
   border-radius: 8px;
   background-color: #f9f9f9;
-  width: 30%;
-  transition: background-color 0.3s ease;
+  max-width: 600px;
+  width: 100%;
+  height: auto;
+  min-height: 60px;
 
-  &:hover {
-    background-color: #f0f0f0;
+  span {
+    font-size: 14px;
+    font-weight: 500;
   }
 `;
+
+const BottomBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+`;
+
 export default NoticelWrite;

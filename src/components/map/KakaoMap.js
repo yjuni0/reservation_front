@@ -1,7 +1,8 @@
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 import React from "react";
+import styled from "styled-components";
 
-function KakaoMap() {
+function KakaoMap(props) {
   return (
     <Map
       center={{ lat: 37.48197988243028, lng: 126.89814204687781 }}
@@ -10,24 +11,21 @@ function KakaoMap() {
     >
       {/* 마커 추가 */}
       <MapMarker position={{ lat: 37.48197988243028, lng: 126.89814204687781 }}>
-        <div style={markerStyle}>
+        <MarkerStyle >
           <strong>🏥 하이펫동물병원</strong>
-        </div>
+        </MarkerStyle>
       </MapMarker>
     </Map>
   );
 }
 
-const markerStyle = {
-  background: "#ffffff",
-  padding: "10px 13px 9px 15px",
-  borderRadius: "8px",
-
-  color: "#333",
-  fontSize: "14px",
-  fontWeight: "bold",
-  textAlign: "center",
-  whiteSpace: "nowrap",
-};
+const MarkerStyle = styled.div`
+  background: #ffffff;
+  border-Radius: 8px;
+  color: #333;
+  font-Size: 14px;
+  font-Weight: bold;
+  padding-left:15px;
+`
 
 export default KakaoMap;

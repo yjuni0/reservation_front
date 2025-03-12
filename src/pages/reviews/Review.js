@@ -1,18 +1,19 @@
-import React, { lazy, useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import CommonTable from "../../components/common/CommonTable";
 import CustomPagination from "../../components/common/CustomPagination";
-import { AuthContext, HttpHeadersContext } from "../../context";
 import WriteGo from "../../components/button/WriteGo";
+import CommonSearch from "../../components/common/CommonSearch";
 
 function Review() {
   const [bbsList, setBbsList] = useState([]);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalCnt, setTotalCnt] = useState(0);
-  const [role, setRole] = useState(null); // 역할을 state로 설정
   const [linkValue, setLinkValue] = useState("/review");
+  const [isSearchActive, setIsSearchActive] = useState(false); // 검색 활성 상태 추가
+  const type = "review";
 
   const columns = [
     { label: "No", field: "id" },
@@ -25,9 +26,9 @@ function Review() {
 
   useEffect(() => {
     if (window.location.pathname.includes("/admin")) {
-      setLinkValue("/admin/review"); // "/admin/question"으로 설정
+      setLinkValue("/admin/review");
     } else {
-      setLinkValue("/review"); // "/question"으로 설정
+      setLinkValue("/review");
     }
   }, []); // 컴포넌트가 처음 렌더링될 때 한번만 실행
 
@@ -36,14 +37,26 @@ function Review() {
       const response = await axios.get("/api/review", {
         params: { page: page - 1 },
       });
-      console.log(response.data);
       setBbsList(response.data.content || []); // 응답이 없을 경우 빈 배열 처리
       setPageSize(response.data.pageSize || 10);
+      console.log("ddd", response);
       setTotalCnt(response.data.totalElements);
     } catch (error) {
       console.error("Error fetching board data:", error);
     }
   };
+
+  // 검색 후 결과 갱신
+  const updateBbsList = (data) => {
+    if (data && data.content && data.content.length > 0) {
+      setBbsList(data.content); // 검색 결과가 있을 때만 데이터 업데이트
+      setIsSearchActive(true); // 검색 활성화
+    } else {
+      setBbsList([]); // 결과가 없으면 빈 배열로 초기화
+      setIsSearchActive(false); // 검색 비활성화
+    }
+  };
+
   useEffect(() => {
     getBbsList(page);
   }, [page]);
@@ -65,10 +78,15 @@ function Review() {
           bbsList={bbsListWithEmptyRows}
           columns={columns}
           linkPrefix={linkValue}
+          isSearchActive={isSearchActive} // 검색 활성 상태 전달
         />
         <BottomBox>
           <WriteGo />
         </BottomBox>
+        <CommonSearch
+          type={type}
+          onUpdate={updateBbsList} // 검색 후 데이터를 갱신할 수 있도록 onUpdate 전달
+        />
         <PaginationBox>
           <CustomPagination
             page={page}
@@ -124,14 +142,13 @@ const PaginationBox = styled.div`
   }
 `;
 
-//  하단 버튼 박스
+// 하단 버튼 박스
 const BottomBox = styled.div`
   display: flex;
   width: 100%;
   max-width: 1000px;
   justify-content: flex-end;
   margin-top: 20px;
-  margin-bottom: 10px;
   padding-left: 140px;
   padding-right: 140px;
 `;
