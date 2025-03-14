@@ -54,8 +54,8 @@ import MyPageCheck from "./pages/user/mypage/MyPageCheck";
 import MemberDetail from "./pages/admin/user/MemberDetail";
 import A_ReservationDetail from "../src/pages/admin/reservation/A_ReservationDetail";
 import SessionTimeout from "../src/SessionTimeout";
-// import NonUser_Layout from "./pages/admin/user/NonUser_Layout";
-// import NonUser from "./pages/admin/user/NonUser";
+import NonUser_Layout from "./pages/admin/user/NonUser_Layout";
+import NonUser from "./pages/admin/user/NonUser";
 import OAuth2 from "./pages/user/login/OAuth2";
 
 const Router = () => {
@@ -112,9 +112,9 @@ const Router = () => {
             <Route index element={<A_User />} />
             <Route path="member/:memberId" element={<MemberDetail />} />{" "}
           </Route>
-          {/* <Route path="nonuser" element={<NonUser_Layout />}>
+          <Route path="nonuser" element={<NonUser_Layout />}>
             <Route index element={<NonUser />} />
-          </Route> */}
+          </Route>
 
           <Route path="a_reservation" element={<A_ReservationLayout />}>
             <Route index element={<A_Reservation />} />

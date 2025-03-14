@@ -9,7 +9,8 @@ const AdminLayout = () => {
   const menuItems = [
     { title: "회원 관리", key: "adminuser", path: "adminuser" },
     { title: "공지사항 관리", key: "notice", path: "notice" },
-    { title: "온라인예약 관리", key: "reservations", path: "a_reservation" },
+    { title: "회원예약 관리", key: "reservations", path: "a_reservation" },
+    { title: "비회원예약 관리", key: "nonuser", path: "nonuser" },
     { title: "온라인상담 관리", key: "onlineCounsel", path: "question" },
     { title: "고객 리뷰 관리", key: "review", path: "review" },
   ];

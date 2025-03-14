@@ -24,16 +24,17 @@ function OAuth2() {
           console.log("생성된 닉네임:", nickName);
         } else {
           console.log("유효한 이메일 정보가 없습니다.");
-          navigate("/login", { replace: true });
+          navigate("/login");
         }
         localStorage.setItem("nick_name", nickName);
         localStorage.setItem("access_token", token);
-        navigate("/", { replace: true });
+        localStorage.setItem("id", decodedToken.id);
+        navigate("/");
       } catch (e) {
         console.log("토큰 디코딩 오류:", e.message);
       }
     }
-  }, [navigate]);
+  }, []);
 
   return <div>로그인 중...</div>;
 }

@@ -9,6 +9,7 @@ import CommentList from "../comment/CommentList";
 import CommentWrite from "../comment/CommentWrite";
 import UpdateGo from "../../components/button/UpdateGo";
 import ReviewLike from "../../pages/reviews/ReviewLike";
+import { jwtDecode } from "jwt-decode"; // jwt-decode 라이브러리 import
 
 function ReviewDetail() {
   const { headers, setHeaders } = useContext(HttpHeadersContext);
@@ -17,15 +18,27 @@ function ReviewDetail() {
   const navigate = useNavigate();
   const [comments, setComments] = useState([]);
   const [postType, setPostType] = useState(3);
+  const token = localStorage.getItem("token");
   const memberId = Number(localStorage.getItem("id"));
-  console.log(memberId)
+  console.log(memberId);
+  let useRole = null;
+  if (token) {
+    try {
+      // 토큰 디코딩
+      const decodedToken = jwtDecode(token);
+      useRole = decodedToken.roles;
+    } catch (e) {
+      console.log("토큰 디코딩 오류 : ", e);
+    }
+  }
+
   const getBbsDetail = async () => {
     try {
       const response = await axios.get(`/api/review/${reviewId}`);
 
       console.log("[reviewDetail.js] getBbsDetail() success :D");
       console.log(response.data);
-      
+
       setReview(response.data);
     } catch (error) {
       console.log("[reviewDetail.js] getBbsDetail() error :<");
@@ -40,7 +53,7 @@ function ReviewDetail() {
     });
     getBbsDetail();
   }, [reviewId]);
-  console.log("게시글 멤버 아이디:",review.memberId);
+  console.log("게시글 멤버 아이디:", review.memberId);
   return (
     <Container>
       <ContentWrapper>
@@ -64,12 +77,12 @@ function ReviewDetail() {
         <CommentWrite reviewId={reviewId} />
 
         <BottomBox>
-        {memberId === review.memberId && (
-        <>
-          <Delete />
-          <UpdateGo />
-        </>
-        )}
+          {(memberId === review.memberId || useRole === "ROLE_ADMIN") && (
+            <>
+              <Delete />
+              <UpdateGo />
+            </>
+          )}
           <List postType={postType} />
         </BottomBox>
       </ContentWrapper>

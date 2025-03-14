@@ -1,15 +1,28 @@
 import axios from "axios";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { AuthContext, HttpHeadersContext } from "../../context";
-
+import { jwtDecode } from "jwt-decode"; // jwt-decode 라이브러리 import
+import { useNavigate } from "react-router-dom";
 function Comment(props) {
   const comment = props.comment;
   const commentId = props.comment.id;
   const page = props.page;
+  const navigate = useNavigate();
   const { headers, setHeaders } = useContext(HttpHeadersContext);
   const memberId = Number(localStorage.getItem("id"));
-
+  const token = localStorage.getItem("access_token");
+  let useRole = null;
+  if (token) {
+    try {
+      // 토큰 디코딩
+      const decodedToken = jwtDecode(token);
+      console.log("유저 롤", decodedToken.roles);
+      useRole = decodedToken.roles;
+    } catch (e) {
+      console.log("토큰 디코딩 오류 : ", e);
+    }
+  }
   const deleteComment = async () => {
     await axios
       .delete(`/api/member/comment/${commentId}`, { headers: headers })
@@ -19,7 +32,6 @@ function Comment(props) {
 
         alert("답글을 성공적으로 삭제했습니다 :D");
         //삭제된 댓글 목록 다시 불러오기
-        props.getCommentList(page);
       })
       .catch((err) => {
         console.log("[BbsComment.js] deleteComment() error :<");
@@ -48,7 +60,7 @@ function Comment(props) {
         </Table>
 
         <BtnBox>
-          {memberId === comment.memberId && (
+          {(memberId === comment.memberId || useRole === "ROLE_ADMIN") && (
             <>
               <Btn onClick={deleteComment}>삭제</Btn>
             </>

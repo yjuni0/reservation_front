@@ -45,7 +45,7 @@ function Delete() {
       if (!isConfirmed) return;
 
       const isAdmin = location.pathname.includes("/admin");
-      const apiUrl = `/api/question/${questionId}`;
+      const apiUrl = `/api/member/question/${questionId}`;
       const redirectUrl = isAdmin ? "/admin/question" : "/question";
 
       const response = await axios.delete(apiUrl, {
