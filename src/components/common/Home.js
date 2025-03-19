@@ -239,19 +239,16 @@ function Home() {
                   </Link>
                 </div>
               </BoardTitleBox>
-              {(reviewList && reviewList.length > 0 ? reviewList : []).map(
-                (review) => (
-                  <BoardContentBox key={review.id}>
-                    <BoardContentTitle>{review.title}</BoardContentTitle>
-                    <BoardContent>{review.content}</BoardContent>
-                    <BoardContentCd>
-                      {review.createdDate.substring(0, 10)}
-                    </BoardContentCd>
-                  </BoardContentBox>
-                )
-              )}
+              {(Array.isArray(reviewList) ? reviewList : []).map((review) => (
+                <BoardContentBox key={review.id}>
+                  <BoardContentTitle>{review.title}</BoardContentTitle>
+                  <BoardContent>{review.content}</BoardContent>
+                  <BoardContentCd>
+                    {review.createdDate.substring(0, 10)}
+                  </BoardContentCd>
+                </BoardContentBox>
+              ))}
             </BoardBox>
-
             <BoardBox>
               <BoardTitleBox>
                 <div className="titleBox">
@@ -268,17 +265,15 @@ function Home() {
                 </div>
               </BoardTitleBox>
 
-              {(noticeList && noticeList.length > 0 ? noticeList : []).map(
-                (notice) => (
-                  <BoardContentBox key={notice.id}>
-                    <BoardContentTitle>{notice.title}</BoardContentTitle>
-                    <BoardContent>{notice.content}</BoardContent>
-                    <BoardContentCd>
-                      {notice.createdDate.substring(0, 10)}
-                    </BoardContentCd>
-                  </BoardContentBox>
-                )
-              )}
+              {(Array.isArray(noticeList) ? noticeList : []).map((notice) => (
+                <BoardContentBox key={notice.id}>
+                  <BoardContentTitle>{notice.title}</BoardContentTitle>
+                  <BoardContent>{notice.content}</BoardContent>
+                  <BoardContentCd>
+                    {notice.createdDate.substring(0, 10)}
+                  </BoardContentCd>
+                </BoardContentBox>
+              ))}
             </BoardBox>
           </SectionC>
         </ContentWrapper>
