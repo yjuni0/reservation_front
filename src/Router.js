@@ -56,7 +56,7 @@ import A_ReservationDetail from "../src/pages/admin/reservation/A_ReservationDet
 import SessionTimeout from "../src/SessionTimeout";
 import NonUser_Layout from "./pages/admin/user/NonUser_Layout";
 import NonUser from "./pages/admin/user/NonUser";
-import OAuth2 from "./pages/user/login/OAuth2";
+import OAuth2 from "./pages/user/login/oauth2";
 
 const Router = () => {
   return (
