@@ -4,8 +4,7 @@ import { AuthProvider, HttpHeadersProvider } from "./context"; // context 임포
 import { ThemeProvider } from "styled-components";
 import GlobalStyle from "./styles/GlobalStyle";
 import theme from "./styles/theme";
-
-import App from "./App";
+import Router from "./Router";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -15,7 +14,7 @@ root.render(
       {/* HttpHeadersContext 제공 */}
       <ThemeProvider theme={theme}>
         <GlobalStyle />
-        <App />
+        <Router />
       </ThemeProvider>
     </HttpHeadersProvider>
   </AuthProvider>
