@@ -4,7 +4,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Link } from "react-router-dom";
 import Youtube from "react-youtube";
-import KakaoMap from "../map/KakaoMap";
+// import KakaoMap from "../map/KakaoMap";
 import styled from "styled-components";
 
 import main_banner_01 from "../../assets/imgs/main_banner_01.png";
@@ -329,9 +329,7 @@ function Home() {
                 </Link>
               </div>
             </MapContentBox>
-            <MapBox>
-              <KakaoMap></KakaoMap>
-            </MapBox>
+            <MapBox>{/* <KakaoMap></KakaoMap> */}</MapBox>
           </SectionD>
         </MapContainer>
       </Container>
