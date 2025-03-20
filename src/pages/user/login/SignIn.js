@@ -145,13 +145,13 @@ function SignIn() {
           <div className="sns">SNS 간편 로그인</div>
           <div className="right"></div>
         </Article>
-        <Link to="http://localhost:8080/oauth2/authorization/google">
+        <Link to="#">
           <SignButton>
             <img src={google} alt="google" />
             구글 로그인
           </SignButton>
         </Link>
-        <Link to="http://localhost:8080/oauth2/authorization/naver">
+        <Link to="#">
           <SignsButton>
             <img src={naverLogin} alt="naver" />
             네이버 로그인
