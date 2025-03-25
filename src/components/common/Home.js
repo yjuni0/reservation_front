@@ -4,7 +4,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Link } from "react-router-dom";
 import Youtube from "react-youtube";
-import KakaoMap from "../map/KakaoMap";
+// import KakaoMap from "../map/KakaoMap";
 import styled from "styled-components";
 
 import main_banner_01 from "../../assets/imgs/main_banner_01.png";
@@ -239,7 +239,7 @@ function Home() {
                   </Link>
                 </div>
               </BoardTitleBox>
-              {reviewList.map((review) => (
+              {(Array.isArray(reviewList) ? reviewList : []).map((review) => (
                 <BoardContentBox key={review.id}>
                   <BoardContentTitle>{review.title}</BoardContentTitle>
                   <BoardContent>{review.content}</BoardContent>
@@ -249,12 +249,10 @@ function Home() {
                 </BoardContentBox>
               ))}
             </BoardBox>
-
             <BoardBox>
               <BoardTitleBox>
                 <div className="titleBox">
                   <BoardTitle>공지사항</BoardTitle>
-
                   <BoardText>병원 내부 업무 및 운영에 관한 안내상항</BoardText>
                 </div>
                 <div className="reviewLink">
@@ -267,7 +265,7 @@ function Home() {
                 </div>
               </BoardTitleBox>
 
-              {noticeList.map((notice) => (
+              {(Array.isArray(noticeList) ? noticeList : []).map((notice) => (
                 <BoardContentBox key={notice.id}>
                   <BoardContentTitle>{notice.title}</BoardContentTitle>
                   <BoardContent>{notice.content}</BoardContent>
@@ -329,9 +327,7 @@ function Home() {
                 </Link>
               </div>
             </MapContentBox>
-            <MapBox>
-              <KakaoMap></KakaoMap>
-            </MapBox>
+            <MapBox>{/* <KakaoMap></KakaoMap> */}</MapBox>
           </SectionD>
         </MapContainer>
       </Container>
