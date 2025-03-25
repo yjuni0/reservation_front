@@ -40,7 +40,7 @@ function NoticelWrite() {
 
     try {
       const response = await axios.post(
-        `/api/admin/notice/${noticeId}/file`,
+        `https://hipet-yjuni0.com/api/admin/notice/${noticeId}/file`,
         fd,
         {
           headers: {

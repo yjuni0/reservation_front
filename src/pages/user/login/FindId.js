@@ -23,7 +23,7 @@ function FindId() {
     console.log("Request data: ", { name, phoneNum }); // 데이터 확인용 로그
 
     try {
-      const response = await fetch("/api/findId", {
+      const response = await fetch("https://hipet-yjuni0.com/api/findId", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

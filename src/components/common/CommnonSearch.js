@@ -66,7 +66,10 @@ function CommonSearch({ type, onUpdate }) {
       ) {
         req[choiceVal] = searchVal;
       }
-      const response = await axios.post(`/api/search?type=${type}`, req);
+      const response = await axios.post(
+        `https://hipet-yjuni0.com/api/search?type=${type}`,
+        req
+      );
 
       console.log("검색 결과:", response.data);
 

@@ -31,7 +31,11 @@ function CommentWrite(props) {
     console.log(req);
 
     await axios
-      .post(`/api/member/review/${reviewId}/comment`, req, { headers: headers })
+      .post(
+        `https://hipet-yjuni0.com/api/member/review/${reviewId}/comment`,
+        req,
+        { headers: headers }
+      )
       .then((response) => {
         console.log("createComment success", response.data);
         alert("댓글을 등록하였습니다.");

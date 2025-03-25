@@ -8,50 +8,39 @@ import { AuthContext, HttpHeadersContext } from "../../../context";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-
 //MyPage
 function MyPage() {
-    const { auth, setAuth } = useContext(AuthContext);
-    const { headers, setHeaders } = useContext(HttpHeadersContext);
-
+  const { auth, setAuth } = useContext(AuthContext);
+  const { headers, setHeaders } = useContext(HttpHeadersContext);
 
   // 강사 수정(네비)
   const navigate = useNavigate();
   const location = useLocation();
- const [profile, setProfile] = useState([]);
-  
-    useEffect(() => {
-      console.log("access_token:", localStorage.getItem("access_token"));
-      // 컴포넌트가 렌더링될 때마다 localStorage의 토큰 값으로 headers를 업데이트
-      setHeaders({
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-      });
+  const [profile, setProfile] = useState([]);
 
-    }, []);
+  useEffect(() => {
+    console.log("access_token:", localStorage.getItem("access_token"));
+    // 컴포넌트가 렌더링될 때마다 localStorage의 토큰 값으로 headers를 업데이트
+    setHeaders({
+      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+    });
+  }, []);
 
-
-    const getProfile = async () => {
-      try{
-  
-        const response = await axios.get(`/api/myProfile`,{headers:headers});
-        console.log("회원정보" , response.data)
-        setProfile(response.data)
-
-      }
-      catch(error) {
-        console.log("회원 정보 불러오기 실패", error);
-      }
-  
-    };
-    useEffect(() => {
-      getProfile();
-  
-    },[]);
-
-
-
-
-
+  const getProfile = async () => {
+    try {
+      const response = await axios.get(
+        `https://hipet-yjuni0.com/api/myProfile`,
+        { headers: headers }
+      );
+      console.log("회원정보", response.data);
+      setProfile(response.data);
+    } catch (error) {
+      console.log("회원 정보 불러오기 실패", error);
+    }
+  };
+  useEffect(() => {
+    getProfile();
+  }, []);
 
   //return
   return (

@@ -14,7 +14,7 @@ function FindPassword() {
   const navigate = useNavigate();
   const handleSendCode = async () => {
     try {
-      await axios.post("/api/findPw", { email });
+      await axios.post("https://hipet-yjuni0.com/api/findPw", { email });
       alert("인증 메일이 전송되었습니다.");
       setIsCodeSent(true);
     } catch (error) {
@@ -25,7 +25,10 @@ function FindPassword() {
     console.log("Email:", email);
     console.log("Verification Code:", verificationCode); // 입력된 인증코드 확인
     try {
-      await axios.post("api/findPw/verify", { email, code: verificationCode });
+      await axios.post("https://hipet-yjuni0.com/api/findPw/verify", {
+        email,
+        code: verificationCode,
+      });
       alert("인증번호가 확인되었습니다.");
       setIsCodeVerified(true);
       console.log("isCodeVerified 상태:", isCodeVerified); // 디버깅용 로그
@@ -51,7 +54,7 @@ function FindPassword() {
     }
 
     try {
-      await axios.post("api/findPw/resetPw", {
+      await axios.post("https://hipet-yjuni0.com/api/findPw/resetPw", {
         email,
         code: verificationCode,
         newPassword,

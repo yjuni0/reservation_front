@@ -5,7 +5,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { HttpHeadersContext } from "../../context"; // HttpHeadersContext import
 
 function UpdateGo() {
-  const {headers, setHeaders } = useContext(HttpHeadersContext); // setHeaders 가져오기
+  const { headers, setHeaders } = useContext(HttpHeadersContext); // setHeaders 가져오기
   const { noticeId, questionId, reviewId } = useParams(); // useParams로 noticeId 받기
   const navigate = useNavigate();
   const location = useLocation();
@@ -16,7 +16,9 @@ function UpdateGo() {
   // 게시글 상세 데이터를 가져오는 함수
   const getBbsDetail = async () => {
     try {
-      const response = await axios.get(`/api/notice/${noticeId}`);
+      const response = await axios.get(
+        `https://hipet-yjuni0.com/api/notice/${noticeId}`
+      );
       setNotice(response.data); // 받아온 데이터를 notice 상태에 저장
     } catch (error) {
       console.error("getBbsDetail() error:", error);
@@ -25,7 +27,10 @@ function UpdateGo() {
 
   const getQuestionDetail = async () => {
     try {
-      const response = await axios.get(`/api/member/question/${questionId}`, {headers});
+      const response = await axios.get(
+        `https://hipet-yjuni0.com/api/member/question/${questionId}`,
+        { headers }
+      );
       setQuestion(response.data); // 받아온 데이터를 question 상태에 저장
     } catch (error) {
       console.error("getQuestionDetail() error:", error);
@@ -34,7 +39,9 @@ function UpdateGo() {
 
   const getReviewDetail = async () => {
     try {
-      const response = await axios.get(`/api/review/${reviewId}`);
+      const response = await axios.get(
+        `https://hipet-yjuni0.com/api/review/${reviewId}`
+      );
       setReview(response.data); // 받아온 데이터를 review 상태에 저장
     } catch (error) {
       console.error("getReviewDetail() error:", error);

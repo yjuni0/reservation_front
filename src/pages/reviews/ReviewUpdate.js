@@ -24,7 +24,7 @@ function ReviewUpdate() {
       }
 
       await axios.patch(
-        `/api/review/${bbs.id}`,
+        `https://hipet-yjuni0.com/api/review/${bbs.id}`,
         { title, content },
         {
           headers: {

@@ -3,7 +3,9 @@ import axios from "axios";
 // 이메일 중복 확인
 export const idDuplicateCheck = async (id) => {
   try {
-    const response = await axios.post(`/api/checkEmail?email=${id}`);
+    const response = await axios.post(
+      `https://hipet-yjuni0.com/api/checkEmail?email=${id}`
+    );
     if (response.status !== 200) {
       throw new Error("아이디 중복 확인 오류");
     }
@@ -18,7 +20,7 @@ export const idDuplicateCheck = async (id) => {
 export const nicknameDuplicateCheck = async (nickname) => {
   try {
     const response = await axios.post(
-      `/api/checkNickName?nickName=${nickname}`
+      `https://hipet-yjuni0.com/api/checkNickName?nickName=${nickname}`
     );
     if (response.status !== 200) {
       throw new Error("닉네임 중복 확인 오류");
@@ -34,7 +36,7 @@ export const nicknameDuplicateCheck = async (nickname) => {
 export const sendVerificationEmail = async (email) => {
   try {
     const response = await axios.post(
-      "/api/email/send",
+      "https://hipet-yjuni0.com/api/email/send",
       {
         receiver: email,
       },
@@ -57,7 +59,7 @@ export const sendVerificationEmail = async (email) => {
 export const verifyEmailCode = async (email, code) => {
   try {
     const response = await axios.post(
-      `/api/email/verify?receiver=${email}&code=${code}`
+      `https://hipet-yjuni0.com/api/email/verify?receiver=${email}&code=${code}`
     );
 
     if (response.status !== 200) {

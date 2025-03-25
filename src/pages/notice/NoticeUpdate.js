@@ -19,7 +19,6 @@ function NoticeUpdate() {
   const { headers, setHeaders } = useContext(HttpHeadersContext);
   const noticeId = bbs?.id;
 
-
   useEffect(() => {
     if (!noticeId) return;
 
@@ -33,7 +32,9 @@ function NoticeUpdate() {
   // 기존 게시글 정보 가져오기 (파일 포함)
   const getBbsDetail = async () => {
     try {
-      const response = await axios.get(`/api/notice/${noticeId}`);
+      const response = await axios.get(
+        `https://hipet-yjuni0.com/api/notice/${noticeId}`
+      );
       setTitle(response.data.title);
       setContent(response.data.content);
 
@@ -67,7 +68,7 @@ function NoticeUpdate() {
   const handleDeleteFile = async (fileId) => {
     try {
       await axios.delete(
-        `/api/admin/notice/${noticeId}/file/delete?fileId=${fileId}`,
+        `https://hipet-yjuni0.com/api/admin/notice/${noticeId}/file/delete?fileId=${fileId}`,
         {
           params: { fileId }, // @RequestParam 방식으로 변경
           headers,
@@ -86,7 +87,7 @@ function NoticeUpdate() {
 
     try {
       const response = await axios.post(
-        `/api/admin/notice/${noticeId}/file`,
+        `https://hipet-yjuni0.com/api/admin/notice/${noticeId}/file`,
         fd,
         {
           headers: {
@@ -117,7 +118,7 @@ function NoticeUpdate() {
                   />
                 </td>
               </tr>
-              
+
               <tr>
                 <td>
                   <TableContent value={content} onChange={changeContent} />
@@ -127,53 +128,53 @@ function NoticeUpdate() {
           </Table>
         </TableBox>
         <UploadWrapper>
-                <FileInputWrapper>
-                  {/* 기존 파일 목록 표시 (삭제 가능) */}
-                  {existingFiles.length > 0 && (
-                    <div>
-                      {existingFiles.map((file) => (
-                        <div
-                          key={file.id}
-                          style={{ display: "flex", alignItems: "center" }}
-                        >
-                          <span>
-                            {file.originFileName} {file.name}
-                          </span>
-                          <button onClick={() => handleDeleteFile(file.id)}>
-                            삭제
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+          <FileInputWrapper>
+            {/* 기존 파일 목록 표시 (삭제 가능) */}
+            {existingFiles.length > 0 && (
+              <div>
+                {existingFiles.map((file) => (
+                  <div
+                    key={file.id}
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    <span>
+                      {file.originFileName} {file.name}
+                    </span>
+                    <button onClick={() => handleDeleteFile(file.id)}>
+                      삭제
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
 
-                  {/* 새로 추가된 파일 목록 */}
-                  {files.length > 0 && (
-                    <div>
-                      {files.map((file, index) => (
-                        <div
-                          key={index}
-                          style={{ display: "flex", alignItems: "center" }}
-                        >
-                          <span>{file.name}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+            {/* 새로 추가된 파일 목록 */}
+            {files.length > 0 && (
+              <div>
+                {files.map((file, index) => (
+                  <div
+                    key={index}
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    <span>{file.name}</span>
+                  </div>
+                ))}
+              </div>
+            )}
 
-                  {/* 새 파일 추가 */}
-                  {files.length < 5 && (
-                    <div>
-                      <InputFile
-                        type="file"
-                        name="file"
-                        onChange={handleChangeFile}
-                        multiple
-                      />
-                    </div>
-                  )}
-                </FileInputWrapper>
-              </UploadWrapper>
+            {/* 새 파일 추가 */}
+            {files.length < 5 && (
+              <div>
+                <InputFile
+                  type="file"
+                  name="file"
+                  onChange={handleChangeFile}
+                  multiple
+                />
+              </div>
+            )}
+          </FileInputWrapper>
+        </UploadWrapper>
         <BottomBox>
           <Update
             noticeId={noticeId}

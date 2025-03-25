@@ -24,16 +24,19 @@ function QuestionDetail() {
     }
 
     try {
-      const response = await axios.get(`/api/member/question/${questionId}`, {
-        headers,
-      });
+      const response = await axios.get(
+        `https://hipet-yjuni0.com/api/member/question/${questionId}`,
+        {
+          headers,
+        }
+      );
       console.log("[questionDetail.js] getBbsDetail() success :D");
       console.log(response.data);
       setQuestion(response.data);
     } catch (error) {
       console.log("[questionDetail.js] getBbsDetail() error :<");
       console.error(error);
-      alert("문의 내용은 작성자만 볼 수 있습니다.")
+      alert("문의 내용은 작성자만 볼 수 있습니다.");
       navigate(-1);
     }
   };

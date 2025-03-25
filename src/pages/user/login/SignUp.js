@@ -5,9 +5,7 @@ import DaumPostcode from "react-daum-postcode";
 import { useNavigate } from "react-router-dom";
 
 function SignUp() {
-  const [forms, setForms] = useState([
-    { petName: "", breed: "", age: "" },
-  ]);
+  const [forms, setForms] = useState([{ petName: "", breed: "", age: "" }]);
   const [hasPet, setHasPet] = useState(true); // 반려동물 유무 상태 추가
 
   const addForm = () => {
@@ -24,7 +22,6 @@ function SignUp() {
     const value = e.target.value;
     setForms(
       forms.map((form) => (form.id === id ? { ...form, [field]: value } : form))
-      
     );
     console.log("변경된 forms:", forms); // ✅ 상태 업데이트 확인
   };
@@ -39,8 +36,7 @@ function SignUp() {
   const [passwordCheckError, setPasswordCheckError] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
-   const [isLoading, setIsLoading] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
 
   //하이픈 자동
   const [phoneNum, setPhoneNum] = useState("");
@@ -105,12 +101,18 @@ function SignUp() {
 
     try {
       // 🔹 1. 이메일 중복 체크
-      await axios.get("/api/checkEmail", { params: { email } });
+      await axios.get("https://hipet-yjuni0.com/api/checkEmail", {
+        params: { email },
+      });
 
       // 🔹 2. 중복이 아니면 인증 메일 전송
-      const sendResponse = await axios.post("/api/email/send", null, {
-        params: { receiver: email },
-      });
+      const sendResponse = await axios.post(
+        "https://hipet-yjuni0.com/api/email/send",
+        null,
+        {
+          params: { receiver: email },
+        }
+      );
 
       setMessage(sendResponse.data); // 성공 메시지 표시
     } catch (error) {
@@ -133,9 +135,13 @@ function SignUp() {
     }
 
     try {
-      const response = await axios.post("/api/email/verify", null, {
-        params: { receiver: email, code: code }, // 사용자가 입력한 코드 검증
-      });
+      const response = await axios.post(
+        "https://hipet-yjuni0.com/api/email/verify",
+        null,
+        {
+          params: { receiver: email, code: code }, // 사용자가 입력한 코드 검증
+        }
+      );
 
       if (response.status === 200) {
         setMessage("인증이 완료되었습니다.");
@@ -160,9 +166,12 @@ function SignUp() {
     }
 
     try {
-      const response = await axios.get("/api/checkNickName", {
-        params: { nickName },
-      });
+      const response = await axios.get(
+        "https://hipet-yjuni0.com/api/checkNickName",
+        {
+          params: { nickName },
+        }
+      );
 
       // 중복되지 않으면 성공 메시지
       if (response.status === 200) {
@@ -190,8 +199,6 @@ function SignUp() {
   const handleBirthChange = (e) => {
     setBirth(e.target.value);
   };
-
-
 
   const handleSubmit = async () => {
     if (passwordError || passwordCheckError) {
@@ -235,31 +242,33 @@ function SignUp() {
       birth,
       phoneNum,
       pets: hasPet
-      ? forms.map((form) => ({
-        name: form.petName,  // ✅ 필드명 변경 (petName → name)
-        breed: form.breed,   // ✅ breed는 그대로
-        age: parseInt(form.age, 10)  // ✅ 문자열을 숫자로 변환
-    }))
+        ? forms.map((form) => ({
+            name: form.petName, // ✅ 필드명 변경 (petName → name)
+            breed: form.breed, // ✅ breed는 그대로
+            age: parseInt(form.age, 10), // ✅ 문자열을 숫자로 변환
+          }))
         : [], // hasPet 상태에 따라 pets 정보 포함 여부 결정
-
-      };
-      console.log("보내는데이처:", memberData);
-
-      try {
-        const response = await axios.post("/api/register", memberData);
-        console.log("회원가입 성공:", response.data); // 성공 로그 추가
-        alert("회원가입이 성공적으로 완료되었습니다.");
-  
-        navigate("/signIn");
-      } catch (error) {
-        console.error("회원가입 실패:", error.response); // 오류 로그 수정
-        if (error.response && error.response.data) {
-          alert("회원가입 실패! 다시 확인해주세요"); // 서버에서 받은 오류 메시지 표시
-        } else {
-          alert("회원가입에 실패했습니다. 잠시 후 다시 시도해주세요.");
-        }
-      }
     };
+    console.log("보내는데이처:", memberData);
+
+    try {
+      const response = await axios.post(
+        "https://hipet-yjuni0.com/api/register",
+        memberData
+      );
+      console.log("회원가입 성공:", response.data); // 성공 로그 추가
+      alert("회원가입이 성공적으로 완료되었습니다.");
+
+      navigate("/signIn");
+    } catch (error) {
+      console.error("회원가입 실패:", error.response); // 오류 로그 수정
+      if (error.response && error.response.data) {
+        alert("회원가입 실패! 다시 확인해주세요"); // 서버에서 받은 오류 메시지 표시
+      } else {
+        alert("회원가입에 실패했습니다. 잠시 후 다시 시도해주세요.");
+      }
+    }
+  };
 
   const [postcode, setPostcode] = useState(""); // 우편번호
   const [address, setAddress] = useState(""); // 우편번호 검색 결과 주소
@@ -325,8 +334,8 @@ function SignUp() {
             </button>
           </Table>
 
-         {/*2.인증*/}
-         <Table>
+          {/*2.인증*/}
+          <Table>
             <tbody>
               <tr>
                 <td className="th_title">
@@ -360,7 +369,7 @@ function SignUp() {
               </tr>
             </tbody>
           </Table>
-          
+
           {/*2.비밀번호*/}
           <Tables>
             <tbody>
@@ -382,9 +391,8 @@ function SignUp() {
             </tbody>
           </Tables>
 
-
-       {/* 3.비밀번호 확인 */}
-       <Table>
+          {/* 3.비밀번호 확인 */}
+          <Table>
             <tbody>
               <tr>
                 <td className="th_title">
@@ -454,7 +462,7 @@ function SignUp() {
           </Table>
 
           {/* 5.이름*/}
-           <Tablelable>
+          <Tablelable>
             <tbody>
               <tr>
                 <td className="th_title">
@@ -473,8 +481,8 @@ function SignUp() {
             </tbody>
           </Tablelable>
 
-            {/*6.주소*/}
-            <Tabless>
+          {/*6.주소*/}
+          <Tabless>
             <tbody>
               <tr>
                 <td className="th_title">
@@ -498,8 +506,8 @@ function SignUp() {
             </tbody>
           </Tabless>
 
-         {/*6-2.상세주소*/}
-         <TableBox>
+          {/*6-2.상세주소*/}
+          <TableBox>
             <tbody>
               <tr>
                 <td>
@@ -574,7 +582,7 @@ function SignUp() {
 
         {/*반려동물정보 입력*/}
         <AnimalBox>
-        {forms.map((form) => (
+          {forms.map((form) => (
             <Formtable key={form.id}>
               {/*동물이름*/}
               <Table>
@@ -598,7 +606,7 @@ function SignUp() {
               </Table>
 
               {/*선택 박스*/}
-            <Tabled>
+              <Tabled>
                 <tbody>
                   <tr>
                     <td className="th_title">
@@ -628,8 +636,8 @@ function SignUp() {
                 </tbody>
               </Tabled>
 
-           {/*동물 나이*/}
-           <Table>
+              {/*동물 나이*/}
+              <Table>
                 <tbody>
                   <tr>
                     <td className="th_title">
@@ -676,7 +684,7 @@ function SignUp() {
               {/*</tr>*/}
             </Formtable>
           ))}
-         <AnimalBoxButton>
+          <AnimalBoxButton>
             <button onClick={addForm}>추가</button>
             <button type="submit" onClick={handleSubmit}>
               회원가입
@@ -823,11 +831,9 @@ const Table = styled.div`
     min-width: 92px;
     font-size: 14px;
     color: #111;
-
   }
 
   .th_form {
-  
   }
 
   .pwdError {

@@ -39,7 +39,7 @@ function SignIn() {
     };
 
     try {
-      const resp = await axios.post("/api/login", req);
+      const resp = await axios.post("https://hipet-yjuni0.com/api/login", req);
       console.log("Login OK", resp.data);
 
       alert(resp.data.nickName + "님, 성공적으로 로그인 되었습니다!");
@@ -75,7 +75,7 @@ function SignIn() {
     if (!storedToken) return; // 로그인된 사용자가 없으면 실행 X
 
     try {
-      const resp = await axios.get("/api/check-token", {
+      const resp = await axios.get("https://hipet-yjuni0.com/api/check-token", {
         headers: { Authorization: `Bearer ${storedToken}` },
       });
 

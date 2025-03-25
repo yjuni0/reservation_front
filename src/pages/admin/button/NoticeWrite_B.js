@@ -16,7 +16,7 @@ function NoticeWrite_B() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/upload",
+        "https://hipet-yjuni0.com/upload",
         formData,
         {
           headers: {

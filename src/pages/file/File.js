@@ -27,12 +27,15 @@ const File = ({ files, noticeId }) => {
 
     try {
       // 요청 헤더에 인증 토큰 추가
-      const response = await fetch(`/api/notice/${noticeId}/file/${fileId}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`, // accessToken을 사용
-        },
-      });
+      const response = await fetch(
+        `https://hipet-yjuni0.com/api/notice/${noticeId}/file/${fileId}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`, // accessToken을 사용
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch the file");

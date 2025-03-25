@@ -29,7 +29,7 @@ function Update({
 
       // 수정할 API URL과 리디렉션 URL 설정
       if (noticeId) {
-        apiUrl = `/api/admin/notice/${noticeId}`;
+        apiUrl = `https://hipet-yjuni0.com/api/admin/notice/${noticeId}`;
         redirectUrl = `/admin/notice/${noticeId}`;
       } else if (questionId) {
         apiUrl = `/api/member/question/${questionId}`;
@@ -37,7 +37,7 @@ function Update({
           ? `/admin/question/${questionId}`
           : `/question/${questionId}`;
       } else if (reviewId) {
-        apiUrl = `/api/member/review/${reviewId}`;
+        apiUrl = `https://hipet-yjuni0.com/api/member/review/${reviewId}`;
         redirectUrl = isAdmin
           ? `/admin/review/${reviewId}`
           : `/review/${reviewId}`;

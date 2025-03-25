@@ -20,7 +20,9 @@ function NoticeDetail() {
 
   const getBbsDetail = async () => {
     try {
-      const response = await axios.get(`/api/notice/${noticeId}`);
+      const response = await axios.get(
+        `https://hipet-yjuni0.com/api/notice/${noticeId}`
+      );
       console.log("[NoticeDetail.js] getBbsDetail() success :D", response.data);
 
       setNotice(response.data);

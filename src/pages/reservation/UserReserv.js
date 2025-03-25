@@ -38,7 +38,10 @@ function UserReserv() {
     const fetchPetListAndSlots = async () => {
       try {
         if (headers.Authorization) {
-          const petResponse = await axios.get("/api/member/pet", { headers });
+          const petResponse = await axios.get(
+            "https://hipet-yjuni0.com/api/member/pet",
+            { headers }
+          );
           setPetList(petResponse.data);
 
           if (selectedDate && selectedDepartment) {
@@ -49,7 +52,7 @@ function UserReserv() {
             const formattedDate = formatDateToKST(selectedDate);
             console.log("날짜 선택:", formattedDate);
             const slotResponse = await axios.get(
-              `/api/member/slot?departmentName=${selectedDepartment}&date=${formattedDate}`,
+              `https://hipet-yjuni0.com/api/member/slot?departmentName=${selectedDepartment}&date=${formattedDate}`,
               { headers }
             );
             setTimeSlots(slotResponse.data);
@@ -80,7 +83,7 @@ function UserReserv() {
 
       axios
         .get(
-          `/api/member/slot?departmentName=${selectedDepartment}&date=${formattedDate}`
+          `https://hipet-yjuni0.com/api/member/slot?departmentName=${selectedDepartment}&date=${formattedDate}`
         )
         .then((response) => {
           console.log(response.data);
@@ -111,7 +114,9 @@ function UserReserv() {
     };
     console.log("보낸느 데이터", req);
     await axios
-      .post("/api/member/reservation", req, { headers: headers })
+      .post("https://hipet-yjuni0.com/api/member/reservation", req, {
+        headers: headers,
+      })
       .then((response) => {
         console.log("응답 데이터: ", response.data);
         const reserveId = response.data.id;

@@ -25,7 +25,9 @@ function Comment(props) {
   }
   const deleteComment = async () => {
     await axios
-      .delete(`/api/member/comment/${commentId}`, { headers: headers })
+      .delete(`https://hipet-yjuni0.com/api/member/comment/${commentId}`, {
+        headers: headers,
+      })
       .then((resp) => {
         console.log("[BbsComment.js] deleteComment() success :D");
         console.log(resp.data);

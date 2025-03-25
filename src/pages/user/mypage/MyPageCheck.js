@@ -28,11 +28,11 @@ function MyPageCheck() {
       password: password,
     };
     await axios
-      .post("/api/myPage", req, { headers: headers })
+      .post("https://hipet-yjuni0.com/api/myPage", req, { headers: headers })
       .then((response) => {
         console.log("응답 데이터", response.data);
 
-        navigate("/mypage")
+        navigate("/mypage");
       })
       .catch((error) => {
         console.log("error", error);
@@ -143,7 +143,6 @@ const Article = styled.div`
   img {
     width: 77px;
     height: auto;
-   
   }
   .tit {
     margin-top: 20px;

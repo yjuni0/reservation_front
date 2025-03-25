@@ -31,10 +31,13 @@ function OnlineCounsel() {
   // 게시판 데이터 가져오기
   const getBbsList = async (page) => {
     try {
-      const response = await axios.get("/api/member/question", {
-        params: { page: page - 1 },
-        headers: headers,
-      });
+      const response = await axios.get(
+        "https://hipet-yjuni0.com/api/member/question",
+        {
+          params: { page: page - 1 },
+          headers: headers,
+        }
+      );
       setBbsList(response.data.content || []); // 응답이 없을 경우 빈 배열 처리
       setPageSize(response.data.pageSize || 8);
       setTotalCnt(response.data.totalElements);

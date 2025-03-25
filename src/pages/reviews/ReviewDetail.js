@@ -34,7 +34,9 @@ function ReviewDetail() {
 
   const getBbsDetail = async () => {
     try {
-      const response = await axios.get(`/api/review/${reviewId}`);
+      const response = await axios.get(
+        `https://hipet-yjuni0.com/api/review/${reviewId}`
+      );
 
       console.log("[reviewDetail.js] getBbsDetail() success :D");
       console.log(response.data);

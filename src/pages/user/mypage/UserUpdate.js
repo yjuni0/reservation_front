@@ -1,35 +1,31 @@
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import AnimalProfile from "./AnimalProfile";
-import { redirect, useLocation,useNavigate } from "react-router-dom";
+import { redirect, useLocation, useNavigate } from "react-router-dom";
 import DaumPostcode from "react-daum-postcode";
 import { AuthContext, HttpHeadersContext } from "../../../context";
 import axios from "axios";
 
 function UserUpdate() {
-    const { headers, setHeaders } = useContext(HttpHeadersContext);
-      const { auth, setAuth } = useContext(AuthContext);
+  const { headers, setHeaders } = useContext(HttpHeadersContext);
+  const { auth, setAuth } = useContext(AuthContext);
   const navigate = useNavigate();
-
 
   const location = useLocation();
   const userData = location.state?.profile;
-  console.log("회원 정보",userData.addr);
+  console.log("회원 정보", userData.addr);
 
   const [petData, setPetData] = useState(userData.pets);
-  console.log("펫 정보" , petData);
+  console.log("펫 정보", petData);
 
   const memberId = userData.id;
 
   const [addr, setAddr] = useState("");
-  const [nickName, setNickName] = useState(userData.nickName)
-
+  const [nickName, setNickName] = useState(userData.nickName);
 
   const changeNickName = (event) => {
     setNickName(event.target.value);
-  }
-
-
+  };
 
   useEffect(() => {
     console.log("access_token:", localStorage.getItem("access_token"));
@@ -45,103 +41,92 @@ function UserUpdate() {
     }
   }, []);
 
+  // 🔹 정규식을 사용해 기본 주소와 상세 주소 분리
+  const match = userData.addr.match(/^(\d{5}\s[^\d]+[\d-]+)\s(.+)$/);
+  const baseAddr = match ? match[1] : userData.addr; // 기본 주소
+  const detailAddr = match ? match[2] : ""; // 상세 주소
 
-// 🔹 정규식을 사용해 기본 주소와 상세 주소 분리
-const match = userData.addr.match(/^(\d{5}\s[^\d]+[\d-]+)\s(.+)$/);
-const baseAddr = match ? match[1] : userData.addr; // 기본 주소
-const detailAddr = match ? match[2] : ""; // 상세 주소
+  // 🔹 초기 상태 설정 (정규식으로 분리한 값 적용)
+  const [postcode, setPostcode] = useState(baseAddr.split(" ")[0]); // 우편번호
+  const [address, setAddress] = useState(baseAddr); // 기본 주소
+  const [detailAddress, setDetailAddress] = useState(detailAddr); // 상세 주소
 
-// 🔹 초기 상태 설정 (정규식으로 분리한 값 적용)
-const [postcode, setPostcode] = useState(baseAddr.split(" ")[0]); // 우편번호
-const [address, setAddress] = useState(baseAddr); // 기본 주소
-const [detailAddress, setDetailAddress] = useState(detailAddr); // 상세 주소
+  const [isOpen, setIsOpen] = useState(false);
+  const [phoneNum, setPhoneNum] = useState(userData.phoneNum);
+  function regPhoneNumber(e) {
+    const result = e.target.value
+      .replace(/[^0-9.]/g, "")
+      .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3")
+      .replace(/(-{1,2})$/g, "");
+    setPhoneNum(result);
+  }
 
-const [isOpen, setIsOpen] = useState(false);
- const [phoneNum, setPhoneNum] = useState(userData.phoneNum);
- function regPhoneNumber(e) {
-  const result = e.target.value
-    .replace(/[^0-9.]/g, "")
-    .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3")
-    .replace(/(-{1,2})$/g, "");
-  setPhoneNum(result);
-}
+  const handleComplete = (data) => {
+    const newBaseAddr = data.zonecode + " " + data.address; // 새 기본 주소 설정
+    setPostcode(data.zonecode);
+    setAddress(newBaseAddr);
+    setIsOpen(false);
 
-const handleComplete = (data) => {
-  const newBaseAddr = data.zonecode + " " + data.address; // 새 기본 주소 설정
-  setPostcode(data.zonecode);
-  setAddress(newBaseAddr);
-  setIsOpen(false);
-  
-  // 기존 detailAddress 값을 유지하면서 addr 업데이트
-  setAddr(newBaseAddr + " " + detailAddress);
-};
+    // 기존 detailAddress 값을 유지하면서 addr 업데이트
+    setAddr(newBaseAddr + " " + detailAddress);
+  };
 
-// 주소 또는 상세 주소가 변경될 때 전체 주소를 업데이트
-useEffect(() => {
-  setAddr(address + " " + detailAddress);
-}, [address, detailAddress]);
+  // 주소 또는 상세 주소가 변경될 때 전체 주소를 업데이트
+  useEffect(() => {
+    setAddr(address + " " + detailAddress);
+  }, [address, detailAddress]);
 
+  // 🔹 상세 주소 입력 변경 시 전체 주소 업데이트
+  const handleDetailAddressChange = (e) => {
+    setDetailAddress(e.target.value);
+    setAddr(address + " " + e.target.value); // 전체 주소 업데이트
+  };
 
-// 🔹 상세 주소 입력 변경 시 전체 주소 업데이트
-const handleDetailAddressChange = (e) => {
-  setDetailAddress(e.target.value);
-  setAddr(address + " " + e.target.value); // 전체 주소 업데이트
-};
+  const handlePetDataChange = (updatedPetData) => {
+    console.log("변경된 펫 데이터:", updatedPetData); // 추가
+    setPetData(updatedPetData);
+  };
+  const handleUpdate = () => {
+    userUpdate();
+    petUpdate();
+    navigate("/mypage");
+    alert("수정이 완료되었습니다.");
+  };
 
-const handlePetDataChange = (updatedPetData) => {
-  console.log("변경된 펫 데이터:", updatedPetData);  // 추가
-  setPetData(updatedPetData);
-};
-const handleUpdate = ()=>{
-  userUpdate();
-  petUpdate();
-  navigate("/mypage");
-  alert("수정이 완료되었습니다.")
-}
+  // useEffect(()=>{
+  //   const getPetList
 
-// useEffect(()=>{
-//   const getPetList
+  // },[])
 
-
-// },[])
-
-
-
-  const userUpdate = async()=>{
-    try{
+  const userUpdate = async () => {
+    try {
       const token = localStorage.getItem("access_token");
-      if(!token){
+      if (!token) {
         console.error("토큰이 없음 로그인 확인");
         return;
       }
-      const fullAddr = address + " " + detailAddress;  // 기본 주소 + 상세 주소
+      const fullAddr = address + " " + detailAddress; // 기본 주소 + 상세 주소
       const req = {
         nickName,
-        addr : fullAddr,
+        addr: fullAddr,
         phoneNum,
-
-      }
-      console.log("보내는 데이터" , req);
-      await axios.patch(
-        `/api/${memberId}`,
-        req,
-      {
+      };
+      console.log("보내는 데이터", req);
+      await axios.patch(`https://hipet-yjuni0.com/api/${memberId}`, req, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
-      );
-
-    }catch (error) {
-      console.error("회원정보 업데이트 에러" , error)
+      });
+    } catch (error) {
+      console.error("회원정보 업데이트 에러", error);
     }
   };
-  
-//펫정보 업데이트
-  const petUpdate = async()=>{
-    try{
+
+  //펫정보 업데이트
+  const petUpdate = async () => {
+    try {
       const token = localStorage.getItem("access_token");
-      if(!token){
+      if (!token) {
         console.error("토큰이 없음 로그인 확인");
         return;
       }
@@ -149,31 +134,29 @@ const handleUpdate = ()=>{
       const req = petData.map((pet, index) => {
         console.log(`pet[${index}] 데이터:`, pet);
         return {
-          id: pet.id,  // 여기서 id가 undefined라면 pet 객체 자체를 확인해야 함
+          id: pet.id, // 여기서 id가 undefined라면 pet 객체 자체를 확인해야 함
           name: pet.name,
           breed: pet.breed,
           age: pet.age,
         };
       });
       console.log("최종 요청 데이터:", req);
-      console.log("보내는 데이터" , req);
-      await axios
-      .patch(`/api/member/pet`, req, {headers:headers}
-      );
-
-    }catch (error) {
-      console.error("회원정보 업데이트 에러" , error)
+      console.log("보내는 데이터", req);
+      await axios.patch(`https://hipet-yjuni0.com/api/member/pet`, req, {
+        headers: headers,
+      });
+    } catch (error) {
+      console.error("회원정보 업데이트 에러", error);
     }
   };
-  
+
   return (
     <UserUpdateContainer>
-            <LoginBox>
+      <LoginBox>
         <LoginTitle>회원 정보 수정</LoginTitle>
         <LoginSub>회원 정보 및 반려동물 정보를 수정하세요.</LoginSub>
       </LoginBox>
       <UserUpdateUserBox>
-        
         <UserUpdateUserTable>
           <thead>
             <tr>
@@ -181,73 +164,81 @@ const handleUpdate = ()=>{
             </tr>
           </thead>
           <tbody>
-          <TableRow>
-            <TableHead>이름</TableHead>
-            <TableData>{userData.name}</TableData>
-          </TableRow>
-          <TableRow>
-            <TableHead>생년월일</TableHead>
-            <TableData>{userData.birth}</TableData>
-          </TableRow>
-            
-          <TableRow>
-            <TableHead>이메일</TableHead>
-            <TableData>{userData.email}</TableData>
-          </TableRow>          
-          <TableRow>
-            <TableHead>닉네임</TableHead>
-            <TableData><Input value={nickName} onChange={changeNickName} ></Input></TableData>
-          </TableRow>
+            <TableRow>
+              <TableHead>이름</TableHead>
+              <TableData>{userData.name}</TableData>
+            </TableRow>
+            <TableRow>
+              <TableHead>생년월일</TableHead>
+              <TableData>{userData.birth}</TableData>
+            </TableRow>
 
-          <TableRow className="th_title">
-            <TableHead>
-              주소
-            </TableHead>
-            <TableData>
-              <AddrBtn type="button" onClick={() => setIsOpen(true)}>
-                검색
-              </AddrBtn>
-              <Input
+            <TableRow>
+              <TableHead>이메일</TableHead>
+              <TableData>{userData.email}</TableData>
+            </TableRow>
+            <TableRow>
+              <TableHead>닉네임</TableHead>
+              <TableData>
+                <Input value={nickName} onChange={changeNickName}></Input>
+              </TableData>
+            </TableRow>
+
+            <TableRow className="th_title">
+              <TableHead>주소</TableHead>
+              <TableData>
+                <AddrBtn type="button" onClick={() => setIsOpen(true)}>
+                  검색
+                </AddrBtn>
+                <Input
                   type="text"
                   value={address} // 우편번호 검색 결과 주소 표
                   readOnly
-              />
-            </TableData>
-          </TableRow>
-          
-          <TableRow>
-            <TableHead>상세주소</TableHead>
-            <TableData>
-              <Input
-                className="address"
-                type="text"
-                value={detailAddress} // 상세 주소 표시 및 변경 가능
-                onChange={handleDetailAddressChange} // 상세 주소 변경 시 addr 업데이트
-                placeholder="상세주소를 입력하세요"
-              />
-              {isOpen && (
-                <Modal>
-                  <Overlay onClick={() => setIsOpen(false)} />
-                  <PostcodeWrapper>
-                    <DaumPostcode onComplete={handleComplete} />
-                  </PostcodeWrapper>
-                </Modal>
-              )}
-            </TableData>
-          </TableRow>
+                />
+              </TableData>
+            </TableRow>
 
-          <TableRow>
-            <TableHead>휴대폰번호</TableHead>
-            <TableData><Input value={phoneNum} maxLength={13} onChange={regPhoneNumber} ></Input></TableData>
-          </TableRow>
-          <TableRow>
-          </TableRow>
-        </tbody>
+            <TableRow>
+              <TableHead>상세주소</TableHead>
+              <TableData>
+                <Input
+                  className="address"
+                  type="text"
+                  value={detailAddress} // 상세 주소 표시 및 변경 가능
+                  onChange={handleDetailAddressChange} // 상세 주소 변경 시 addr 업데이트
+                  placeholder="상세주소를 입력하세요"
+                />
+                {isOpen && (
+                  <Modal>
+                    <Overlay onClick={() => setIsOpen(false)} />
+                    <PostcodeWrapper>
+                      <DaumPostcode onComplete={handleComplete} />
+                    </PostcodeWrapper>
+                  </Modal>
+                )}
+              </TableData>
+            </TableRow>
+
+            <TableRow>
+              <TableHead>휴대폰번호</TableHead>
+              <TableData>
+                <Input
+                  value={phoneNum}
+                  maxLength={13}
+                  onChange={regPhoneNumber}
+                ></Input>
+              </TableData>
+            </TableRow>
+            <TableRow></TableRow>
+          </tbody>
         </UserUpdateUserTable>
       </UserUpdateUserBox>
 
       <UserUpdateAnimalBox>
-        <AnimalProfile petData={petData} onPetDataChange={handlePetDataChange} />
+        <AnimalProfile
+          petData={petData}
+          onPetDataChange={handlePetDataChange}
+        />
       </UserUpdateAnimalBox>
 
       <UserUpdateButtonBox>
@@ -255,8 +246,10 @@ const handleUpdate = ()=>{
         <CancelButton
           onClick={() => {
             navigate(`/mypage`);
-          }}        
-        >취소</CancelButton>
+          }}
+        >
+          취소
+        </CancelButton>
       </UserUpdateButtonBox>
     </UserUpdateContainer>
   );
@@ -349,7 +342,6 @@ const TableHead = styled.th`
 `;
 
 const TableData = styled.td`
-  
   padding: 10px;
   border: 1px solid #ddd;
 `;
@@ -516,24 +508,23 @@ const PostcodeWrapper = styled.div`
   position: relative;
 `;
 const AddrBtn = styled.button`
-     width: 50px;
-    height: 30px;
-    background-color: transparent;
-    border: 1px solid #000;
-    border-radius: 5px;
-    max-width: 16rem;
-    color: #111;
-    font-size: 14.2px;
-    font-weight: 600;
-    float: left; 
-    margin-right: 10px;
-    
-    &:hover{
-      background-color: #0D326F;
-      border: 1px solid #0D326F;
-      color: #fff;
-    }
-`
+  width: 50px;
+  height: 30px;
+  background-color: transparent;
+  border: 1px solid #000;
+  border-radius: 5px;
+  max-width: 16rem;
+  color: #111;
+  font-size: 14.2px;
+  font-weight: 600;
+  float: left;
+  margin-right: 10px;
 
+  &:hover {
+    background-color: #0d326f;
+    border: 1px solid #0d326f;
+    color: #fff;
+  }
+`;
 
 export default UserUpdate;

@@ -30,7 +30,7 @@ function NonUserReserve() {
     console.log("보내는 데이터", req);
 
     await axios
-      .post("/api/nonMember", req)
+      .post("https://hipet-yjuni0.com/api/nonMember", req)
       .then((response) => {
         console.log("비회원 예약 성공: ", response.data);
         const reserveId = response.data.id;

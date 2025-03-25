@@ -34,7 +34,7 @@ function Review() {
 
   const getBbsList = async (page) => {
     try {
-      const response = await axios.get("/api/review", {
+      const response = await axios.get("https://hipet-yjuni0.com/api/review", {
         params: { page: page - 1 },
       });
       setBbsList(response.data.content || []); // 응답이 없을 경우 빈 배열 처리

@@ -41,7 +41,7 @@ function Notice() {
 
   const getBbsList = async (page) => {
     try {
-      const response = await axios.get("/api/notice", {
+      const response = await axios.get("https://hipet-yjuni0.com/api/notice", {
         params: { page: page - 1 },
       });
       setBbsList(response.data.content || []);

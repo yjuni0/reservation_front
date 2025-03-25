@@ -16,7 +16,7 @@ function Delete() {
       const isConfirmed = window.confirm("정말로 삭제하시겠습니까?");
       if (!isConfirmed) return;
 
-      const apiUrl = `/api/admin/notice/${noticeId}`;
+      const apiUrl = `https://hipet-yjuni0.com/api/admin/notice/${noticeId}`;
       const redirectUrl = "/admin/notice";
 
       const response = await axios.delete(apiUrl, {
@@ -45,7 +45,7 @@ function Delete() {
       if (!isConfirmed) return;
 
       const isAdmin = location.pathname.includes("/admin");
-      const apiUrl = `/api/member/question/${questionId}`;
+      const apiUrl = `https://hipet-yjuni0.com/api/member/question/${questionId}`;
       const redirectUrl = isAdmin ? "/admin/question" : "/question";
 
       const response = await axios.delete(apiUrl, {
@@ -74,7 +74,7 @@ function Delete() {
       if (!isConfirmed) return;
 
       const isAdmin = location.pathname.includes("/admin");
-      const apiUrl = `/api/member/review/${reviewId}`;
+      const apiUrl = `https://hipet-yjuni0.com/api/member/review/${reviewId}`;
       const redirectUrl = isAdmin ? "/admin/review" : "/review";
 
       const response = await axios.delete(apiUrl, {
@@ -102,11 +102,14 @@ function Delete() {
     if (!isConfirmed) return;
 
     try {
-      const response = await axios.delete(`/api/admin/member/${memberId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.delete(
+        `https://hipet-yjuni0.com/api/admin/member/${memberId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.status === 200) {
         alert("삭제하였습니다.");

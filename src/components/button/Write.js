@@ -26,7 +26,11 @@ function Write({
     const req = { title, content };
 
     try {
-      const response = await axios.post("/api/admin/notice", req, { headers });
+      const response = await axios.post(
+        "https://hipet-yjuni0.com/api/admin/notice",
+        req,
+        { headers }
+      );
       console.log("게시글 등록 응답:", response); // 응답을 로그로 확인
       const noticeId = response.data.id;
 
@@ -60,9 +64,13 @@ function Write({
     const req = { title, content };
 
     try {
-      const response = await axios.post("/api/member/question", req, {
-        headers,
-      });
+      const response = await axios.post(
+        "https://hipet-yjuni0.com/api/member/question",
+        req,
+        {
+          headers,
+        }
+      );
       const questionId = response.data.id;
 
       if (questionId) {
@@ -90,7 +98,11 @@ function Write({
     const req = { title, content };
 
     try {
-      const response = await axios.post("/api/member/review", req, { headers });
+      const response = await axios.post(
+        "https://hipet-yjuni0.com/api/member/review",
+        req,
+        { headers }
+      );
       const answerId = response.data.id;
 
       if (answerId) {
